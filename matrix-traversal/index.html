@@ -7,7 +7,7 @@
 </head>
 
 <body data-ng-controller="matrixController">
-    <table class="matrix bordered">
+    <table class="matrix bordered ng-cloak">
         <tr data-ng-repeat="row in matrix">
             <td data-ng-repeat="cell in row" data-ng-class="cell.visited && 'visited'">
                 <span data-ng-click="start($parent.$index, $index)">

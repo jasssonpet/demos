@@ -1,5 +1,7 @@
 body { font: 25px sans-serif; }
 
+.ng-cloak { display: none; }
+
 /* BORDERED */
 .bordered {
     border-spacing: 0;
