@@ -1,0 +1,23 @@
+<!doctype html>
+<html data-ng-app="matrixApp">
+<head>
+    <meta charset="utf-8" />
+    <title>Matrix DFS</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+
+<body data-ng-controller="matrixController">
+    <table class="matrix bordered">
+        <tr data-ng-repeat="row in matrix">
+            <td data-ng-repeat="cell in row" data-ng-class="cell.visited && 'visited'">
+                <span data-ng-click="start($parent.$index, $index)">
+                    {{ cell.value }}
+                </span>
+            </td>
+        </tr>
+    </table>
+
+    <script src="scripts/vendor/angular.js"></script>
+    <script src="scripts/script.js"></script>
+</body>
+</html>
