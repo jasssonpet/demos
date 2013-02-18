@@ -40,7 +40,7 @@ body { font: 25px sans-serif; }
 
 .matrix td:hover {
     background: #F4F4F4;
-    color: #444;
+    color: #666;
 }
 
 .matrix td.visited {
