@@ -31,6 +31,7 @@ body { font: 25px sans-serif; }
     color: #999;
     text-align: center;
     line-height: 50px;
+    cursor: pointer;
     -webkit-transition: all 333ms;
        -moz-transition: all 333ms;
          -o-transition: all 333ms;
@@ -38,8 +39,8 @@ body { font: 25px sans-serif; }
 }
 
 .matrix td:hover {
-    background: #f0f0f0;
-    cursor: pointer;
+    background: #F4F4F4;
+    color: #444;
 }
 
 .matrix td.visited {
