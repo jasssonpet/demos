@@ -26,10 +26,11 @@ var getSampleMatrix = (function() {
             matrix.push([])
 
             row.forEach(function(cell) {
-                matrix[matrix.length - 1].push({
-                    value: cell,
-                    visited: false
-                })
+                matrix[matrix.length - 1].push(
+                    { value: cell
+                    , visited: false
+                    }
+                )
             })
         })
 
@@ -46,14 +47,14 @@ APP.controller('matrixController', function($scope, $timeout) {
         })
     }
 
-    function isNext(row, col, nextRow, nextCol) {
-        if (!isInside($scope.matrix, nextRow, nextCol))
+    function isNext(row, col, value) {
+        if (!isInside($scope.matrix, row, col))
             return false
 
-        if ($scope.matrix[nextRow][nextCol].visited)
+        if ($scope.matrix[row][col].visited)
             return false
 
-        if ($scope.matrix[nextRow][nextCol].value != $scope.matrix[row][col].value)
+        if ($scope.matrix[row][col].value != value)
             return false
 
         return true
@@ -75,7 +76,7 @@ APP.controller('matrixController', function($scope, $timeout) {
                 var nextRow = row + direction[0]
                   , nextCol = col + direction[1]
 
-                if (isNext(row, col, nextRow, nextCol))
+                if (isNext(nextRow, nextCol, $scope.matrix[row][col].value))
                     $timeout(makeNext(nextRow, nextCol), FPS) // Make loop closure
             })
         }
