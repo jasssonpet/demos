@@ -1,21 +1,44 @@
 <!doctype html>
-<html data-ng-app="matrixApp">
+<html data-ng-app="app">
 <head>
     <meta charset="utf-8" />
     <title>Matrix Traversal</title>
     <link rel="stylesheet" href="styles/style.css">
 </head>
 
-<body data-ng-controller="matrixController">
-    <table class="matrix bordered ng-cloak">
-        <tr data-ng-repeat="row in matrix">
-            <td data-ng-repeat="cell in row" data-ng-class="cell.visited && 'visited'">
-                <span data-ng-click="start($parent.$index, $index)">
-                    {{ cell.value }}
-                </span>
-            </td>
-        </tr>
-    </table>
+<body>
+    <section class="matrix" data-ng-controller="ctrl" data-ng-class="animating && 'disabled'">
+        <table class="matrix-table bordered ng-cloak">
+            <caption>
+                <span data-ng-show="currentLength == 0">Click on a cell to view its neighbors.</span>
+                <span data-ng-hide="currentLength == 0">Current length is {{ currentLength }}.</span>
+            </caption>
+
+            <tr data-ng-repeat="row in matrix">
+                <td data-ng-repeat="cell in row" data-ng-class="cell.visited && 'visited'">
+                    <span data-ng-click="traverse($parent.$index, $index)">
+                        {{ cell.value }}
+                    </span>
+                </td>
+            </tr>
+        </table>
+
+        <form class="matrix-controls" title="To see the difference, click on the number 3 on the last row.">
+            <label>
+                <input type="radio" name="type" data-ng-model="type"
+                  data-ng-disabled="animating && 'disabled'" value="DFS" checked />
+
+                <abbr title="Depth-first Search">DFS</abbr>
+            </label>
+
+            <label>
+                <input type="radio" name="type" data-ng-model="type"
+                  data-ng-disabled="animating && 'disabled'" value="BFS" />
+
+                <abbr title="Breadth-first Search">BFS</abbr>
+            </label>
+        </form>
+    </section>
 
     <script src="scripts/vendor/angular.js"></script>
     <script src="scripts/script.js"></script>

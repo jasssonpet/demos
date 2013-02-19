@@ -1,12 +1,14 @@
-body { font: 25px sans-serif; }
+body {
+    font-family: sans-serif;
+    color: #444;
+}
+
+abbr { border-bottom: 1px dotted #999; }
 
 .ng-cloak { display: none; }
 
 /* BORDERED */
-.bordered {
-    border-spacing: 0;
-    border-radius: 5px;
-}
+.bordered { border-spacing: 0; }
 
 .bordered {
     border-right: 1px solid #999;
@@ -18,34 +20,60 @@ body { font: 25px sans-serif; }
       border-left: 1px solid #999;
 }
 
+/* Add radius to all corners */
+.bordered {                                            border-radius: 5px; }
 .bordered tr:first-child td:first-child {     border-top-left-radius: 5px; }
-.bordered tr:first-child td:last-child  {    border-top-right-radius: 5px; }
+.bordered tr:first-child td:last-child {     border-top-right-radius: 5px; }
 .bordered tr:last-child  td:first-child {  border-bottom-left-radius: 5px; }
-.bordered tr:last-child  td:last-child  { border-bottom-right-radius: 5px; }
+.bordered tr:last-child  td:last-child {  border-bottom-right-radius: 5px; }
 
 /* MATRIX */
-.matrix { margin: 0 auto; }
+.matrix { text-align: center; }
 
-.matrix td {
+/* MATRIX TABLE */
+.matrix-table { margin: 0 auto 8px; }
+
+.matrix-table caption {
+    margin-bottom: 8px;
+    color: #999;
+}
+
+.matrix-table caption a { color: #999; }
+
+.matrix-table td {
     width: 50px;
     color: #999;
     text-align: center;
+    font-size: 25px;
     line-height: 50px;
-    cursor: pointer;
     -webkit-transition: all 333ms;
        -moz-transition: all 333ms;
          -o-transition: all 333ms;
             transition: all 333ms;
 }
 
-.matrix td:hover {
-    background: #F4F4F4;
-    color: #666;
-}
-
-.matrix td.visited {
+.matrix-table .visited {
     background: #FCF8E3;
     color: #966;
 }
 
-.matrix span { display: block; }
+.matrix:not(.disabled) .matrix-table td { cursor: pointer; }
+
+.matrix:not(.disabled) .matrix-table td:hover {
+    background: #F4F4F4;
+    color: #666;
+}
+
+.matrix-table span { display: block; }
+
+/* MATRIX CONTROLS */
+.matrix-controls { display: inline-block; }
+
+.matrix-controls label { display: inline-block; }
+
+.matrix:not(.disabled) .matrix-controls input[type = "radio"],
+.matrix:not(.disabled) .matrix-controls label {
+    cursor: pointer;
+}
+
+.matrix.disabled .matrix-controls label { color: #999; }
