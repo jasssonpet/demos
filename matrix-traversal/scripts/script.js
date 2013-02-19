@@ -4,7 +4,7 @@
 'use strict';
 
 var APP = angular.module('app', [])
-  , FPS = 1000 / 2 // Delay
+  , FPS = 1000 / 2 // Timeout delay
 
   , sampleMatrix =
     [ [1, 3, 2, 2, 2, 4]
@@ -15,6 +15,12 @@ var APP = angular.module('app', [])
     ]
 
 APP.controller('ctrl', function($scope, $timeout) {
+    $scope.type = "DFS"
+
+    $scope.currentLength = 0
+
+    $scope.animating = false
+
     $scope.matrix = (function() {
         var matrix = []
 
@@ -28,12 +34,6 @@ APP.controller('ctrl', function($scope, $timeout) {
 
         return matrix
     }())
-
-    $scope.type = "DFS"
-
-    $scope.currentLength = 0
-
-    $scope.animating = false
 
     $scope.traverse = (function() {
         var directions = [ [1, 0], [0, 1], [-1, 0], [0, -1] ]
