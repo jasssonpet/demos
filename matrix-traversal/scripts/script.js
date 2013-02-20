@@ -1,6 +1,6 @@
 /*global angular */
 
-(function() {
+;(function() {
 'use strict';
 
 var APP = angular.module('app', [])
