@@ -93,7 +93,7 @@ APP.controller('ctrl', function($scope, $timeout, $q) {
             })
 
             $timeout(function() {
-                list.length && loop() || deffered.resolve()
+                list.length ? loop() : deffered.resolve()
             }, FPS)
         }
 
