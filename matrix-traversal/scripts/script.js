@@ -24,11 +24,11 @@ APP.controller('ctrl', function($scope, $timeout, $q) {
     $scope.matrix = (function() {
         var matrix = []
 
-        sampleMatrix.forEach(function(row) {
+        sampleMatrix.forEach(function(row, i) {
             matrix.push([])
 
             row.forEach(function(cell) {
-                matrix[matrix.length - 1].push({ value: cell, visited: false })
+                matrix[i].push({ value: cell, visited: false })
             })
         })
 
