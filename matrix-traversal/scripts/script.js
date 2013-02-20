@@ -4,15 +4,16 @@
 'use strict';
 
 var APP = angular.module('app', [])
-  , fps = 1000 / 3 // Timeout delay
 
-  , sampleMatrix =
+  , speed = 1000 / 3 // Timeout delay
+
+  , field =
         [ [1, 3, 2, 2, 2, 4]
         , [3, 3, 3, 2, 4, 4]
         , [4, 3, 1, 2, 3, 3]
         , [4, 3, 1, 3, 3, 1]
         , [4, 3, 3, 3, 1, 1]
-    ]
+  ]
 
 APP.controller('ctrl', function($scope, $timeout, $q, $log) {
     $scope.type = "DFS"
@@ -21,7 +22,7 @@ APP.controller('ctrl', function($scope, $timeout, $q, $log) {
 
     $scope.isAnimating = false
 
-    $scope.matrix = sampleMatrix.map(function(row) {
+    $scope.matrix = field.map(function(row) {
         return row.map(function(cell) {
             return { value: cell, visited: false }
         })
@@ -101,7 +102,7 @@ APP.controller('ctrl', function($scope, $timeout, $q, $log) {
 
             $timeout(function() {
                 list.length ? loop() : deffered.resolve()
-            }, fps)
+            }, speed)
         }
 
         return function(row, col) {
