@@ -4,7 +4,7 @@
 'use strict';
 
 var APP = angular.module('app', [])
-  , FPS = 1000 / 2 // Timeout delay
+  , fps = 1000 / 3 // Timeout delay
 
   , sampleMatrix =
         [ [1, 3, 2, 2, 2, 4]
@@ -14,26 +14,18 @@ var APP = angular.module('app', [])
         , [4, 3, 3, 3, 1, 1]
     ]
 
-APP.controller('ctrl', function($scope, $timeout, $q) {
+APP.controller('ctrl', function($scope, $timeout, $q, $log) {
     $scope.type = "DFS"
 
     $scope.currentLength = 0
 
-    $scope.animating = false
+    $scope.isAnimating = false
 
-    $scope.matrix = (function() {
-        var matrix = []
-
-        sampleMatrix.forEach(function(row, i) {
-            matrix.push([])
-
-            row.forEach(function(cell) {
-                matrix[i].push({ value: cell, visited: false })
-            })
+    $scope.matrix = sampleMatrix.map(function(row) {
+        return row.map(function(cell) {
+            return { value: cell, visited: false }
         })
-
-        return matrix
-    }())
+    })
 
     $scope.traverse = (function() {
         var directions = [ [1, 0], [0, 1], [-1, 0], [0, -1] ]
@@ -41,6 +33,19 @@ APP.controller('ctrl', function($scope, $timeout, $q) {
           , list = []
 
           , deffered = null
+
+        function animate() {
+            if ($scope.isAnimating)
+                throw new Error("Animation in progress!")
+
+            $scope.isAnimating = true
+
+            deffered = $q.defer()
+
+            deffered.promise.then(function() {
+                $scope.isAnimating = false
+            })
+        }
 
         function reset() {
             $scope.currentLength = 0
@@ -71,7 +76,7 @@ APP.controller('ctrl', function($scope, $timeout, $q) {
         }
 
         function visit(row, col) {
-            console.log(row, col)
+            $log.log(row, col)
 
             $scope.currentLength++
 
@@ -79,7 +84,7 @@ APP.controller('ctrl', function($scope, $timeout, $q) {
         }
 
         // Recursive loop with timeout
-        function loop(row, col) {
+        function loop() {
             var cell = list[{ 'DFS': 'pop', 'BFS': 'shift' }[$scope.type]]() // Get the first or last element
 
             visit(cell[0], cell[1])
@@ -94,23 +99,11 @@ APP.controller('ctrl', function($scope, $timeout, $q) {
 
             $timeout(function() {
                 list.length ? loop() : deffered.resolve()
-            }, FPS)
-        }
-
-        function animate() {
-            if ($scope.animating) return true
-
-            $scope.animating = true
-
-            deffered = $q.defer()
-
-            deffered.promise.then(function() {
-                $scope.animating = false
-            })
+            }, fps)
         }
 
         return function(row, col) {
-            if (animate()) return
+            animate()
 
             reset()
 

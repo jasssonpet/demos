@@ -7,7 +7,7 @@
 </head>
 
 <body>
-    <section class="matrix ng-cloak" data-ng-controller="ctrl" data-ng-class="animating && 'disabled'">
+    <section class="matrix ng-cloak" data-ng-controller="ctrl" data-ng-class="isAnimating && 'disabled'">
         <table class="matrix-table bordered">
             <caption>
                 <span data-ng-show="currentLength == 0">Click on a cell to view its neighbors.</span>
@@ -26,14 +26,14 @@
         <form class="matrix-controls" title="To see the difference, click on the number 3 on the last row.">
             <label>
                 <input type="radio" name="type" data-ng-model="type"
-                  data-ng-disabled="animating && 'disabled'" value="DFS" />
+                  data-ng-disabled="isAnimating" value="DFS" />
 
                 <abbr title="Depth-first Search">DFS</abbr>
             </label>
 
             <label>
                 <input type="radio" name="type" data-ng-model="type"
-                  data-ng-disabled="animating && 'disabled'" value="BFS" />
+                  data-ng-disabled="isAnimating" value="BFS" />
 
                 <abbr title="Breadth-first Search">BFS</abbr>
             </label>
