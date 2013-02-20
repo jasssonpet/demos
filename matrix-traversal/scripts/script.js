@@ -79,7 +79,6 @@ APP.controller('ctrl', function($scope, $timeout) {
         // Recursive loop with timeout
         function loop(row, col) {
             var cell = list[{ 'DFS': 'pop', 'BFS': 'shift' }[$scope.type]]() // Get the first or last element
-              , node = $scope.matrix[cell.row][cell.col]
 
             visit(cell.row, cell.col)
 
@@ -87,7 +86,7 @@ APP.controller('ctrl', function($scope, $timeout) {
                 var nextRow = cell.row + direction[0]
                   , nextCol = cell.col + direction[1]
 
-                if (isNext(nextRow, nextCol, node.value))
+                if (isNext(nextRow, nextCol, $scope.matrix[cell.row][cell.col].value))
                     list.push({ row: nextRow, col: nextCol })
             })
 
