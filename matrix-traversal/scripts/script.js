@@ -14,7 +14,7 @@ var APP = angular.module('app', [])
         , [4, 3, 3, 3, 1, 1]
     ]
 
-APP.controller('ctrl', function($scope, $timeout) {
+APP.controller('ctrl', function($scope, $timeout, $q) {
     $scope.type = "DFS"
 
     $scope.currentLength = 0
@@ -39,6 +39,8 @@ APP.controller('ctrl', function($scope, $timeout) {
         var directions = [ [1, 0], [0, 1], [-1, 0], [0, -1] ]
 
           , list = []
+
+          , deffered = null
 
         function reset() {
             $scope.currentLength = 0
@@ -90,16 +92,25 @@ APP.controller('ctrl', function($scope, $timeout) {
                     list.push([nextRow, nextCol])
             })
 
-            // TODO: Deferred
             $timeout(function() {
-                if (list.length) loop()
-                else $scope.animating = false
+                list.length && loop() || deffered.resolve()
             }, FPS)
         }
 
+        function animate() {
+            if ($scope.animating) return true
+
+            $scope.animating = true
+
+            deffered = $q.defer()
+
+            deffered.promise.then(function() {
+                $scope.animating = false
+            })
+        }
+
         return function(row, col) {
-            if ($scope.animating) return
-            else $scope.animating = true
+            if (animate()) return
 
             reset()
 
