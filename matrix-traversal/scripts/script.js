@@ -93,11 +93,10 @@ APP.controller('ctrl', function($scope, $timeout) {
                 })
             }
 
-            if (list.length) return $timeout(loop, FPS)
-
             // TODO: Deferred
             $timeout(function() {
-                $scope.animating = false
+                if (list.length) loop()
+                else $scope.animating = false
             }, FPS)
         }
 
