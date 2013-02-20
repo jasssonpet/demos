@@ -85,15 +85,17 @@ APP.controller('ctrl', function($scope, $timeout, $q, $log) {
 
         // Recursive loop with timeout
         function loop() {
-            var cell = list[{ 'DFS': 'pop', 'BFS': 'shift' }[$scope.type]]() // Get the first or last element
+            var current = list[{ 'DFS': 'pop', 'BFS': 'shift' }[$scope.type]]()
 
-            visit(cell[0], cell[1])
+              , value = $scope.matrix[current[0]][current[1]].value
+
+            visit(current[0], current[1])
 
             directions.forEach(function(direction) {
-                var nextRow = cell[0] + direction[0]
-                  , nextCol = cell[1] + direction[1]
+                var nextRow = current[0] + direction[0]
+                  , nextCol = current[1] + direction[1]
 
-                if (isNext(nextRow, nextCol, $scope.matrix[cell[0]][cell[1]].value))
+                if (isNext(nextRow, nextCol, value))
                     list.push([nextRow, nextCol])
             })
 
