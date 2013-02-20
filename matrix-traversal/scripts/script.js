@@ -80,14 +80,14 @@ APP.controller('ctrl', function($scope, $timeout) {
         function loop(row, col) {
             var cell = list[{ 'DFS': 'pop', 'BFS': 'shift' }[$scope.type]]() // Get the first or last element
 
-            visit(cell.row, cell.col)
+            visit(cell[0], cell[1])
 
             directions.forEach(function(direction) {
-                var nextRow = cell.row + direction[0]
-                  , nextCol = cell.col + direction[1]
+                var nextRow = cell[0] + direction[0]
+                  , nextCol = cell[1] + direction[1]
 
-                if (isNext(nextRow, nextCol, $scope.matrix[cell.row][cell.col].value))
-                    list.push({ row: nextRow, col: nextCol })
+                if (isNext(nextRow, nextCol, $scope.matrix[cell[0]][cell[1]].value))
+                    list.push([nextRow, nextCol])
             })
 
             // TODO: Deferred
@@ -103,7 +103,7 @@ APP.controller('ctrl', function($scope, $timeout) {
 
             reset()
 
-            list.push({ row: row, col: col })
+            list.push([row, col])
 
             loop()
         }
