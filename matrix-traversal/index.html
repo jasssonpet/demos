@@ -9,9 +9,9 @@
 <body>
     <section class="matrix ng-cloak" data-ng-controller="ctrl" data-ng-class="isAnimating && 'disabled'">
         <table class="matrix-table bordered">
-            <caption>
-                <span data-ng-show="currentLength == 0">Click on a cell to view its neighbors.</span>
-                <span data-ng-hide="currentLength == 0">The current length is {{ currentLength }}.</span>
+            <caption data-ng-switch="currentLength">
+                <span data-ng-switch-when="0">Click on a cell to view its neighbors.</span>
+                <span data-ng-switch-default>The current length is {{ currentLength }}.</span>
             </caption>
 
             <tr data-ng-repeat="row in matrix">
