@@ -5,14 +5,14 @@
 
 var APP = angular.module('app', [])
 
-  , speed = 1000 / 3 // Timeout delay
+  , speed = 1000 / 4 // Timeout delay
 
   , field =
-        [ [1, 3, 2, 2, 2, 4]
+        [ [3, 3, 2, 2, 2, 4]
         , [3, 3, 3, 2, 4, 4]
-        , [4, 3, 1, 2, 3, 3]
-        , [4, 3, 1, 3, 3, 1]
-        , [4, 3, 3, 3, 1, 1]
+        , [3, 3, 3, 2, 3, 3]
+        , [3, 1, 3, 3, 3, 1]
+        , [3, 1, 3, 3, 1, 1]
     ]
 
 APP.controller('ctrl', function($scope, $timeout, $q, $log) {
@@ -67,9 +67,6 @@ APP.controller('ctrl', function($scope, $timeout, $q, $log) {
             if (!isInside(row, col))
                 return false
 
-            if ($scope.matrix[row][col].visited)
-                return false
-
             if ($scope.matrix[row][col].value != value)
                 return false
 
@@ -87,22 +84,24 @@ APP.controller('ctrl', function($scope, $timeout, $q, $log) {
         // Recursive loop with timeout
         function loop() {
             var current = list[{ 'DFS': 'pop', 'BFS': 'shift' }[$scope.type]]()
+              , cell = $scope.matrix[current[0]][current[1]]
+              , visited = cell.visited
 
-              , value = $scope.matrix[current[0]][current[1]].value
+            if (!visited) {
+                visit(current[0], current[1])
 
-            visit(current[0], current[1])
+                directions.forEach(function(direction) {
+                    var nextRow = current[0] + direction[0]
+                      , nextCol = current[1] + direction[1]
 
-            directions.forEach(function(direction) {
-                var nextRow = current[0] + direction[0]
-                  , nextCol = current[1] + direction[1]
-
-                if (isNext(nextRow, nextCol, value))
-                    list.push([nextRow, nextCol])
-            })
+                    if (isNext(nextRow, nextCol, cell.value))
+                        list.push([nextRow, nextCol])
+                })
+            }
 
             $timeout(function() {
                 list.length ? loop() : deffered.resolve()
-            }, speed)
+            }, visited ? 0 : speed)
         }
 
         return function(row, col) {
