@@ -16,7 +16,7 @@ var APP = angular.module('app', [])
     ]
 
 APP.controller('ctrl', function($scope, $timeout, $q, $log) {
-    $scope.type = "DFS"
+    $scope.type = 'DFS'
 
     $scope.currentLength = 0
 
@@ -37,14 +37,16 @@ APP.controller('ctrl', function($scope, $timeout, $q, $log) {
 
         function animate() {
             if ($scope.isAnimating)
-                throw new Error("Animation in progress!")
+                throw new Error('Animation in progress!')
 
             $scope.isAnimating = true
+            console.group('Traverse: ' + $scope.type)
 
             deffered = $q.defer()
 
             deffered.promise.then(function() {
                 $scope.isAnimating = false
+                console.groupEnd()
             })
         }
 
@@ -67,7 +69,7 @@ APP.controller('ctrl', function($scope, $timeout, $q, $log) {
             if (!isInside(row, col))
                 return false
 
-            if ($scope.matrix[row][col].value != value)
+            if ($scope.matrix[row][col].value !== value)
                 return false
 
             return true
