@@ -85,25 +85,25 @@ APP.controller('ctrl', function($scope, $timeout, $q, $log) {
 
         // Recursive loop with timeout
         function loop() {
+            if (!list.length) return deffered.resolve() // Condition
+
             var current = list[{ 'DFS': 'pop', 'BFS': 'shift' }[$scope.type]]()
               , cell = $scope.matrix[current[0]][current[1]]
-              , visited = cell.visited
 
-            if (!visited) {
-                visit(current[0], current[1])
+            if (cell.visited) return loop() // Continue
 
-                directions.forEach(function(direction) {
-                    var nextRow = current[0] + direction[0]
-                      , nextCol = current[1] + direction[1]
+            visit(current[0], current[1])
 
-                    if (isNext(nextRow, nextCol, cell.value))
-                        list.push([nextRow, nextCol])
-                })
-            }
+            directions.forEach(function(direction) {
+                var nextRow = current[0] + direction[0]
+                  , nextCol = current[1] + direction[1]
 
-            $timeout(function() {
-                list.length ? loop() : deffered.resolve()
-            }, visited ? 0 : speed)
+                if (isNext(nextRow, nextCol, cell.value))
+                    list.push([nextRow, nextCol])
+            })
+
+            // Afterthought
+            $timeout(loop, speed)
         }
 
         return function(row, col) {
