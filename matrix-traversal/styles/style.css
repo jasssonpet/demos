@@ -1,4 +1,4 @@
-body, ul, li {
+ul, li {
     margin: 0;
     padding: 0;
 }
@@ -38,10 +38,10 @@ abbr { border-bottom: 1px dotted #999; }
 .matrix { text-align: center; }
 
 /* MATRIX TABLE */
-.matrix-table { margin: 0 auto 10px; }
+.matrix-table { margin: 0 auto 8px; }
 
 .matrix-table caption {
-    margin: 10px 0;
+    margin-bottom: 8px;
     color: #999;
 }
 
