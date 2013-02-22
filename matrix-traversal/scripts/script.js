@@ -102,8 +102,7 @@ APP.controller('ctrl', function($scope, $timeout, $q, $log) {
                     list.push([nextRow, nextCol])
             })
 
-            // Afterthought
-            $timeout(loop, speed)
+            $timeout(loop, speed) // Afterthought
         }
 
         return function(row, col) {
