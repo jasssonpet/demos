@@ -1,3 +1,8 @@
+body, ul, li {
+    margin: 0;
+    padding: 0;
+}
+
 body {
     font-family: sans-serif;
     color: #444;
@@ -6,6 +11,8 @@ body {
 abbr { border-bottom: 1px dotted #999; }
 
 .ng-cloak { display: none; }
+
+.inline li { display: inline-block; }
 
 /* BORDERED */
 .bordered { border-spacing: 0; }
@@ -31,10 +38,10 @@ abbr { border-bottom: 1px dotted #999; }
 .matrix { text-align: center; }
 
 /* MATRIX TABLE */
-.matrix-table { margin: 0 auto 8px; }
+.matrix-table { margin: 0 auto 10px; }
 
 .matrix-table caption {
-    margin-bottom: 8px;
+    margin: 10px 0;
     color: #999;
 }
 

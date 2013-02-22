@@ -25,19 +25,25 @@
         </table>
 
         <form class="matrix-controls" title="To see the difference, click on the number 3 on the last row.">
-            <label>
-                <input type="radio" name="type" data-ng-model="type"
-                  data-ng-disabled="isAnimating" value="DFS" />
+            <ul class="inline">
+                <li>
+                    <label>
+                        <input type="radio" name="type" data-ng-model="type"
+                          data-ng-disabled="isAnimating" value="DFS" />
 
-                <abbr title="Depth-first Search">DFS</abbr>
-            </label>
+                        <abbr title="Depth-first Search">DFS</abbr>
+                    </label>
+                </li>
 
-            <label>
-                <input type="radio" name="type" data-ng-model="type"
-                  data-ng-disabled="isAnimating" value="BFS" />
+                <li>
+                    <label>
+                        <input type="radio" name="type" data-ng-model="type"
+                          data-ng-disabled="isAnimating" value="BFS" />
 
-                <abbr title="Breadth-first Search">BFS</abbr>
-            </label>
+                        <abbr title="Breadth-first Search">BFS</abbr>
+                    </label>
+                </li>
+            </ul>
         </form>
     </section>
 
