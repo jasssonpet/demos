@@ -66,13 +66,7 @@ APP.controller('ctrl', function($scope, $timeout, $q, $log) {
         }
 
         function isNext(row, col, value) {
-            if (!isInside(row, col))
-                return false
-
-            if ($scope.matrix[row][col].value !== value)
-                return false
-
-            return true
+            return isInside(row, col) && $scope.matrix[row][col].value === value
         }
 
         function visit(row, col) {
