@@ -104,11 +104,7 @@ APP.controller('ctrl', function($scope, $timeout, $q, $log) {
         }
 
         return function(row, col) {
-            start()
-
-            reset()
-
-            traverse(row, col)
+            start(), reset(), traverse(row, col)
         }
     }())
 })
