@@ -35,7 +35,7 @@ APP.controller('ctrl', function($scope, $timeout, $q, $log) {
 
           , deffered = null
 
-        function animate() {
+        function start() {
             if ($scope.isAnimating)
                 throw new Error('Animation in progress!')
 
@@ -77,36 +77,38 @@ APP.controller('ctrl', function($scope, $timeout, $q, $log) {
             $scope.matrix[row][col].visited = true
         }
 
-        // Recursive loop with timeout
-        function loop() {
-            if (!list.length) return deffered.resolve() // Condition
+        function traverse(row, col) {
+            list.push([row, col])
 
-            var current = list[{ 'DFS': 'pop', 'BFS': 'shift' }[$scope.type]]()
-              , cell = $scope.matrix[current[0]][current[1]]
+            // Recursive while loop with timeout
+            ;(function loop() {
+                if (!list.length) return deffered.resolve() // Condition
 
-            if (cell.visited) return loop() // Continue
+                var current = list[{ 'DFS': 'pop', 'BFS': 'shift' }[$scope.type]]()
+                  , cell = $scope.matrix[current[0]][current[1]]
 
-            visit(current[0], current[1])
+                if (cell.visited) return loop() // Continue
 
-            directions.forEach(function(direction) {
-                var nextRow = current[0] + direction[0]
-                  , nextCol = current[1] + direction[1]
+                visit(current[0], current[1])
 
-                if (isNext(nextRow, nextCol, cell.value))
-                    list.push([nextRow, nextCol])
-            })
+                directions.forEach(function(direction) {
+                    var nextRow = current[0] + direction[0]
+                      , nextCol = current[1] + direction[1]
 
-            $timeout(loop, speed) // Afterthought
+                    if (isNext(nextRow, nextCol, cell.value))
+                        list.push([nextRow, nextCol])
+                })
+
+                $timeout(loop, speed) // Afterthought
+            }())
         }
 
         return function(row, col) {
-            animate()
+            start()
 
             reset()
 
-            list.push([row, col])
-
-            loop()
+            traverse(row, col)
         }
     }())
 })
