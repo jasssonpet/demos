@@ -33,7 +33,7 @@ APP.controller('ctrl', function($scope, $timeout, $q, $log) {
 
           , list = []
 
-          , deffered = null
+          , deferred = null
 
         function start() {
             if ($scope.isAnimating)
@@ -42,9 +42,9 @@ APP.controller('ctrl', function($scope, $timeout, $q, $log) {
             $scope.isAnimating = true
             console.group('Traverse: ' + $scope.type)
 
-            deffered = $q.defer()
+            deferred = $q.defer()
 
-            deffered.promise.then(function() {
+            deferred.promise.then(function() {
                 $scope.isAnimating = false
                 console.groupEnd()
             })
@@ -82,7 +82,7 @@ APP.controller('ctrl', function($scope, $timeout, $q, $log) {
 
             // Recursive while loop with timeout
             ;(function loop() {
-                if (!list.length) return deffered.resolve() // Condition
+                if (!list.length) return deferred.resolve() // Condition
 
                 var current = list[{ 'DFS': 'pop', 'BFS': 'shift' }[$scope.type]]()
                   , cell = $scope.matrix[current[0]][current[1]]
