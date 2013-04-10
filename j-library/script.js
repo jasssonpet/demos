@@ -142,6 +142,24 @@ var J = (function() {
     }
 
     ;(function() {
+        var makeVendorProperty = (function() {
+            var _prefixes = ['Webkit', 'Moz', 'ms', 'O']
+
+              , style = document.createElement('div').style
+
+            return function(property) {
+                if (property in style) return property
+
+                var vendorProp, i
+
+                for (i = 0; i < _prefixes.length; i++) {
+                    vendorProp = _prefixes[i] + property[0].toUpperCase() + property.substr(1)
+
+                    if (vendorProp in style) return vendorProp
+                }
+            }
+        }())
+
         // Gets the value of the CSS property for the first element.
         function _getCSS(self, property) {
             var el = self.elements[0]
@@ -158,6 +176,8 @@ var J = (function() {
 
         // Get or set the CSS property.
         J.prototype.css = function(property, value) {
+            property = makeVendorProperty(property)
+
             return value == null ?
                 _getCSS(this, property) :
                 _setCSS(this, property, value)
