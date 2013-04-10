@@ -125,13 +125,19 @@ var J = (function() {
             return this.on('mouseout', callback)
         }
 
-        // Clones each element and add it to all current elements.
+        // Clones each element and adds it to all current elements.
         , append: function(elements) {
             return this.each(function(el) {
                 elements.each(function(appendedElement) {
                     el.appendChild(appendedElement.cloneNode(true))
                 })
             })
+        }
+
+        , appendTo: function(element) {
+            element.append(this)
+
+            return this
         }
     }
 
@@ -243,7 +249,7 @@ var J = (function() {
         return min + Math.floor(Math.random() * (max - min + 1))
     }
 
-    // Returns a random RGB color in Hex format (`#FF0A10`)
+    // Returns a random RGB color in hex format (`#FF0A10`)
     J.randomColor = function() {
         var r = J.padLeft(J.random(255).toString(16), 2, '0')
           , g = J.padLeft(J.random(255).toString(16), 2, '0')
