@@ -16,7 +16,7 @@
 var J = (function() {
     'use strict';
 
-    var _singleTag = /^<(\w+)\s*\/>$/
+    var _voidTag = /^<(\w+)\s*\/>$/
 
     // ### Helper functions
 
@@ -31,11 +31,11 @@ var J = (function() {
     }
 
     function _isTag(str) {
-        return _singleTag.test(str)
+        return _voidTag.test(str)
     }
 
     function _create(str) {
-        var tag = str.match(_singleTag)[1]
+        var tag = str.match(_voidTag)[1]
 
         return document.createElement(tag)
     }
