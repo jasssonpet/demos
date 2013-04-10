@@ -16,74 +16,74 @@
 var J = (function() {
     'use strict';
 
-    var _voidTag = /^<(\w+)\s*\/>$/
-
-    // ### Helper functions
-
-    // Checks if the object is a DOM Node.
-    function _isNode(obj) {
-        return obj instanceof Node
-    }
-
-    // Checks if the object is a string.
-    function _isString(obj) {
-        return typeof obj === 'string'
-    }
-
-    function _isTag(str) {
-        return _voidTag.test(str)
-    }
-
-    function _create(str) {
-        var tag = str.match(_voidTag)[1]
-
-        return document.createElement(tag)
-    }
-
-    // Works like `Array.protype.concat()` but doesn't create a new array.
-    //
-    //     var source = [1, 2]
-    //
-    //     _addRange(source, [3, 4]) // Now source is [1, 2, 3, 4]
-    function _addRange(source, elements) {
-        J.each(elements, function(el) {
-            source.push(el)
-        })
-
-        return source
-    }
-
-    // Finds all elements, that match the CSS selector and are subelements of `context`.
-    //
-    //     _find('h1, p', '#wrapper') // Matches #wrapper h1, #wrapper p
-    function _find(selector, context) {
-        var result = []
-
-        J.each(context, function(el) {
-            _addRange(result, el.querySelectorAll(selector))
-        })
-
-        return result
-    }
-
     // ### Constructor
 
     // The constructor accepts a string `J('p, div')` or a DOM Node `J(document.getElementById('id'))`.
-    var J = function(selector, context) {
-        // This check allows us to make new instances without the `new` keyword.
+    var J = (function() {
+        var _voidTag = /^<(\w+)\s*\/>$/
+
+        // Checks if the object is a DOM Node.
+        function _isNode(obj) {
+            return obj instanceof Node
+        }
+
+        function _isTag(str) {
+            return _voidTag.test(str)
+        }
+
+        function _create(str) {
+            var tag = str.match(_voidTag)[1]
+
+            return document.createElement(tag)
+        }
+
+        // Checks if the object is a string.
+        function _isString(obj) {
+            return typeof obj === 'string'
+        }
+
+        // Works like `Array.protype.concat()` but doesn't create a new array.
         //
-        //     J('p') // Same as new J('p')
-        if (!(this instanceof J)) return new J(selector, context)
+        //     var source = [1, 2]
+        //
+        //     _addRange(source, [3, 4]) // Now source is [1, 2, 3, 4]
+        function _addRange(source, elements) {
+            J.each(elements, function(el) {
+                source.push(el)
+            })
 
-        // If there is no context specified, use the root element (`html` in case of an *.html file).
-        context = context && context.elements || [document.documentElement]
+            return source
+        }
 
-        // Saves the matched elements as an array in the `elements` property.
-        this.elements =
-            _isNode(selector)   && [selector] ||
-            _isTag(selector)    && [_create(selector)] ||
-            _isString(selector) && _find(selector, context)
-    }
+        // Finds all elements, that match the CSS selector and are subelements of `context`.
+        //
+        //     _find('h1, p', '#wrapper') // Matches #wrapper h1, #wrapper p
+        function _find(selector, context) {
+            var result = []
+
+            J.each(context, function(el) {
+                _addRange(result, el.querySelectorAll(selector))
+            })
+
+            return result
+        }
+
+        return function(selector, context) {
+            // This check allows us to make new instances without the `new` keyword.
+            //
+            //     J('p') // Same as new J('p')
+            if (!(this instanceof J)) return new J(selector, context)
+
+            // If there is no context specified, use the root element (`html` in case of an *.html file).
+            context = context && context.elements || [document.documentElement]
+
+            // Saves the matched elements as an array in the `elements` property.
+            this.elements =
+                _isNode(selector)   && [selector] ||
+                _isTag(selector)    && [_create(selector)] ||
+                _isString(selector) && _find(selector, context)
+        }
+    }())
 
     // ### Prototype
 
@@ -145,10 +145,10 @@ var J = (function() {
         var _makeVendorProperty = (function() {
             var _prefixes = ['Webkit', 'Moz', 'ms', 'O']
 
-              , style = document.createElement('div').style
+              , _style = document.createElement('div').style
 
             return function(property) {
-                if (property in style) return property
+                if (property in _style) return property
 
                 var vendorProp, i
 
@@ -157,7 +157,7 @@ var J = (function() {
                 for (i = 0; i < _prefixes.length; i++) {
                     vendorProp = _prefixes[i] + property
 
-                    if (vendorProp in style) return vendorProp
+                    if (vendorProp in _style) return vendorProp
                 }
             }
         }())
