@@ -137,16 +137,16 @@ var J = (function() {
 
     ;(function() {
         // Gets the value of the CSS property for the first element.
-        function _getCSS(self, prop) {
+        function _getCSS(self, property) {
             var el = self.elements[0]
 
-            return getComputedStyle(el).getPropertyValue(prop)
+            return getComputedStyle(el).getPropertyValue(property)
         }
 
         // Sets the CSS property for every element to the given value.
-        function _setCSS(self, prop, value) {
+        function _setCSS(self, property, value) {
             return self.each(function(el) {
-                el.style[prop] = value
+                el.style[property] = value
             })
         }
 
@@ -249,35 +249,33 @@ var J = (function() {
           , g = J.padLeft(J.random(255).toString(16), 2, '0')
           , b = J.padLeft(J.random(255).toString(16), 2, '0')
 
-          , color = ('#' + r + g + b).toUpperCase()
-
-       return color
+        return ('#' + r + g + b).toUpperCase()
     }
 
     J.each = (function() {
-        function _eachArray(obj, callback) {
+        function _eachArray(object, callback) {
             var i
 
-            for (i = 0; i < obj.length; i++)
-                callback.call(obj, obj[i], i)
+            for (i = 0; i < object.length; i++)
+                callback.call(object, object[i], i)
 
-            return obj
+            return object
         }
 
-        function _eachObject(obj, callback) {
+        function _eachObject(object, callback) {
             var prop
 
-            for (prop in obj)
-                if (obj.hasOwnProperty(prop))
-                    callback.call(obj, prop, obj[prop])
+            for (prop in object)
+                if (object.hasOwnProperty(prop))
+                    callback.call(object, prop, object[prop])
 
-            return obj
+            return object
         }
 
-        return function(obj, callback) {
-            return obj.length != null ?
-                _eachArray(obj, callback) :
-                _eachObject(obj, callback)
+        return function(object, callback) {
+            return object.length != null ?
+                _eachArray(object, callback) :
+                _eachObject(object, callback)
         }
     }())
 
