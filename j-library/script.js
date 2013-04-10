@@ -152,8 +152,10 @@ var J = (function() {
 
                 var vendorProp, i
 
+                property = property[0].toUpperCase() + property.substr(1)
+
                 for (i = 0; i < _prefixes.length; i++) {
-                    vendorProp = _prefixes[i] + property[0].toUpperCase() + property.substr(1)
+                    vendorProp = _prefixes[i] + property
 
                     if (vendorProp in style) return vendorProp
                 }
