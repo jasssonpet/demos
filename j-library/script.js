@@ -142,7 +142,7 @@ var J = (function() {
     }
 
     ;(function() {
-        var makeVendorProperty = (function() {
+        var _makeVendorProperty = (function() {
             var _prefixes = ['Webkit', 'Moz', 'ms', 'O']
 
               , style = document.createElement('div').style
@@ -174,9 +174,9 @@ var J = (function() {
             })
         }
 
-        // Get or set the CSS property.
+        // Gets or sets the CSS property.
         J.prototype.css = function(property, value) {
-            property = makeVendorProperty(property)
+            property = _makeVendorProperty(property)
 
             return value == null ?
                 _getCSS(this, property) :
