@@ -93,6 +93,11 @@ static class Program
         return new Func<T, T>[n].Map(x => f).Reduce((a, b) => Compose(a, b));   // Without using first
     }
 
+    static Func<T[]> Curry<T>(T[] arguments)
+    {
+
+    }
+
     // TODO: YCombinator, Currying
     static void Main()
     {
@@ -198,6 +203,11 @@ static class Program
 
             //Console.WriteLine("Map: x * 5; Filter: x > 12; Reduce: a + b");
             //Print(numbers.Map(x => 5 * x).Filter(x => x > 12).Reduce((a, b) => a + b));
+        }
+
+        {
+            Console.WriteLine("Curry");
+            var f = Curry();
         }
     }
 
