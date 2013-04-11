@@ -134,19 +134,20 @@ var J = (function() {
 
     // #### DOM Manipulation
     ;(function() {
-        // Clones each element and adds it to all current elements.
         J.prototype.append = function(elements) {
             return this.each(function(el) {
                 elements.each(function(appendedElement) {
-                    el.appendChild(appendedElement.cloneNode(true))
+                    el.appendChild(appendedElement)
                 })
             })
         }
 
-        J.prototype.appendTo = function(element) {
-            element.append(this)
-
-            return this
+        J.prototype.prepend = function(elements) {
+            return this.each(function(el) {
+                elements.each(function(appendedElement) {
+                    el.insertBefore(appendedElement, el.firstChild)
+                })
+            })
         }
 
         J.prototype.remove = function() {
