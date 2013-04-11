@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>J Library With Sample Plugin</title>
+  <title>script.js</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="docco.css" />
@@ -13,13 +13,39 @@
     
     <ul class="sections">
         
+          <li id="title">
+              <div class="annotation">
+                  <h1>script.js</h1>
+              </div>
+          </li>
+        
         
         
         <li id="section-1">
             <div class="annotation">
               
-              <div class="pilwrap for-h1">
+              <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="comment">/*!
+ * J Library
+ * https://github.com/jasssonpet/demos/tree/gh-pages/j-library
+ *
+ * Copyright 2013 jasssonpet
+ * Released under the MIT license
+ */</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h1">
+                <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
               <h1>J Library With Sample Plugin</h1>
 
@@ -28,11 +54,11 @@
         </li>
         
         
-        <li id="section-2">
+        <li id="section-3">
             <div class="annotation">
               
               <div class="pilwrap for-h2">
-                <a class="pilcrow" href="#section-2">&#182;</a>
+                <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
               <h2>J library</h2>
 
@@ -44,11 +70,11 @@
         </li>
         
         
-        <li id="section-3">
+        <li id="section-4">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-3">&#182;</a>
+                <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
               <p>Everything inside is visible only in the module.</p>
 
@@ -60,32 +86,15 @@
         </li>
         
         
-        <li id="section-4">
-            <div class="annotation">
-              
-              <div class="pilwrap for-h3">
-                <a class="pilcrow" href="#section-4">&#182;</a>
-              </div>
-              <h3>Helper functions</h3>
-
-            </div>
-            
-        </li>
-        
-        
         <li id="section-5">
             <div class="annotation">
               
-              <div class="pilwrap ">
+              <div class="pilwrap for-h3">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>Checks if the object is a DOM Node.</p>
+              <h3>Constructor</h3>
 
             </div>
-            
-            <div class="content"><div class='highlight'><pre>    <span class="function"><span class="keyword">function</span> <span class="title">_isNode</span><span class="params">(obj)</span> {</span>
-        <span class="keyword">return</span> obj <span class="keyword">instanceof</span> Node
-    }</pre></div></div>
             
         </li>
         
@@ -96,13 +105,12 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>Checks if the object is a string.</p>
+              <p>The constructor accepts a string <code>J(&#39;p, div&#39;)</code> or a DOM Node <code>J(document.getElementById(&#39;id&#39;))</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="function"><span class="keyword">function</span> <span class="title">_isString</span><span class="params">(obj)</span> {</span>
-        <span class="keyword">return</span> <span class="keyword">typeof</span> obj === <span class="string">'string'</span>
-    }</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">var</span> J = (<span class="keyword">function</span>() {
+        <span class="keyword">var</span> _voidTag = <span class="regexp">/^&lt;(\w+)\s*\/&gt;$/</span></pre></div></div>
             
         </li>
         
@@ -113,21 +121,23 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>Works like <code>Array.protype.concat()</code> but doesn&#39;t create a new array.</p>
-<pre><code>var source = [1, 2]
-
-_addRange(source, [3, 4]) // Now source is [1, 2, 3, 4]</code></pre>
+              <p>Checks if the object is a DOM Node.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="function"><span class="keyword">function</span> <span class="title">_addRange</span><span class="params">(source, elements)</span> {</span>
-        <span class="keyword">var</span> i
+            <div class="content"><div class='highlight'><pre>        <span class="function"><span class="keyword">function</span> <span class="title">_isNode</span><span class="params">(obj)</span> {</span>
+            <span class="keyword">return</span> obj <span class="keyword">instanceof</span> Node
+        }
 
-        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; elements.length; i++)
-            source.push(elements[i])
+        <span class="function"><span class="keyword">function</span> <span class="title">_isTag</span><span class="params">(str)</span> {</span>
+            <span class="keyword">return</span> _voidTag.test(str)
+        }
 
-        <span class="keyword">return</span> source
-    }</pre></div></div>
+        <span class="function"><span class="keyword">function</span> <span class="title">_create</span><span class="params">(str)</span> {</span>
+            <span class="keyword">var</span> tag = str.match(_voidTag)[<span class="number">1</span>]
+
+            <span class="keyword">return</span> document.createElement(tag)
+        }</pre></div></div>
             
         </li>
         
@@ -138,20 +148,13 @@ _addRange(source, [3, 4]) // Now source is [1, 2, 3, 4]</code></pre>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
-              <p>Finds all elements, that match the CSS selector and are subelements of <code>context</code>.</p>
-<pre><code>_find(&#39;h1, p&#39;, &#39;#wrapper&#39;) // Matches #wrapper h1, #wrapper p</code></pre>
+              <p>Checks if the object is a string.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="function"><span class="keyword">function</span> <span class="title">_find</span><span class="params">(selector, context)</span> {</span>
-        <span class="keyword">var</span> result = []
-
-        context.forEach(<span class="keyword">function</span>(el) {
-            _addRange(result, el.querySelectorAll(selector))
-        })
-
-        <span class="keyword">return</span> result
-    }</pre></div></div>
+            <div class="content"><div class='highlight'><pre>        <span class="function"><span class="keyword">function</span> <span class="title">_isString</span><span class="params">(obj)</span> {</span>
+            <span class="keyword">return</span> <span class="keyword">typeof</span> obj === <span class="string">'string'</span>
+        }</pre></div></div>
             
         </li>
         
@@ -159,12 +162,23 @@ _addRange(source, [3, 4]) // Now source is [1, 2, 3, 4]</code></pre>
         <li id="section-9">
             <div class="annotation">
               
-              <div class="pilwrap for-h3">
+              <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <h3>Constructor</h3>
+              <p>Works like <code>Array.protype.concat()</code> but doesn&#39;t create a new array.</p>
+<pre><code>var source = [1, 2]
+
+_addRange(source, [3, 4]) // Now source is [1, 2, 3, 4]</code></pre>
 
             </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="function"><span class="keyword">function</span> <span class="title">_addRange</span><span class="params">(source, elements)</span> {</span>
+            J.each(elements, <span class="keyword">function</span>(el) {
+                source.push(el)
+            })
+
+            <span class="keyword">return</span> source
+        }</pre></div></div>
             
         </li>
         
@@ -175,11 +189,22 @@ _addRange(source, [3, 4]) // Now source is [1, 2, 3, 4]</code></pre>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
-              <p>The constructor accepts a string <code>J(&#39;p, div&#39;)</code> or a DOM Node <code>J(document.getElementById(&#39;id&#39;))</code>.</p>
+              <p>Finds all elements, that match the CSS selector and are subelements of <code>context</code>.</p>
+<pre><code>_find(&#39;h1, p&#39;, &#39;#wrapper&#39;) // Matches #wrapper h1, #wrapper p</code></pre>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="keyword">var</span> J = <span class="keyword">function</span>(selector, context) {</pre></div></div>
+            <div class="content"><div class='highlight'><pre>        <span class="function"><span class="keyword">function</span> <span class="title">_find</span><span class="params">(selector, context)</span> {</span>
+            <span class="keyword">var</span> result = []
+
+            J.each(context, <span class="keyword">function</span>(el) {
+                _addRange(result, el.querySelectorAll(selector))
+            })
+
+            <span class="keyword">return</span> result
+        }
+
+        <span class="keyword">return</span> <span class="keyword">function</span>(selector, context) {</pre></div></div>
             
         </li>
         
@@ -195,8 +220,7 @@ _addRange(source, [3, 4]) // Now source is [1, 2, 3, 4]</code></pre>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        <span class="keyword">if</span> (!(<span class="keyword">this</span> <span class="keyword">instanceof</span> J))
-            <span class="keyword">return</span> <span class="keyword">new</span> J(selector, context)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>            <span class="keyword">if</span> (!(<span class="keyword">this</span> <span class="keyword">instanceof</span> J)) <span class="keyword">return</span> <span class="keyword">new</span> J(selector, context)</pre></div></div>
             
         </li>
         
@@ -211,7 +235,7 @@ _addRange(source, [3, 4]) // Now source is [1, 2, 3, 4]</code></pre>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        context = context &amp;&amp; context.elements || [document.documentElement]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>            context = context &amp;&amp; context.elements || [document.documentElement]</pre></div></div>
             
         </li>
         
@@ -226,10 +250,12 @@ _addRange(source, [3, 4]) // Now source is [1, 2, 3, 4]</code></pre>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        <span class="keyword">this</span>.elements =
-            _isNode(selector)   &amp;&amp; [selector] ||
-            _isString(selector) &amp;&amp; _find(selector, context)
-    }</pre></div></div>
+            <div class="content"><div class='highlight'><pre>            <span class="keyword">this</span>.elements =
+                _isNode(selector)   &amp;&amp; [selector] ||
+                _isTag(selector)    &amp;&amp; [_create(selector)] ||
+                _isString(selector) &amp;&amp; _find(selector, context)
+        }
+    }())</pre></div></div>
             
         </li>
         
@@ -265,8 +291,6 @@ el.on()</code></pre>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    J.prototype = (<span class="keyword">function</span>() {</pre></div></div>
-            
         </li>
         
         
@@ -275,6 +299,318 @@ el.on()</code></pre>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Executes the given callback function for every element.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    J.prototype.each = <span class="keyword">function</span>(callback) {
+        J.each(<span class="keyword">this</span>.elements, callback)
+
+        <span class="keyword">return</span> <span class="keyword">this</span>
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <h4>Events</h4>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    ;(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Attaches an event listener to every element.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        J.prototype.on = <span class="keyword">function</span>(event, callback) {
+            <span class="keyword">return</span> <span class="keyword">this</span>.each(<span class="keyword">function</span>(el) {
+                el.addEventListener(event, callback, <span class="literal">false</span>)
+            })
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p><strong>TODO</strong>: Add <code>mouseenter</code> event to non-IE browsers.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        J.prototype.mouseenter = <span class="keyword">function</span>(callback) {
+            <span class="keyword">return</span> <span class="keyword">this</span>.on(<span class="string">'mouseover'</span>, callback)
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p><strong>TODO</strong>: Add <code>mouseleave</code> event to non-IE browsers.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        J.prototype.mouseleave = <span class="keyword">function</span>(callback) {
+            <span class="keyword">return</span> <span class="keyword">this</span>.on(<span class="string">'mouseout'</span>, callback)
+        }
+
+        J.prototype.click = <span class="keyword">function</span>(callback) {
+            <span class="keyword">return</span> <span class="keyword">this</span>.on(<span class="string">'click'</span>, callback)
+        }
+    }())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <h4>DOM Manipulation</h4>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    ;(<span class="keyword">function</span>() {
+        J.prototype.append = <span class="keyword">function</span>(elements) {
+            <span class="keyword">return</span> <span class="keyword">this</span>.each(<span class="keyword">function</span>(el) {
+                elements.each(<span class="keyword">function</span>(appendedElement) {
+                    el.appendChild(appendedElement)
+                })
+            })
+        }
+
+        J.prototype.prepend = <span class="keyword">function</span>(elements) {
+            <span class="keyword">return</span> <span class="keyword">this</span>.each(<span class="keyword">function</span>(el) {
+                elements.each(<span class="keyword">function</span>(appendedElement) {
+                    el.insertBefore(appendedElement, el.firstChild)
+                })
+            })
+        }
+
+        J.prototype.remove = <span class="keyword">function</span>() {
+            <span class="keyword">return</span> <span class="keyword">this</span>.each(<span class="keyword">function</span>(el) {
+                el.parentNode.removeChild(el)
+            })
+        }
+    }())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <h4>Attributes</h4>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    ;(<span class="keyword">function</span>() {
+        <span class="function"><span class="keyword">function</span> <span class="title">_getAttribute</span><span class="params">(self, attribute)</span> {</span>
+            <span class="keyword">return</span> self.elements[<span class="number">0</span>].getAttribute(attribute)
+        }
+
+        <span class="function"><span class="keyword">function</span> <span class="title">_setAttribute</span><span class="params">(self, attribute, value)</span> {</span>
+            <span class="keyword">return</span> self.each(<span class="keyword">function</span>(el) {
+                el.setAttribute(attribute, value)
+            })
+        }
+
+        <span class="function"><span class="keyword">function</span> <span class="title">_removeAttribute</span><span class="params">(self, attribute)</span> {</span>
+            <span class="keyword">return</span> self.each(<span class="keyword">function</span>(el) {
+                el.removeAttribute(attribute)
+            })
+        }
+
+        J.prototype.attr = <span class="keyword">function</span>(attribute, value) {
+            <span class="keyword">return</span> value == <span class="literal">null</span> ?
+                _getAttribute(<span class="keyword">this</span>, attribute) :
+                _setAttribute(<span class="keyword">this</span>, attribute, value)
+        }
+
+        J.prototype.removeAttr = <span class="keyword">function</span>(attribute) {
+            _removeAttribute(<span class="keyword">this</span>, attribute)
+        }
+    }())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <h4>Classes</h4>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    ;(<span class="keyword">function</span>() {
+        J.prototype.addClass = <span class="keyword">function</span>(className) {
+            <span class="keyword">return</span> <span class="keyword">this</span>.each(<span class="keyword">function</span>(el) {
+                el.classList.add(className)
+            })
+        }
+
+        J.prototype.removeClass = <span class="keyword">function</span>(className) {
+            <span class="keyword">return</span> <span class="keyword">this</span>.each(<span class="keyword">function</span>(el) {
+                el.classList.remove(className)
+            })
+        }
+
+        J.prototype.toggleClass = <span class="keyword">function</span>(className) {
+            <span class="keyword">return</span> <span class="keyword">this</span>.each(<span class="keyword">function</span>(el) {
+                el.classList.toggle(className)
+            })
+        }
+    }())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <h4>CSS properties</h4>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    ;(<span class="keyword">function</span>() {
+        <span class="keyword">var</span> _makeVendorProperty = (<span class="keyword">function</span>() {
+            <span class="keyword">var</span> _prefixes = [<span class="string">'Webkit'</span>, <span class="string">'Moz'</span>, <span class="string">'ms'</span>, <span class="string">'O'</span>]
+
+              , _style = document.createElement(<span class="string">'div'</span>).style
+
+            <span class="keyword">return</span> <span class="keyword">function</span>(property) {
+                <span class="keyword">if</span> (property <span class="keyword">in</span> _style) <span class="keyword">return</span> property
+
+                <span class="keyword">var</span> vendorProp, i
+
+                property = property[<span class="number">0</span>].toUpperCase() + property.substr(<span class="number">1</span>)
+
+                <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; _prefixes.length; i++) {
+                    vendorProp = _prefixes[i] + property
+
+                    <span class="keyword">if</span> (vendorProp <span class="keyword">in</span> _style) <span class="keyword">return</span> vendorProp
+                }
+            }
+        }())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>Gets the value of the CSS property for the first element.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="function"><span class="keyword">function</span> <span class="title">_getCSS</span><span class="params">(self, property)</span> {</span>
+            <span class="keyword">var</span> el = self.elements[<span class="number">0</span>]
+
+            <span class="keyword">return</span> getComputedStyle(el).getPropertyValue(property)
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>Sets the CSS property for every element to the given value.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="function"><span class="keyword">function</span> <span class="title">_setCSS</span><span class="params">(self, property, value)</span> {</span>
+            <span class="keyword">return</span> self.each(<span class="keyword">function</span>(el) {
+                el.style[property] = value
+            })
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>Gets or sets the CSS property.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        J.prototype.css = <span class="keyword">function</span>(property, value) {
+            property = _makeVendorProperty(property)
+
+            <span class="keyword">return</span> value == <span class="literal">null</span> ?
+                _getCSS(<span class="keyword">this</span>, property) :
+                _setCSS(<span class="keyword">this</span>, property, value)
+        }
+    }())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <h4>Show/hide</h4>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    ;(<span class="keyword">function</span>() {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
               <p>Function helper for the <code>show</code> and <code>hide</code> methods.</p>
 <p><strong>TODO</strong>: Restore the original display (<code>inline, table ...</code>).</p>
@@ -288,180 +624,249 @@ el.on()</code></pre>
         </li>
         
         
-        <li id="section-17">
+        <li id="section-30">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-17">&#182;</a>
-              </div>
-              <p>Gets the value of the CSS property for the first element.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>        <span class="function"><span class="keyword">function</span> <span class="title">_getCSS</span><span class="params">(self, prop)</span> {</span>
-            <span class="keyword">var</span> el = self.elements[<span class="number">0</span>]
-
-            <span class="keyword">return</span> getComputedStyle(el).getPropertyValue(prop)
-        }</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-18">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-18">&#182;</a>
-              </div>
-              <p>Sets the CSS property for every element to the given value.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>        <span class="function"><span class="keyword">function</span> <span class="title">_setCSS</span><span class="params">(self, prop, value)</span> {</span>
-            <span class="keyword">return</span> self.each(<span class="keyword">function</span>(el) {
-                el.style[prop] = value
-            })
-        }
-
-        <span class="keyword">var</span> prototype =</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-19">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-19">&#182;</a>
-              </div>
-              <p>Executes the given callback function for every element.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>            { each: <span class="keyword">function</span>(callback) {
-                <span class="keyword">this</span>.elements.forEach(callback)
-
-                <span class="keyword">return</span> <span class="keyword">this</span>
-            }</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-20">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-20">&#182;</a>
+                <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
               <p>Restores the previous <code>display</code> property.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>            , show: <span class="keyword">function</span>() {
-               <span class="keyword">return</span> _showHide(<span class="keyword">this</span>, <span class="literal">true</span>)
-            }</pre></div></div>
+            <div class="content"><div class='highlight'><pre>        J.prototype.show = <span class="keyword">function</span>() {
+           <span class="keyword">return</span> _showHide(<span class="keyword">this</span>, <span class="literal">true</span>)
+        }</pre></div></div>
             
         </li>
         
         
-        <li id="section-21">
+        <li id="section-31">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-21">&#182;</a>
+                <a class="pilcrow" href="#section-31">&#182;</a>
               </div>
               <p>Saves the current CSS <code>display</code> property of each element and sets it to <code>none</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>            , hide: <span class="keyword">function</span>() {
-                <span class="keyword">return</span> _showHide(<span class="keyword">this</span>, <span class="literal">false</span>)
-            }</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-22">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-22">&#182;</a>
-              </div>
-              <p>Attaches an event listener to every element.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>            , on: <span class="keyword">function</span>(event, callback) {
-                <span class="keyword">return</span> <span class="keyword">this</span>.each(<span class="keyword">function</span>(el) {
-                    el.addEventListener(event, callback, <span class="literal">false</span>)
-                })
-            }</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-23">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-23">&#182;</a>
-              </div>
-              <p><strong>TODO</strong>: Add <code>mouseenter</code> event to non-IE browsers.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>            , mouseenter: <span class="keyword">function</span>(callback) {
-                <span class="keyword">return</span> <span class="keyword">this</span>.on(<span class="string">'mouseover'</span>, callback)
-            }</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-24">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-24">&#182;</a>
-              </div>
-              <p><strong>TODO</strong>: Add <code>mouseleave</code> event to non-IE browsers.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>            , mouseleave: <span class="keyword">function</span>(callback) {
-                <span class="keyword">return</span> <span class="keyword">this</span>.on(<span class="string">'mouseout'</span>, callback)
-            }</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-25">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-25">&#182;</a>
-              </div>
-              <p>Get or set the CSS property.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>            , css: <span class="keyword">function</span>(property, value) {
-                <span class="keyword">return</span> value == <span class="literal">null</span> ?
-                    _getCSS(<span class="keyword">this</span>, property) :
-                    _setCSS(<span class="keyword">this</span>, property, value)
-            }
+            <div class="content"><div class='highlight'><pre>        J.prototype.hide = <span class="keyword">function</span>() {
+            <span class="keyword">return</span> _showHide(<span class="keyword">this</span>, <span class="literal">false</span>)
         }
-
-        <span class="keyword">return</span> prototype
     }())</pre></div></div>
             
         </li>
         
         
-        <li id="section-26">
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <h4>Text and HTML</h4>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    ;(<span class="keyword">function</span>() {
+        <span class="function"><span class="keyword">function</span> <span class="title">_getText</span><span class="params">(self)</span> {</span>
+            <span class="keyword">var</span> ret = <span class="string">''</span>
+
+            self.each(<span class="keyword">function</span>(el) {
+                ret += el.textContent
+            })
+
+            <span class="keyword">return</span> ret
+        }
+
+        <span class="function"><span class="keyword">function</span> <span class="title">_setText</span><span class="params">(self, text)</span> {</span>
+            <span class="keyword">return</span> self.each(<span class="keyword">function</span>(el) {
+                el.textContent = text
+            })
+        }
+
+        J.prototype.text = <span class="keyword">function</span>(text) {
+            <span class="keyword">return</span> text == <span class="literal">null</span> ?
+                _getText(<span class="keyword">this</span>) :
+                _setText(<span class="keyword">this</span>, text)
+        }
+    }())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <h3>Static Methods</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-34">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              <p>Repeats a given string.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    J.repeat = <span class="keyword">function</span>(string, times) {
+        <span class="keyword">var</span> result = <span class="string">''</span>
+
+        <span class="keyword">while</span> (times--)
+            result += string
+
+        <span class="keyword">return</span> result
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
+              </div>
+              <p>Returns a new string of a specified length in which the beginning
+of the current string is padded with spaces or with a specified character.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    ;(<span class="keyword">function</span>() {
+        <span class="function"><span class="keyword">function</span> <span class="title">_makeMissing</span><span class="params">(string, length, character)</span> {</span>
+            <span class="keyword">return</span> J.repeat(character || <span class="string">' '</span>, length - string.length)
+        }
+
+        J.padLeft = <span class="keyword">function</span>(string, length, character) {
+            <span class="keyword">return</span> _makeMissing(string, length, character) + string
+        }
+
+        J.padRight = <span class="keyword">function</span>(string, length, character) {
+            <span class="keyword">return</span> string + _makeMissing(string, length, character)
+        }
+    }())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-36">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-36">&#182;</a>
+              </div>
+              <p>Creates an array with values <code>[min, max]</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    J.range = <span class="keyword">function</span>(min, max) {
+        <span class="keyword">if</span> (arguments.length === <span class="number">1</span>) <span class="keyword">return</span> J.range(<span class="number">0</span>, min)
+
+        <span class="keyword">var</span> result = <span class="keyword">new</span> Array(max - min + <span class="number">1</span>)
+
+        <span class="keyword">return</span> J.each(result, <span class="keyword">function</span>(el, i) {
+            <span class="keyword">this</span>[i] = min + i
+        })
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-37">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-37">&#182;</a>
+              </div>
+              <p>Creates a random integer in the range [min, max] or [0, min].</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    J.random = <span class="keyword">function</span>(min, max) {
+        <span class="keyword">if</span> (arguments.length === <span class="number">1</span>) <span class="keyword">return</span> J.random(<span class="number">0</span>, min)
+
+        <span class="keyword">return</span> min + Math.floor(Math.random() * (max - min + <span class="number">1</span>))
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-38">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-38">&#182;</a>
+              </div>
+              <p>Returns a random RGB color in hex format (<code>#FF0A10</code>).</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    J.randomColor = <span class="keyword">function</span>() {
+        <span class="keyword">var</span> r = J.padLeft(J.random(<span class="number">255</span>).toString(<span class="number">16</span>), <span class="number">2</span>, <span class="string">'0'</span>)
+          , g = J.padLeft(J.random(<span class="number">255</span>).toString(<span class="number">16</span>), <span class="number">2</span>, <span class="string">'0'</span>)
+          , b = J.padLeft(J.random(<span class="number">255</span>).toString(<span class="number">16</span>), <span class="number">2</span>, <span class="string">'0'</span>)
+
+        <span class="keyword">return</span> (<span class="string">'#'</span> + r + g + b).toUpperCase()
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-39">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-39">&#182;</a>
+              </div>
+              <p>Iterates over an array or an object.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    J.each = (<span class="keyword">function</span>() {
+        <span class="function"><span class="keyword">function</span> <span class="title">_eachArray</span><span class="params">(object, callback)</span> {</span>
+            <span class="keyword">var</span> i
+
+            <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; object.length; i++)
+                callback.call(object, object[i], i)
+
+            <span class="keyword">return</span> object
+        }
+
+        <span class="function"><span class="keyword">function</span> <span class="title">_eachObject</span><span class="params">(object, callback)</span> {</span>
+            <span class="keyword">var</span> prop
+
+            <span class="keyword">for</span> (prop <span class="keyword">in</span> object)
+                <span class="keyword">if</span> (object.hasOwnProperty(prop))
+                    callback.call(object, prop, object[prop])
+
+            <span class="keyword">return</span> object
+        }
+
+        <span class="keyword">return</span> <span class="keyword">function</span>(object, callback) {
+            <span class="keyword">return</span> object.length != <span class="literal">null</span> ?
+                _eachArray(object, callback) :
+                _eachObject(object, callback)
+        }
+    }())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-40">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-40">&#182;</a>
               </div>
               <p>Exposes the constructor to the global scope.</p>
 
@@ -473,11 +878,11 @@ el.on()</code></pre>
         </li>
         
         
-        <li id="section-27">
+        <li id="section-41">
             <div class="annotation">
               
               <div class="pilwrap for-h2">
-                <a class="pilcrow" href="#section-27">&#182;</a>
+                <a class="pilcrow" href="#section-41">&#182;</a>
               </div>
               <h2>J plugin</h2>
 <p>Each plugin should extend the <code>prototype</code> to make the new methods available to all <code>J</code> instances.</p>
@@ -487,11 +892,11 @@ el.on()</code></pre>
         </li>
         
         
-        <li id="section-28">
+        <li id="section-42">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-28">&#182;</a>
+                <a class="pilcrow" href="#section-42">&#182;</a>
               </div>
               <p><strong>Usage</strong>:</p>
 <p>Use <code>data-*</code> for scripting and <code>class</code> for styling.</p>
@@ -507,39 +912,39 @@ el.on()</code></pre>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>;(<span class="keyword">function</span>($) {
+            <div class="content"><div class='highlight'><pre>;(<span class="keyword">function</span>(J) {
     <span class="string">'use strict'</span>;
 
-    $.prototype.menu = (<span class="keyword">function</span>() {
+    J.prototype.menu = (<span class="keyword">function</span>() {
         <span class="keyword">var</span> _delay = <span class="number">500</span>
 
         <span class="keyword">return</span> <span class="keyword">function</span>() {
             <span class="keyword">this</span>.each(<span class="keyword">function</span>(el) {
-                <span class="keyword">var</span> self = $(el)</pre></div></div>
+                <span class="keyword">var</span> self = J(el)</pre></div></div>
             
         </li>
         
         
-        <li id="section-29">
+        <li id="section-43">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-29">&#182;</a>
+                <a class="pilcrow" href="#section-43">&#182;</a>
               </div>
               <p><strong>TODO</strong>: Nested menus.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                  , content = $(<span class="string">'[data-content]'</span>, self)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                  , content = J(<span class="string">'[data-content]'</span>, self)</pre></div></div>
             
         </li>
         
         
-        <li id="section-30">
+        <li id="section-44">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-30">&#182;</a>
+                <a class="pilcrow" href="#section-44">&#182;</a>
               </div>
               <p>Shows the menu after a specific delay.</p>
 
@@ -550,11 +955,11 @@ el.on()</code></pre>
         </li>
         
         
-        <li id="section-31">
+        <li id="section-45">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-31">&#182;</a>
+                <a class="pilcrow" href="#section-45">&#182;</a>
               </div>
               <p>Function helper for the <code>show</code> and <code>hide</code> methods.</p>
 
@@ -565,11 +970,11 @@ el.on()</code></pre>
         </li>
         
         
-        <li id="section-32">
+        <li id="section-46">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-32">&#182;</a>
+                <a class="pilcrow" href="#section-46">&#182;</a>
               </div>
               <p>Remove the previous timer, when the user triggers the event too rapidly.</p>
 
@@ -585,11 +990,11 @@ el.on()</code></pre>
         </li>
         
         
-        <li id="section-33">
+        <li id="section-47">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-33">&#182;</a>
+                <a class="pilcrow" href="#section-47">&#182;</a>
               </div>
               <p>Hides the content at start.
 Use CSS to do it before the plugin is loaded to avoid jumping.</p>
@@ -601,11 +1006,11 @@ Use CSS to do it before the plugin is loaded to avoid jumping.</p>
         </li>
         
         
-        <li id="section-34">
+        <li id="section-48">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-34">&#182;</a>
+                <a class="pilcrow" href="#section-48">&#182;</a>
               </div>
               <p><strong>TODO</strong>: Touch events.</p>
 
@@ -623,17 +1028,17 @@ Use CSS to do it before the plugin is loaded to avoid jumping.</p>
         </li>
         
         
-        <li id="section-35">
+        <li id="section-49">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-35">&#182;</a>
+                <a class="pilcrow" href="#section-49">&#182;</a>
               </div>
               <p>Initialize all menus.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    $(<span class="string">'[data-menu]'</span>).menu()
+            <div class="content"><div class='highlight'><pre>    J(<span class="string">'[data-menu]'</span>).menu()
 }(J))</pre></div></div>
             
         </li>

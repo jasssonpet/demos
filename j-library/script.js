@@ -1,6 +1,6 @@
 /*!
  * J Library
- * https://github.com/jasssonpet/demos/tree/gh-pages/j-library
+ * http://jasssonpet.github.io/demos/j-library/docs/script.html
  *
  * Copyright 2013 jasssonpet
  * Released under the MIT license
@@ -169,6 +169,12 @@ var J = (function() {
             })
         }
 
+        function _removeAttribute(self, attribute) {
+            return self.each(function(el) {
+                el.removeAttribute(attribute)
+            })
+        }
+
         J.prototype.attr = function(attribute, value) {
             return value == null ?
                 _getAttribute(this, attribute) :
@@ -176,9 +182,7 @@ var J = (function() {
         }
 
         J.prototype.removeAttr = function(attribute) {
-            return this.each(function(el) {
-                el.removeAttribute(attribute)
-            })
+            _removeAttribute(this, attribute)
         }
     }())
 
@@ -296,6 +300,7 @@ var J = (function() {
 
     // ### Static Methods
 
+    // Repeats a given string.
     J.repeat = function(string, times) {
         var result = ''
 
@@ -305,6 +310,8 @@ var J = (function() {
         return result
     }
 
+    // Returns a new string of a specified length in which the beginning
+    // of the current string is padded with spaces or with a specified character.
     ;(function() {
         function _makeMissing(string, length, character) {
             return J.repeat(character || ' ', length - string.length)
@@ -319,6 +326,7 @@ var J = (function() {
         }
     }())
 
+    // Creates an array with values `[min, max]`.
     J.range = function(min, max) {
         if (arguments.length === 1) return J.range(0, min)
 
@@ -329,14 +337,14 @@ var J = (function() {
         })
     }
 
-    // Creates a random integer in the range [min, max] or [0, min]
+    // Creates a random integer in the range [min, max] or [0, min].
     J.random = function(min, max) {
         if (arguments.length === 1) return J.random(0, min)
 
         return min + Math.floor(Math.random() * (max - min + 1))
     }
 
-    // Returns a random RGB color in hex format (`#FF0A10`)
+    // Returns a random RGB color in hex format (`#FF0A10`).
     J.randomColor = function() {
         var r = J.padLeft(J.random(255).toString(16), 2, '0')
           , g = J.padLeft(J.random(255).toString(16), 2, '0')
@@ -345,6 +353,7 @@ var J = (function() {
         return ('#' + r + g + b).toUpperCase()
     }
 
+    // Iterates over an array or an object.
     J.each = (function() {
         function _eachArray(object, callback) {
             var i
