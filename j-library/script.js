@@ -100,33 +100,42 @@ var J = (function() {
     // Is the same as
     //
     //     J('p').hide().each().on()
-    J.prototype =
-        // Executes the given callback function for every element.
-        { each: function(callback) {
-            J.each(this.elements, callback)
 
-            return this
-        }
+    // Executes the given callback function for every element.
+    J.prototype.each = function(callback) {
+        J.each(this.elements, callback)
 
+        return this
+    }
+
+    // #### Events
+    ;(function () {
         // Attaches an event listener to every element.
-        , on: function(event, callback) {
+        J.prototype.on = function(event, callback) {
             return this.each(function(el) {
                 el.addEventListener(event, callback, false)
             })
         }
 
         // **TODO**: Add `mouseenter` event to non-IE browsers.
-        , mouseenter: function(callback) {
+        J.prototype.mouseenter = function(callback) {
             return this.on('mouseover', callback)
         }
 
         // **TODO**: Add `mouseleave` event to non-IE browsers.
-        , mouseleave: function(callback) {
+        J.prototype.mouseleave = function(callback) {
             return this.on('mouseout', callback)
         }
 
+        J.prototype.click = function(callback) {
+            return this.on('click', callback)
+        }
+    }())
+
+    // #### DOM Manipulation
+    ;(function() {
         // Clones each element and adds it to all current elements.
-        , append: function(elements) {
+        J.prototype.append = function(elements) {
             return this.each(function(el) {
                 elements.each(function(appendedElement) {
                     el.appendChild(appendedElement.cloneNode(true))
@@ -134,13 +143,66 @@ var J = (function() {
             })
         }
 
-        , appendTo: function(element) {
+        J.prototype.appendTo = function(element) {
             element.append(this)
 
             return this
         }
-    }
 
+        J.prototype.remove = function() {
+            return this.each(function(el) {
+                el.parentNode.removeChild(el)
+            })
+        }
+    }())
+
+    // #### Attributes
+    ;(function() {
+        function _getAttribute(self, attribute) {
+            return self.elements[0].getAttribute(attribute)
+        }
+
+        function _setAttribute(self, attribute, value) {
+            return self.each(function(el) {
+                el.setAttribute(attribute, value)
+            })
+        }
+
+        J.prototype.attr = function(attribute, value) {
+            return value == null ?
+                _getAttribute(this, attribute) :
+                _setAttribute(this, attribute, value)
+        }
+
+        J.prototype.removeAttr = function(attribute) {
+            return this.each(function(el) {
+                el.removeAttribute(attribute)
+            })
+        }
+    }())
+
+    // #### Classes
+    ;(function() {
+        J.prototype.addClass = function(className) {
+            return this.each(function(el) {
+                el.classList.add(className)
+            })
+        }
+
+        J.prototype.removeClass = function(className) {
+            return this.each(function(el) {
+                el.classList.remove(className)
+            })
+        }
+
+        J.prototype.toggleClass = function(className) {
+            return this.each(function(el) {
+                el.classList.toggle(className)
+            })
+        }
+    }())
+
+    // #### CSS properties
     ;(function() {
         var _makeVendorProperty = (function() {
             var _prefixes = ['Webkit', 'Moz', 'ms', 'O']
@@ -186,6 +248,27 @@ var J = (function() {
         }
     }())
 
+    // #### Show/hide
+    ;(function() {
+        // Function helper for the `show` and `hide` methods.
+        //
+        // **TODO**: Restore the original display (`inline, table ...`).
+        function _showHide(self, show) {
+            return self.css('display', show ? 'block' : 'none')
+        }
+
+        // Restores the previous `display` property.
+        J.prototype.show = function() {
+           return _showHide(this, true)
+        }
+
+        // Saves the current CSS `display` property of each element and sets it to `none`.
+        J.prototype.hide = function() {
+            return _showHide(this, false)
+        }
+    }())
+
+    // #### Text and HTML
     ;(function() {
         function _getText(self) {
             var ret = ''
@@ -207,25 +290,6 @@ var J = (function() {
             return text == null ?
                 _getText(this) :
                 _setText(this, text)
-        }
-    }())
-
-    ;(function() {
-        // Function helper for the `show` and `hide` methods.
-        //
-        // **TODO**: Restore the original display (`inline, table ...`).
-        function _showHide(self, show) {
-            return self.css('display', show ? 'block' : 'none')
-        }
-
-        // Restores the previous `display` property.
-        J.prototype.show = function() {
-           return _showHide(this, true)
-        }
-
-        // Saves the current CSS `display` property of each element and sets it to `none`.
-        J.prototype.hide = function() {
-            return _showHide(this, false)
         }
     }())
 
