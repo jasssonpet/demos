@@ -85,9 +85,9 @@
                     return J.random(50, 200) + '%'
                 }
 
-                // , animationDuration: function() {
-                //     return J.random(300, 5000) + 'ms'
-                // }
+                , animationDuration: function() {
+                    return J.random(300, 5000) + 'ms'
+                }
             }
 
             return function() {
@@ -109,11 +109,6 @@
               , div = makeDiv().append(strong)
 
             body.append(div)
-        })
-
-        // Chrome bug
-        J('div').each(function() {
-            J(this).css('animationDuration', J.random(300, 3000) + 'ms')
         })
     }())
     </script>
