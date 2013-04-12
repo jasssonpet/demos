@@ -370,7 +370,6 @@ var J = (function() {
             return !!object.length
         }
 
-        // TODO: break, continue and refactor internal for loops
         J.each = (function() {
             function _eachArray(object, callback) {
                 var i
