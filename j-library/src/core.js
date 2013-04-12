@@ -214,7 +214,7 @@ var J = (function() {
                 var pascalCasedProperty = property[0].toUpperCase() + property.substr(1)
                   , vendorProperty
 
-                J.each(function() {
+                J.each(_vendorPrefixes, function() {
                     vendorProperty = this + pascalCasedProperty
 
                     if (vendorProperty in _style)
@@ -305,6 +305,12 @@ var J = (function() {
         }
     }())
 
+    J.prototype.delay = function(callback, time) {
+        setTimeout(callback.bind(this), time)
+
+        return this
+    }
+
     // ### Static Methods
 
     J.repeat = function(string, times) {
@@ -328,7 +334,6 @@ var J = (function() {
             return string + _makeMissing(string, length, character)
         }
     }())
-
 
     // Works like `Array.protype.concat()` but doesn't create a new array.
     J.addRange = function(self, elements) {

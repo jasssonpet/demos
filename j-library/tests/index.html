@@ -6,7 +6,7 @@
     <style>
         p { border-style: solid; }
 
-        .info { color: blue; }
+        .info { border-width: 10px; }
         .big { font-size: 2em; }
     </style>
 </head>
@@ -23,7 +23,9 @@
         ;(function() {
             var p = J('<p />').html('<strong>Paragraph element created.</strong>')
 
-            p.addClass('info').toggleClass('big') //.delay(500).removeClass('big')
+            p.addClass('info').delay(function() {
+                this.removeClass('big')
+            }, 500).addClass('big')
 
             p.css('transform', 'rotate(180deg)')
             p.css('color', J.randomColor())
