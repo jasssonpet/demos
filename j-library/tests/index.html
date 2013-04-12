@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>J Library Tests</title>
+    <style>
+        p { border-style: solid; }
+
+        .info { color: blue; }
+        .big { font-size: 2em; }
+    </style>
+</head>
+
+<body>
+
+    <p>Paragraph</p>
+
+    <script src="../src/core.js"></script>
+    <script>
+    ;(function() {
+        'use strict';
+
+        ;(function() {
+            var p = J('<p />').html('<strong>Paragraph element created.</strong>')
+
+            p.addClass('info').toggleClass('big') //.delay(500).removeClass('big')
+
+            p.css('transform', 'rotate(180deg)')
+            p.css('color', J.randomColor())
+
+            // console.log(p.css('transform'))
+            // console.log(p.text())
+            // console.log(p.html())
+
+            J('body').append(p)
+        }())
+
+        J('p').click(function(e) {
+            console.log(this, e)
+        })
+
+        J('p:not(.info)').remove()
+
+        J('body').prepend(J('<p />').text('Previous paragraph.'))
+        J('body').append(J('<p />').text('Next paragraph.'))
+
+        J('p').each(function(i) {
+            J(this).attr('id', 'paragraph-' + i)
+        })
+
+        // J.each(J.range(10, 15), function(i) {
+        //     console.log(i, this)
+        // })
+
+        // J.each({a: 0, b: 1, c: 2}, function(prop, val) {
+        //     console.log(prop, val)
+        // })
+
+        // console.log(J('p').text())
+        // J('p').text('paragraph')
+
+
+        // console.log(J('p').attr('id'))
+
+        // J('#paragraph-0').data('obj', { x: 1 })
+        // console.log(J('#paragraph-0').data('obj'))
+
+        // J('#paragraph-0').removeData('obj')
+        // console.log(J('#paragraph-0').data('obj'))
+    }())
+    </script>
+</body>
+</html>
