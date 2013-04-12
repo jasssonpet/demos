@@ -20,35 +20,41 @@
     ;(function() {
         'use strict';
 
-        ;(function() {
-            var p = J('<p />').html('<strong>Paragraph element created.</strong>')
+        // J('p').timeout(function() {
+        //     this.addClass('big')
+        // }, 1000)
 
-            p.addClass('info').delay(function() {
-                this.removeClass('big')
-            }, 500).addClass('big')
+        J('p').addClass('big').delay(1000).removeClass('big')
 
-            p.css('transform', 'rotate(180deg)')
-            p.css('color', J.randomColor())
+        // J('p:not(.info)').remove()
 
-            // console.log(p.css('transform'))
-            // console.log(p.text())
-            // console.log(p.html())
+        // ;(function() {
+        //     var p = J('<p />').html('<strong>Paragraph element created.</strong>')
 
-            J('body').append(p)
-        }())
+        //     p.addClass('info').timeout(function() {
+        //         this.removeClass('big')
+        //     }, 100).addClass('big').delay(500).addClass('big')
 
-        J('p').click(function(e) {
-            console.log(this, e)
-        })
+        //     p.css('transform', 'rotate(180deg)')
+        //     p.css('color', J.randomColor())
 
-        J('p:not(.info)').remove()
+        //     // console.log(p.css('transform'))
+        //     // console.log(p.text())
+        //     // console.log(p.html())
 
-        J('body').prepend(J('<p />').text('Previous paragraph.'))
-        J('body').append(J('<p />').text('Next paragraph.'))
+        //     J('body').append(p)
+        // }())
 
-        J('p').each(function(i) {
-            J(this).attr('id', 'paragraph-' + i)
-        })
+        // J('p').click(function(e) {
+        //     console.log(this, e)
+        // })
+
+        // J('body').prepend(J('<p />').text('Previous paragraph.'))
+        // J('body').append(J('<p />').text('Next paragraph.'))
+
+        // J('p').each(function(i) {
+        //     J(this).attr('id', 'paragraph-' + i)
+        // })
 
         // J.each(J.range(10, 15), function(i) {
         //     console.log(i, this)

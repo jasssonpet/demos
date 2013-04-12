@@ -19,7 +19,7 @@ var J = (function() {
         var _voidTag = /^<(\w+)\s?\/>$/ // <div />
 
         function _htmlElementConstructor(self, htmlElement) {
-            self._elements = [htmlElement]
+            self._elements.push(htmlElement)
 
             return self
         }
@@ -35,8 +35,6 @@ var J = (function() {
         function _selectorConstructor(self, selector, context) {
             var contextElements = context && context._elements || [document.documentElement]
 
-            self._elements = []
-
             J.each(contextElements, function() {
                 J.addRange(self._elements, this.querySelectorAll(selector))
             })
@@ -49,6 +47,9 @@ var J = (function() {
             if (!(this instanceof J))
                 return new J(selector, context)
 
+            this._elements = []
+            this._delayQueue = []
+
             if (selector instanceof HTMLElement)
                 return _htmlElementConstructor(this, selector)
 
@@ -58,6 +59,144 @@ var J = (function() {
             return _selectorConstructor(this, selector, context)
         }
     }())
+
+    // ### Static Methods
+
+    J.repeat = function(string, times) {
+        var result = ''
+
+        while (times--) result += string
+
+        return result
+    }
+
+    ;(function() {
+        function _makeMissing(string, length, character) {
+            return J.repeat(character || ' ', length - string.length)
+        }
+
+        J.padLeft = function(string, length, character) {
+            return _makeMissing(string, length, character) + string
+        }
+
+        J.padRight = function(string, length, character) {
+            return string + _makeMissing(string, length, character)
+        }
+    }())
+
+    // Works like `Array.protype.concat()` but doesn't create a new array.
+    J.addRange = function(self, elements) {
+        J.each(elements, function() {
+            self.push(this)
+        })
+
+        return self
+    }
+
+    // Creates an array with values `[min, min + 1, ..., max - 1, max]` or `[0, ... min]`.
+    J.range = function(min, max) {
+        if (arguments.length === 1) return J.range(0, min)
+
+        var result = new Array(max - min + 1)
+
+        return J.each(result, function(i) {
+            result[i] = min + i
+        })
+    }
+
+    // Creates a random integer in the range `[min, max]` or `[0, min]`.
+    J.random = function(min, max) {
+        if (arguments.length === 1) return J.random(0, min)
+
+        return min + Math.floor(Math.random() * (max - min + 1))
+    }
+
+    J.randomColor = function() {
+        var r = J.padLeft(J.random(255).toString(16), 2, '0')
+          , g = J.padLeft(J.random(255).toString(16), 2, '0')
+          , b = J.padLeft(J.random(255).toString(16), 2, '0')
+
+        return ('#' + r + g + b).toUpperCase()
+    }
+
+    ;(function() {
+        function _isArrayLike(object) {
+            return !!object.length
+        }
+
+        J.each = (function() {
+            function _eachArray(object, callback) {
+                var i
+
+                for (i = 0; i < object.length; i++)
+                    if (callback.call(object[i], i) === false)
+                        break
+
+                return object
+            }
+
+            function _eachObject(object, callback) {
+                var i
+
+                // hasOwnProperty?
+                for (i in object)
+                    if (callback.call(object[i], i) === false)
+                        break
+
+                return object
+            }
+
+            return function(object, callback) {
+                return _isArrayLike(object) ?
+                    _eachArray(object, callback) :
+                    _eachObject(object, callback)
+            }
+        }())
+
+        J.filter = (function() {
+            function _filterArray(object, callback) {
+                var result = []
+
+                J.each(object, function(i) {
+                    if (callback.call(this, i))
+                        result.push(this)
+                })
+
+                return result
+            }
+
+            function _filterObject(object, callback) {
+                var result = {}
+
+                J.each(object, function(i) {
+                    if (callback.call(this, i))
+                        result[i] = this
+                })
+
+                return result
+            }
+
+            return function(object, callback) {
+                return _isArrayLike(object) ?
+                    _filterArray(object, callback) :
+                    _filterObject(object, callback)
+            }
+        }())
+
+        J.map = function(object, callback) {
+            var result = _isArrayLike(object) ? [] : {}
+
+            J.each(object, function(i) {
+                result[i] = callback.call(this, i)
+            })
+
+            return result
+        }
+    }())
+
+    J.now = function() {
+        return +new Date()
+    }
 
     // ## Prototype
 
@@ -71,7 +210,7 @@ var J = (function() {
     ;(function () {
         J.prototype.on = function(event, callback) {
             return this.each(function() {
-                this.addEventListener(event, callback, false)
+                this.addEventListener(event, callback)
             })
         }
 
@@ -305,149 +444,34 @@ var J = (function() {
         }
     }())
 
-    J.prototype.delay = function(callback, time) {
-        setTimeout(callback.bind(this), time)
-
-        return this
-    }
-
-    // ### Static Methods
-
-    J.repeat = function(string, times) {
-        var result = ''
-
-        while (times--) result += string
-
-        return result
-    }
-
     ;(function() {
-        function _makeMissing(string, length, character) {
-            return J.repeat(character || ' ', length - string.length)
-        }
+        J.prototype = J.map(J.prototype, function(methodName) {
+            var methodBody = this
 
-        J.padLeft = function(string, length, character) {
-            return _makeMissing(string, length, character) + string
-        }
+            return function() {
+                var self = this
+                  , selfArguments = arguments
 
-        J.padRight = function(string, length, character) {
-            return string + _makeMissing(string, length, character)
-        }
-    }())
+                this._delayQueue.push(function() {
+                    return methodBody.apply(self, selfArguments)
+                })
 
-    // Works like `Array.protype.concat()` but doesn't create a new array.
-    J.addRange = function(self, elements) {
-        J.each(elements, function() {
-            self.push(this)
+                return this._delayQueue.shift()()
+            }
         })
 
-        return self
-    }
+        J.prototype.delay = function(time) {
+            var self = this
 
-    // Creates an array with values `[min, min + 1, ..., max - 1, max]` or `[0, ... min]`.
-    J.range = function(min, max) {
-        if (arguments.length === 1) return J.range(0, min)
-
-        var result = new Array(max - min + 1)
-
-        return J.each(result, function(i) {
-            result[i] = min + i
-        })
-    }
-
-    // Creates a random integer in the range `[min, max]` or `[0, min]`.
-    J.random = function(min, max) {
-        if (arguments.length === 1) return J.random(0, min)
-
-        return min + Math.floor(Math.random() * (max - min + 1))
-    }
-
-    J.randomColor = function() {
-        var r = J.padLeft(J.random(255).toString(16), 2, '0')
-          , g = J.padLeft(J.random(255).toString(16), 2, '0')
-          , b = J.padLeft(J.random(255).toString(16), 2, '0')
-
-        return ('#' + r + g + b).toUpperCase()
-    }
-
-    ;(function() {
-        function _isArrayLike(object) {
-            return !!object.length
-        }
-
-        J.each = (function() {
-            function _eachArray(object, callback) {
-                var i
-
-                for (i = 0; i < object.length; i++)
-                    if (callback.call(object[i], i) === false)
-                        break
-
-                return object
-            }
-
-            function _eachObject(object, callback) {
-                var i
-
-                // hasOwnProperty?
-                for (i in object)
-                    if (callback.call(object[i], i) === false)
-                        break
-
-                return object
-            }
-
-            return function(object, callback) {
-                return _isArrayLike(object) ?
-                    _eachArray(object, callback) :
-                    _eachObject(object, callback)
-            }
-        }())
-
-        J.map = function(object, callback) {
-            var result = _isArrayLike(object) ? [] : {}
-
-            J.each(object, function(i) {
-                result[i] = callback.call(this, i)
+            this._delayQueue.push(function() {
+                setTimeout(function() {
+                    return self._delayQueue.shift()()
+                }, time)
             })
 
-            return result
+            return this
         }
-
-        J.filter = (function() {
-            function _filterArray(object, callback) {
-                var result = []
-
-                J.each(object, function(i) {
-                    if (callback.call(this, i))
-                        result.push(this)
-                })
-
-                return result
-            }
-
-            function _filterObject(object, callback) {
-                var result = {}
-
-                J.each(object, function(i) {
-                    if (callback.call(this, i))
-                        result[i] = this
-                })
-
-                return result
-            }
-
-            return function(object, callback) {
-                return _isArrayLike(object) ?
-                    _filterArray(object, callback) :
-                    _filterObject(object, callback)
-            }
-        }())
     }())
-
-    J.now = function() {
-        return +new Date()
-    }
 
     // Exposes the constructor to the global scope.
     return J
