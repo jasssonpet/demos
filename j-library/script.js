@@ -332,7 +332,7 @@ var J = (function() {
 
         var result = new Array(max - min + 1)
 
-        return J.each(result, function(el, i) {
+        return J.each(result, function(_, i) {
             this[i] = min + i
         })
     }
