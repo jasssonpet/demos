@@ -15,19 +15,17 @@
 
 <body>
 
-    <p>Paragraph</p>
+    <p data-test='123'>Paragraph</p>
 
     <script src="../src/core.js"></script>
     <script>
     ;(function() {
         'use strict';
 
-        // J('p').timeout(function() {
-        //     this.addClass('big')
-        // }, 1000)
+        console.log(J('p').data('test'))
 
-        J('p').addClass('c1')
-        .delay(1000).removeClass('c1').text('changed')
+        // J('p').addClass('c1')
+        // .delay(1000).removeClass('c1').text('changed')
         // .delay(1000).addClass('c1').removeClass('c2')
         // .delay(2000).removeClass('c1').addClass('c2')
 

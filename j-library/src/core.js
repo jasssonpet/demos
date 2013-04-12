@@ -293,7 +293,7 @@ var J = (function() {
         function _getData(self, key) {
             var el = self._elements[0]
 
-            return el[key]
+            return el[key] || el.dataset[key]
         }
 
         function _setData(self, key, value) {

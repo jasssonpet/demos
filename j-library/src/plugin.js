@@ -23,8 +23,8 @@
         var _delay = 500
 
         return function() {
-            this.each(function(el) {
-                var self = J(el)
+            this.each(function() {
+                var self = J(this)
 
                     // **TODO**: Nested menus.
                   , content = J('[data-content]', self)
