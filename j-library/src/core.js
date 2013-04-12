@@ -449,9 +449,9 @@ var J = (function() {
         J.prototype.delay = function(time) {
             var self = this
 
-
             setTimeout(function() {
                 console.log('delay' + time / 1000)
+
                 self._delayQueue.shift()()
             }, time)
 
@@ -462,12 +462,12 @@ var J = (function() {
             var methodBody = this
 
             return function() {
-                console.log(methodName, this._delayQueue)
-
                 var self = this
                   , selfArguments = arguments
 
                 this._delayQueue.push(function() {
+                    console.log(methodName, self._delayQueue)
+
                     return methodBody.apply(self, selfArguments)
                 })
 
