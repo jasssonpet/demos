@@ -93,7 +93,7 @@ var J = (function() {
         return self
     }
 
-    // Creates an array with values `[min, min + 1, ..., max - 1, max]` or `[0, ... min]`.
+    // Creates an array with values `[0, ... min]` or `[min, min + 1, ..., max - 1, max]`.
     J.range = function(min, max) {
         if (arguments.length === 1) return J.range(0, min)
 
@@ -104,7 +104,7 @@ var J = (function() {
         })
     }
 
-    // Creates a random integer in the range `[min, max]` or `[0, min]`.
+    // Creates a random integer in the range `[0, min]` or `[min, max]`.
     J.random = function(min, max) {
         if (arguments.length === 1) return J.random(0, min)
 
@@ -444,11 +444,26 @@ var J = (function() {
         }
     }())
 
+    // This should be the last section
     ;(function() {
+        J.prototype.delay = function(time) {
+            var self = this
+
+
+            setTimeout(function() {
+                console.log('delay' + time / 1000)
+                self._delayQueue.shift()()
+            }, time)
+
+            return this
+        }
+
         J.prototype = J.map(J.prototype, function(methodName) {
             var methodBody = this
 
             return function() {
+                console.log(methodName, this._delayQueue)
+
                 var self = this
                   , selfArguments = arguments
 
@@ -456,21 +471,9 @@ var J = (function() {
                     return methodBody.apply(self, selfArguments)
                 })
 
-                return this._delayQueue.shift()()
+                return methodName === 'delay' && this || this._delayQueue.shift()()
             }
         })
-
-        J.prototype.delay = function(time) {
-            var self = this
-
-            this._delayQueue.push(function() {
-                setTimeout(function() {
-                    return self._delayQueue.shift()()
-                }, time)
-            })
-
-            return this
-        }
     }())
 
     // Exposes the constructor to the global scope.

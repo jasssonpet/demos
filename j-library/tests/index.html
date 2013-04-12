@@ -24,7 +24,10 @@
         //     this.addClass('big')
         // }, 1000)
 
-        J('p').addClass('big').delay(1000).removeClass('big')
+        J('p')
+        // .addClass('info')
+        .delay(1000).addClass('big').removeClass('info')
+        .delay(2000).removeClass('big').addClass('info')
 
         // J('p:not(.info)').remove()
 
