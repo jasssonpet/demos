@@ -204,7 +204,7 @@ var J = (function() {
     // ### CSS Properties
     ;(function() {
         var _makeVendorProperty = (function() {
-            var _prefixes = ['Webkit', 'Moz', 'ms', 'O']
+            var _vendorPrefixes = ['Webkit', 'Moz', 'ms', 'O']
 
               , _style = document.createElement('div').style
 
@@ -214,14 +214,14 @@ var J = (function() {
                 var pascalCasedProperty = property[0].toUpperCase() + property.substr(1)
                   , vendorProperty
 
-                  , i
+                J.each(function() {
+                    vendorProperty = this + pascalCasedProperty
 
+                    if (vendorProperty in _style)
+                        return false
+                })
 
-                for (i = 0; i < _prefixes.length; i++) {
-                    vendorProperty = _prefixes[i] + pascalCasedProperty
-
-                    if (vendorProperty in _style) return vendorProperty
-                }
+                return vendorProperty
             }
         }())
 
@@ -365,33 +365,85 @@ var J = (function() {
         return ('#' + r + g + b).toUpperCase()
     }
 
-    // TODO: break, continue and refactor internal for loops
-    J.each = (function() {
-        function _eachArray(object, callback) {
-            var i
-
-            for (i = 0; i < object.length; i++)
-                callback.call(object[i], i, object[i])
-
-            return object
+    ;(function() {
+        function _isArrayLike(object) {
+            return !!object.length
         }
 
-        function _eachObject(object, callback) {
-            var i
+        // TODO: break, continue and refactor internal for loops
+        J.each = (function() {
+            function _eachArray(object, callback) {
+                var i
 
-            for (i in object)
-                if (object.hasOwnProperty(i))
-                    callback.call(object, i, object[i])
+                for (i = 0; i < object.length; i++)
+                    if (callback.call(object[i], i) === false)
+                        break
 
-            return object
+                return object
+            }
+
+            function _eachObject(object, callback) {
+                var i
+
+                // hasOwnProperty?
+                for (i in object)
+                    if (callback.call(object[i], i) === false)
+                        break
+
+                return object
+            }
+
+            return function(object, callback) {
+                return _isArrayLike(object) ?
+                    _eachArray(object, callback) :
+                    _eachObject(object, callback)
+            }
+        }())
+
+        J.map = function(object, callback) {
+            var result = _isArrayLike(object) ? [] : {}
+
+            J.each(object, function(i) {
+                result[i] = callback.call(this, i)
+            })
+
+            return result
         }
 
-        return function(object, callback) {
-            return object.length != null ?
-                _eachArray(object, callback) :
-                _eachObject(object, callback)
-        }
+        J.filter = (function() {
+            function _filterArray(object, callback) {
+                var result = []
+
+                J.each(object, function(i) {
+                    if (callback.call(this, i))
+                        result.push(this)
+                })
+
+                return result
+            }
+
+            function _filterObject(object, callback) {
+                var result = {}
+
+                J.each(object, function(i) {
+                    if (callback.call(this, i))
+                        result[i] = this
+                })
+
+                return result
+            }
+
+            return function(object, callback) {
+                return _isArrayLike(object) ?
+                    _filterArray(object, callback) :
+                    _filterObject(object, callback)
+            }
+        }())
     }())
+
+    J.now = function() {
+        return +new Date()
+    }
 
     // Exposes the constructor to the global scope.
     return J
