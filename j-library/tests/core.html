@@ -16,6 +16,8 @@
 <body>
 
     <p data-test='0'>Paragraph</p>
+
+<!--
     <p data-test='123.5'>Paragraph</p>
     <p data-test='123'>Paragraph</p>
     <p class='testClass' data-test='null'>Paragraph</p>
@@ -23,13 +25,14 @@
     <p data-test='false'>Paragraph</p>
     <p data-test='{ "x": 1 }'>Paragraph</p>
     <p data-test='string'>Paragraph</p>
+-->
 
     <script src="../src/core.js"></script>
     <script>
     ;(function() {
         'use strict';
 
-        console.log(J.shuffle([1, 2, 3, 4, 5]))
+        // console.log(J.shuffle([1, 2, 3, 4, 5]))
 
         // console.log(J('p').any(function() {
         //     return J(this).data('test') === 123
@@ -48,8 +51,8 @@
         // console.log(J('p').get())
         // console.log(J('p').get(1))
 
-        // J('p').addClass('c1')
-        // .delay(1000).removeClass('c1').text('changed')
+        // J('p').addClass('c1').delay(1000).removeClass('c1').delay(2000).addClass('c1')
+
         // .delay(1000).addClass('c1').removeClass('c2')
         // .delay(2000).removeClass('c1').addClass('c2')
 

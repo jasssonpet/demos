@@ -1,20 +1,21 @@
 /*!
- * J Library
+ * J Library - https://github.com/jasssonpet/demos/blob/gh-pages/j-library/
  *
  * Copyright 2013 jasssonpet
  * Released under the MIT license
  */
 
+/*jshint laxcomma: true, asi: true, curly: false, eqnull: true, newcap: false */
+
 // # J library
 
-// Everything inside is visible only in the module.
 var J = (function() {
     'use strict';
 
     // ## Constructor
 
     var J = (function() {
-        var _voidTag = /^<(\w+)\s?\/>$/ // <div />
+        var _voidTag = /^<(\w+) \/>$/
 
         function _defaultConstructor(self) {
             return self
@@ -89,8 +90,7 @@ var J = (function() {
         }
     }())
 
-    // Works like `Array.protype.concat()` but doesn't create a new array.
-    // TODO: extend object
+    // TODO: Extend object
     J.addRange = function(self, elements) {
         J.each(elements, function() {
             self.push(this)
@@ -99,22 +99,20 @@ var J = (function() {
         return self
     }
 
-    // Creates an array with values `[0, ... min]` or `[min, min + 1, ..., max - 1, max]`.
-    J.range = function(min, max) {
+    J.range = function(min, maxInclusive) {
         if (arguments.length === 1) return J.range(0, min)
 
-        var result = new Array(max - min + 1)
+        var result = new Array(maxInclusive - min + 1)
 
         return J.each(result, function(i) {
             result[i] = min + i
         })
     }
 
-    // Creates a random integer in the range `[0, min]` or `[min, max]`.
-    J.random = function(min, max) {
+    J.random = function(min, maxInclusive) {
         if (arguments.length === 1) return J.random(0, min)
 
-        return min + Math.floor(Math.random() * (max - min + 1))
+        return min + Math.floor(Math.random() * (maxInclusive - min + 1))
     }
 
     J.randomColor = function() {
@@ -204,8 +202,6 @@ var J = (function() {
                 var result = start
 
                 J.each(object, function(i) {
-                    console.log(i)
-
                     if (callback.call(this, i)) {
                         result = !result
 
@@ -372,25 +368,25 @@ var J = (function() {
     // ### Data
     ;(function() {
         function _parseDataAttribute(element, key) {
-            var value = element.dataset[key]
+            var valueString = element.dataset[key]
 
             if (!(key in element.dataset))
                 return undefined
 
-            if (parseFloat(value).toString() === value)
-                return parseFloat(value)
+            if (parseFloat(valueString).toString() === valueString)
+                return parseFloat(valueString)
 
-            if (value === 'null')
+            if (valueString === 'null')
                 return null
 
-            if (value === 'true' || value === 'false')
-                return value === 'true'
+            if (valueString === 'true' || valueString === 'false')
+                return valueString === 'true'
 
             try {
-                return JSON.parse(value)
+                return JSON.parse(valueString)
 
             } catch (e) {
-                return value // String
+                return valueString
             }
         }
 
@@ -459,10 +455,10 @@ var J = (function() {
 
               , _style = document.createElement('div').style
 
-            return function(property) {
-                if (property in _style) return property
+            return function(camelCasedProperty) {
+                if (camelCasedProperty in _style) return camelCasedProperty
 
-                var pascalCasedProperty = property[0].toUpperCase() + property.substr(1)
+                var pascalCasedProperty = camelCasedProperty[0].toUpperCase() + camelCasedProperty.substr(1)
                   , vendorProperty
 
                 J.each(_vendorPrefixes, function() {
@@ -488,9 +484,8 @@ var J = (function() {
             })
         }
 
-        // The property is in camelCase
-        J.prototype.css = function(property, value) {
-            property = _makeVendorProperty(property)
+        J.prototype.css = function(camelCasedProperty, value) {
+            var property = _makeVendorProperty(camelCasedProperty)
 
             return arguments.length === 1 ?
                 _getCSS(this, property) :
@@ -569,36 +564,36 @@ var J = (function() {
     }())
 
     // This should be the last section.
-    ;(function() {
-        J.prototype = J.map(J.prototype, function(methodName) {
-            var methodBody = this
+    // ;(function() {
+    //     J.prototype = J.map(J.prototype, function() {
+    //         var methodBody = this
 
-            return function() {
-                var self = this
-                  , methodArguments = arguments
+    //         return function() {
+    //             var self = this
+    //               , methodArguments = arguments
 
-                this._delayQueue.push(function() {
-                    methodBody.apply(self, methodArguments)
-                })
+    //             this._delayQueue.push(function() {
+    //                 methodBody.apply(self, methodArguments)
+    //             })
 
-                this._delayQueue.shift()()
+    //             this._delayQueue.shift()()
 
-                return this
-            }
-        })
+    //             return this
+    //         }
+    //     })
 
-        J.prototype.delay = function(time) {
-            var self = this
+    //     J.prototype.delay = function(time) {
+    //         var self = this
 
-            this._delayQueue.push(function() {
-                setTimeout(function() {
-                    self._delayQueue.shift()()
-                }, time)
-            })
+    //         this._delayQueue.push(function() {
+    //             setTimeout(function() {
+    //                 self._delayQueue.shift()()
+    //             }, time)
+    //         })
 
-            return this
-        }
-    }())
+    //         return this
+    //     }
+    // }())
 
     return J
 }())
