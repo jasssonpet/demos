@@ -92,6 +92,7 @@ var J = (function() {
     }())
 
     // Works like `Array.protype.concat()` but doesn't create a new array.
+    // TODO: extend object
     J.addRange = function(self, elements) {
         J.each(elements, function() {
             self.push(this)
@@ -228,6 +229,21 @@ var J = (function() {
                     return !callback.apply(this, arguments)
                 }, true)
             }
+
+            J.shuffle = (function() {
+                function _swap(array, i, j) {
+                    array[i] = [array[j], array[j] = array[i]][0]
+                }
+
+                return function(array) {
+                    var i = array.length - 1
+
+                    while (i--)
+                        _swap(array, i, J.random(i))
+
+                    return array
+                }
+            }())
         }())
     }())
 
