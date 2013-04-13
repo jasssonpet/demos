@@ -384,28 +384,34 @@ var J = (function() {
 
     // ### Data
     ;(function() {
-        function _parseDataAttribute(element, key) {
-            var valueString = element.dataset[key]
-
-            if (!(key in element.dataset))
-                return undefined
-
-            if (parseFloat(valueString).toString() === valueString)
-                return parseFloat(valueString)
-
-            if (valueString === 'null')
-                return null
-
-            if (valueString === 'true' || valueString === 'false')
-                return valueString === 'true'
-
-            try {
-                return JSON.parse(valueString)
-
-            } catch (e) {
-                return valueString
+        var _parseDataAttribute = (function() {
+            function _parseBoolean(string) {
+                return string === 'true'
             }
-        }
+
+            return function(element, key) {
+                var valueString = element.dataset[key]
+
+                if (!(key in element.dataset))
+                    return undefined
+
+                if (valueString === 'null')
+                    return null
+
+                if (parseFloat(valueString).toString() === valueString)
+                    return parseFloat(valueString)
+
+                if (valueString === 'true' || valueString === 'false')
+                    return _parseBoolean(valueString)
+
+                try {
+                    return JSON.parse(valueString)
+
+                } catch (e) {
+                    return valueString
+                }
+            }
+        })
 
         function _getData(self, key) {
             var element = self._elements[0]
