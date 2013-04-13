@@ -18,6 +18,10 @@ var J = (function() {
     var J = (function() {
         var _voidTag = /^<(\w+)\s?\/>$/ // <div />
 
+        function _defaultConstructor(self) {
+            return self
+        }
+
         function _htmlElementConstructor(self, htmlElement) {
             self._elements.push(htmlElement)
 
@@ -49,6 +53,9 @@ var J = (function() {
 
             this._elements = []
             this._delayQueue = []
+
+            if (selector == null)
+                return _defaultConstructor(this)
 
             if (selector instanceof HTMLElement)
                 return _htmlElementConstructor(this, selector)
@@ -192,6 +199,36 @@ var J = (function() {
 
             return result
         }
+
+        ;(function() {
+            var _anyAll = function(object, callback, start) {
+                var result = start
+
+                J.each(object, function(i) {
+                    console.log(i)
+
+                    if (callback.call(this, i)) {
+                        result = !result
+
+                        return false
+                    }
+                })
+
+                return result
+            }
+
+            J.any =
+            J.some = function(object, callback) {
+                return _anyAll(object, callback, false)
+            }
+
+            J.all =
+            J.every = function(object, callback) {
+                return _anyAll(object, function() {
+                    return !callback.apply(this, arguments)
+                }, true)
+            }
+        }())
     }())
 
     J.now = function() {
@@ -200,11 +237,42 @@ var J = (function() {
 
     // ## Prototype
 
-    J.prototype.each = function(callback) {
-        J.each(this._elements, callback)
+    // ### Common
+    ;(function() {
+        J.prototype.each = function(callback) {
+            J.each(this._elements, callback)
 
-        return this
-    }
+            return this
+        }
+
+        J.prototype.filter = function(callback) {
+            var result = new J()
+
+            result._elements = J.filter(this._elements, callback)
+
+            return result
+        }
+
+        J.prototype.map = function(callback) {
+            return J.map(this._elements, callback)
+        }
+
+        J.prototype.any =
+        J.prototype.some = function(callback) {
+            return J.some(this._elements, callback)
+        }
+
+        J.prototype.all =
+        J.prototype.every = function(callback) {
+            return J.all(this._elements, callback)
+        }
+
+        J.prototype.get = function(index) {
+            return index == null ?
+                this._elements :
+                this._elements[index]
+        }
+    }())
 
     // ### Events
     ;(function () {
@@ -287,13 +355,33 @@ var J = (function() {
         }
     }())
 
-    // ### Data Attributes
-    // TODO: HTML data-* attributes
+    // ### Data
     ;(function() {
-        function _getData(self, key) {
-            var el = self._elements[0]
+        function _parseDataAttribute(element, key) {
+            var value = element.dataset[key]
 
-            return el[key] || el.dataset[key]
+            if (parseFloat(value).toString() === value)
+                return parseFloat(value)
+
+            if (value === 'null')
+                return null
+
+            if (value === 'true' || value === 'false')
+                return value === 'true'
+
+            try {
+                return JSON.parse(value)
+            } catch (e) {
+                return value
+            }
+        }
+
+        function _getData(self, key) {
+            var element = self._elements[0]
+
+            return (element[key] === undefined) ?
+                _parseDataAttribute(element, key) :
+                element[key]
         }
 
         function _setData(self, key, value) {
@@ -336,6 +424,12 @@ var J = (function() {
         J.prototype.toggleClass = function(className) {
             return this.each(function() {
                 this.classList.toggle(className)
+            })
+        }
+
+        J.prototype.hasClass = function(className) {
+            return this.any(function() {
+                return this.classList.contains(className)
             })
         }
     }())
@@ -444,13 +538,13 @@ var J = (function() {
         }
     }())
 
-    // This should be the last section
+    // This should be the last section.
     ;(function() {
         J.prototype.delay = function(time) {
             var self = this
 
             setTimeout(function() {
-                console.log('delay' + time / 1000)
+                // console.log('delay' + time / 1000)
 
                 self._delayQueue.shift()()
             }, time)
@@ -466,7 +560,7 @@ var J = (function() {
                   , selfArguments = arguments
 
                 this._delayQueue.push(function() {
-                    console.log(methodName, self._delayQueue)
+                    // console.log(methodName, self._delayQueue)
 
                     return methodBody.apply(self, selfArguments)
                 })
