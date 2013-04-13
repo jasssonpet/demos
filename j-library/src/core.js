@@ -238,24 +238,24 @@ var J = (function() {
     J.random = function(min, maxInclusive) {
         if (arguments.length === 1) return J.random(0, min)
 
-        return min + Math.floor(Math.random() * (maxInclusive - min + 1))
+        var possibleNumbers = maxInclusive - min + 1
+
+        return min + Math.floor(Math.random() * possibleNumbers)
     }
 
-    J.randomColor = (function() {
-        function _generateByte() {
-            var decimal = J.random(255)
+    J.randomByte = function() {
+        var decimal = J.random(255)
 
-            return J.padLeft(decimal.toString(16), 2, '0')
-        }
+        return J.padLeft(decimal.toString(16), 2, '0').toUpperCase()
+    }
 
-        return function() {
-            var r = _generateByte()
-              , g = _generateByte()
-              , b = _generateByte()
+    J.randomColor = function() {
+        var r = J.randomByte()
+          , g = J.randomByte()
+          , b = J.randomByte()
 
-            return ('#' + r + g + b).toUpperCase()
-        }
-    }())
+        return ('#' + r + g + b)
+    }
 
     // ### Utilities
     J.now = function() {
@@ -384,6 +384,20 @@ var J = (function() {
 
     // ### Data
     ;(function() {
+        function _hasDataProperty(element, key) {
+            return element._data && (key in element._data)
+        }
+
+        function _getDataProperty(element, key) {
+            return element._data[key]
+        }
+
+        function _setDataProperty(element, key, value) {
+            element._data = element._data || {}
+
+            element._data[key] = value
+        }
+
         function _parseDataAttribute(element, key) {
             var valueString = element.dataset[key]
 
@@ -413,22 +427,20 @@ var J = (function() {
         function _getData(self, key) {
             var element = self._elements[0]
 
-            return element._data && (key in element._data) ?
-                element._data[key] :
+            return _hasDataProperty(element, key) ?
+                _getDataProperty(element, key) :
                 _parseDataAttribute(element, key)
         }
 
         function _setData(self, key, value) {
             return self.each(function() {
-                this._data = this._data || {}
-
-                this._data[key] = value
+                _setDataProperty(this, key, value)
             })
         }
 
         function _removeData(self, key) {
             return self.each(function() {
-                if (this._data) delete this._data[key]
+                _setDataProperty(this, key, undefined)
             })
         }
 
@@ -445,6 +457,12 @@ var J = (function() {
 
     // ### Classes
     ;(function() {
+        J.prototype.hasClass = function(className) {
+            return this.any(function() {
+                return this.classList.contains(className)
+            })
+        }
+
         J.prototype.addClass = function(className) {
             return this.each(function() {
                 this.classList.add(className)
@@ -460,12 +478,6 @@ var J = (function() {
         J.prototype.toggleClass = function(className) {
             return this.each(function() {
                 this.classList.toggle(className)
-            })
-        }
-
-        J.prototype.hasClass = function(className) {
-            return this.any(function() {
-                return this.classList.contains(className)
             })
         }
     }())
