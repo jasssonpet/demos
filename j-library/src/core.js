@@ -494,13 +494,13 @@ var J = (function() {
             }
         }())
 
-        function _getCSS(self, property) {
+        function _getCss(self, property) {
             var el = self._elements[0]
 
             return getComputedStyle(el)[property]
         }
 
-        function _setCSS(self, property, value) {
+        function _setCss(self, property, value) {
             return self.each(function() {
                 this.style[property] = value
             })
@@ -510,8 +510,8 @@ var J = (function() {
             var property = _makeVendorProperty(camelCasedProperty)
 
             return arguments.length === 1 ?
-                _getCSS(this, property) :
-                _setCSS(this, property, value)
+                _getCss(this, property) :
+                _setCss(this, property, value)
         }
     }())
 
