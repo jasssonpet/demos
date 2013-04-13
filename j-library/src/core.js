@@ -198,7 +198,7 @@ var J = (function() {
             }
         }())
 
-        // TODO: Extend object
+        // **TODO**: Extend object
         J.merge = function(self, elements) {
             J.each(elements, function() {
                 self.push(this)
