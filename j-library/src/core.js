@@ -167,7 +167,13 @@ var J = (function() {
         }
 
         ;(function() {
-            var _anyAll = function(object, callback, start) {
+            function _invertPredicate(callback) {
+                return function() {
+                    return !callback.apply(this, arguments)
+                }
+            }
+
+            function _anyAll(object, callback, start) {
                 var result = start
 
                 J.each(object, function(i) {
@@ -188,9 +194,7 @@ var J = (function() {
 
             J.all =
             J.every = function(object, callback) {
-                return _anyAll(object, function() {
-                    return !callback.apply(this, arguments)
-                }, true)
+                return _anyAll(object, _invertPredicate(callback), true)
             }
         }())
 
@@ -237,13 +241,21 @@ var J = (function() {
         return min + Math.floor(Math.random() * (maxInclusive - min + 1))
     }
 
-    J.randomColor = function() {
-        var r = J.padLeft(J.random(255).toString(16), 2, '0')
-          , g = J.padLeft(J.random(255).toString(16), 2, '0')
-          , b = J.padLeft(J.random(255).toString(16), 2, '0')
+    J.randomColor = (function() {
+        function _generateByte() {
+            var decimal = J.random(255)
 
-        return ('#' + r + g + b).toUpperCase()
-    }
+            return J.padLeft(decimal.toString(16), 2, '0')
+        }
+
+        return function() {
+            var r = _generateByte()
+              , g = _generateByte()
+              , b = _generateByte()
+
+            return ('#' + r + g + b).toUpperCase()
+        }
+    }())
 
     // ### Utilities
     J.now = function() {
