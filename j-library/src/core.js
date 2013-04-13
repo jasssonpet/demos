@@ -5,8 +5,6 @@
  * Released under the MIT license
  */
 
-// TODO: call this, instead of self for private methods
-
 // # J library
 
 // Everything inside is visible only in the module.
@@ -46,7 +44,6 @@ var J = (function() {
             return self
         }
 
-        // The constructor accepts a string `J('p, div')` or a DOM Node `J(document.getElementById('id'))`.
         return function(selector, context) {
             if (!(this instanceof J))
                 return new J(selector, context)
@@ -72,7 +69,8 @@ var J = (function() {
     J.repeat = function(string, times) {
         var result = ''
 
-        while (times--) result += string
+        while (times--)
+            result += string
 
         return result
     }
@@ -229,21 +227,21 @@ var J = (function() {
                     return !callback.apply(this, arguments)
                 }, true)
             }
+        }())
 
-            J.shuffle = (function() {
-                function _swap(array, i, j) {
-                    array[i] = [array[j], array[j] = array[i]][0]
-                }
+        J.shuffle = (function() {
+            function _swap(array, i, j) {
+                array[i] = [array[j], array[j] = array[i]][0]
+            }
 
-                return function(array) {
-                    var i = array.length - 1
+            return function(array) {
+                var i = array.length - 1
 
-                    while (i--)
-                        _swap(array, i, J.random(i))
+                while (i--)
+                    _swap(array, i, J.random(i))
 
-                    return array
-                }
-            }())
+                return array
+            }
         }())
     }())
 
@@ -376,6 +374,9 @@ var J = (function() {
         function _parseDataAttribute(element, key) {
             var value = element.dataset[key]
 
+            if (!(key in element.dataset))
+                return undefined
+
             if (parseFloat(value).toString() === value)
                 return parseFloat(value)
 
@@ -387,15 +388,16 @@ var J = (function() {
 
             try {
                 return JSON.parse(value)
+
             } catch (e) {
-                return value
+                return value // String
             }
         }
 
         function _getData(self, key) {
             var element = self._elements[0]
 
-            return (element[key] === undefined) ?
+            return (key in element) ?
                 _parseDataAttribute(element, key) :
                 element[key]
         }
@@ -498,6 +500,10 @@ var J = (function() {
 
     // ### Show/hide
     ;(function() {
+        function _isHidden(self) {
+            return self.css('display') === 'none'
+        }
+
         // **TODO**: Restore the original display (`inline, table ...`).
         function _showHide(self, show) {
             return self.css('display', show ? 'block' : 'none')
@@ -509,6 +515,14 @@ var J = (function() {
 
         J.prototype.hide = function() {
             return _showHide(this, false)
+        }
+
+        J.prototype.toggle = function() {
+            return this.each(function() {
+                var self = J(this)
+
+                _showHide(self, _isHidden(self))
+            })
         }
     }())
 
@@ -586,6 +600,5 @@ var J = (function() {
         })
     }())
 
-    // Exposes the constructor to the global scope.
     return J
 }())
