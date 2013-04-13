@@ -71,7 +71,7 @@ var J = (function() {
     J.repeat = function(string, times) {
         var result = ''
 
-        for ( ; times-- > 0; )
+        while (times --> 0)
             result += string
 
         return result
@@ -215,9 +215,9 @@ var J = (function() {
         }
 
         return function(array) {
-            var i = array.length - 1
+            var i
 
-            for ( ; i-- > 0; )
+            for (i = array.length - 1; i > 0; i--)
                 _swap(array, i, J.random(i))
 
             return array
