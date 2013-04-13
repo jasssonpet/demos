@@ -39,7 +39,7 @@ var J = (function() {
             var contextElements = context && context._elements || [document.documentElement]
 
             J.each(contextElements, function() {
-                J.addRange(self._elements, this.querySelectorAll(selector))
+                J.merge(self._elements, this.querySelectorAll(selector))
             })
 
             return self
@@ -65,12 +65,13 @@ var J = (function() {
         }
     }())
 
-    // ### Static Methods
+    // ## Static Methods
 
+    // ### String Manipulation
     J.repeat = function(string, times) {
         var result = ''
 
-        while (times--)
+        for ( ; times-- > 0; )
             result += string
 
         return result
@@ -90,39 +91,7 @@ var J = (function() {
         }
     }())
 
-    // TODO: Extend object
-    J.addRange = function(self, elements) {
-        J.each(elements, function() {
-            self.push(this)
-        })
-
-        return self
-    }
-
-    J.range = function(min, maxInclusive) {
-        if (arguments.length === 1) return J.range(0, min)
-
-        var result = new Array(maxInclusive - min + 1)
-
-        return J.each(result, function(i) {
-            result[i] = min + i
-        })
-    }
-
-    J.random = function(min, maxInclusive) {
-        if (arguments.length === 1) return J.random(0, min)
-
-        return min + Math.floor(Math.random() * (maxInclusive - min + 1))
-    }
-
-    J.randomColor = function() {
-        var r = J.padLeft(J.random(255).toString(16), 2, '0')
-          , g = J.padLeft(J.random(255).toString(16), 2, '0')
-          , b = J.padLeft(J.random(255).toString(16), 2, '0')
-
-        return ('#' + r + g + b).toUpperCase()
-    }
-
+    // ### Array-like and Object Manipulation
     ;(function() {
         function _isArrayLike(object) {
             return !!object.length
@@ -225,29 +194,65 @@ var J = (function() {
             }
         }())
 
-        J.shuffle = (function() {
-            function _swap(array, i, j) {
-                array[i] = [array[j], array[j] = array[i]][0]
-            }
+        // TODO: Extend object
+        J.merge = function(self, elements) {
+            J.each(elements, function() {
+                self.push(this)
+            })
 
-            return function(array) {
-                var i = array.length - 1
-
-                while (i--)
-                    _swap(array, i, J.random(i))
-
-                return array
-            }
-        }())
+            return self
+        }
     }())
 
+    // ### Array Manipulation
+    J.shuffle = (function() {
+        function _swap(array, i, j) {
+            array[i] = [array[j], array[j] = array[i]][0]
+        }
+
+        return function(array) {
+            var i = array.length - 1
+
+            for ( ; i-- > 0; )
+                _swap(array, i, J.random(i))
+
+            return array
+        }
+    }())
+
+    J.range = function(min, maxInclusive) {
+        if (arguments.length === 1) return J.range(0, min)
+
+        var result = new Array(maxInclusive - min + 1)
+
+        return J.each(result, function(i) {
+            result[i] = min + i
+        })
+    }
+
+    // ### Random Generators
+    J.random = function(min, maxInclusive) {
+        if (arguments.length === 1) return J.random(0, min)
+
+        return min + Math.floor(Math.random() * (maxInclusive - min + 1))
+    }
+
+    J.randomColor = function() {
+        var r = J.padLeft(J.random(255).toString(16), 2, '0')
+          , g = J.padLeft(J.random(255).toString(16), 2, '0')
+          , b = J.padLeft(J.random(255).toString(16), 2, '0')
+
+        return ('#' + r + g + b).toUpperCase()
+    }
+
+    // ### Utilities
     J.now = function() {
         return +new Date()
     }
 
     // ## Prototype
 
-    // ### Common
+    // ### Element manipulation
     ;(function() {
         J.prototype.each = function(callback) {
             J.each(this._elements, callback)
@@ -393,20 +398,22 @@ var J = (function() {
         function _getData(self, key) {
             var element = self._elements[0]
 
-            return (key in element) ?
-                _parseDataAttribute(element, key) :
-                element[key]
+            return element._data && (key in element._data) ?
+                element._data[key] :
+                _parseDataAttribute(element, key)
         }
 
         function _setData(self, key, value) {
             return self.each(function() {
-                this[key] = value
+                this._data = this._data || {}
+
+                this._data[key] = value
             })
         }
 
         function _removeData(self, key) {
             return self.each(function() {
-                this[key] = null
+                this._data && delete this._data[key]
             })
         }
 
