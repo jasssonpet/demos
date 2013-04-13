@@ -413,7 +413,7 @@ var J = (function() {
 
         function _removeData(self, key) {
             return self.each(function() {
-                this._data && delete this._data[key]
+                if (this._data) delete this._data[key]
             })
         }
 
