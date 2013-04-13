@@ -570,34 +570,34 @@ var J = (function() {
 
     // This should be the last section.
     ;(function() {
-        J.prototype.delay = function(time) {
-            var self = this
-
-            setTimeout(function() {
-                // console.log('delay' + time / 1000)
-
-                self._delayQueue.shift()()
-            }, time)
-
-            return this
-        }
-
         J.prototype = J.map(J.prototype, function(methodName) {
             var methodBody = this
 
             return function() {
                 var self = this
-                  , selfArguments = arguments
+                  , methodArguments = arguments
 
                 this._delayQueue.push(function() {
-                    // console.log(methodName, self._delayQueue)
-
-                    return methodBody.apply(self, selfArguments)
+                    methodBody.apply(self, methodArguments)
                 })
 
-                return methodName === 'delay' && this || this._delayQueue.shift()()
+                this._delayQueue.shift()()
+
+                return this
             }
         })
+
+        J.prototype.delay = function(time) {
+            var self = this
+
+            this._delayQueue.push(function() {
+                setTimeout(function() {
+                    self._delayQueue.shift()()
+                }, time)
+            })
+
+            return this
+        }
     }())
 
     return J
