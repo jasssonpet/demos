@@ -390,20 +390,20 @@ this.J = (function() {
     ;(function() {
         J.prototype.prepend = function(elements) {
             return this.each(function() {
-                var el = this
+                var parentElement = this
 
                 elements.each(function() {
-                    el.insertBefore(this, el.firstChild)
+                    parentElement.insertBefore(this, parentElement.firstChild)
                 })
             })
         }
 
         J.prototype.append = function(elements) {
             return this.each(function() {
-                var el = this
+                var parentElement = this
 
                 elements.each(function() {
-                    el.appendChild(this)
+                    parentElement.appendChild(this)
                 })
             })
         }
