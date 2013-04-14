@@ -12,6 +12,8 @@
 // # J library
 
 this.J = (function() {
+    /*jshint validthis: true */
+
     'use strict';
 
     // ## Constructor
@@ -19,32 +21,33 @@ this.J = (function() {
     var J = (function() {
         var _voidTag = /^<(\w+) \/>$/
 
-        function _defaultConstructor(self) {
-            return self
+        function _defaultConstructor() {
+            return this
         }
 
-        function _htmlElementConstructor(self, htmlElement) {
-            self._elements.push(htmlElement)
+        function _htmlElementConstructor(htmlElement) {
+            this._elements.push(htmlElement)
 
-            return self
+            return this
         }
 
-        function _createHtmlElementConstructor(self, voidTag) {
+        function _createHtmlElementConstructor(voidTag) {
             var tagName = voidTag.match(_voidTag)[1]
 
               , htmlElement = document.createElement(tagName)
 
-            return _htmlElementConstructor(self, htmlElement)
+            return _htmlElementConstructor.call(this, htmlElement)
         }
 
-        function _selectorConstructor(self, selector, context) {
-            var contextElements = context && context._elements || [document.documentElement]
+        function _selectorConstructor(selector, context) {
+            var self = this
+              , contextElements = context && context._elements || [document.documentElement]
 
             J.each(contextElements, function() {
                 J.merge(self._elements, this.querySelectorAll(selector))
             })
 
-            return self
+            return this
         }
 
         return function(selector, context) {
@@ -54,15 +57,15 @@ this.J = (function() {
             this._elements = []
 
             if (selector == null)
-                return _defaultConstructor(this)
+                return _defaultConstructor.call(this)
 
             if (selector instanceof HTMLElement)
-                return _htmlElementConstructor(this, selector)
+                return _htmlElementConstructor.call(this, selector)
 
             if (_voidTag.test(selector))
-                return _createHtmlElementConstructor(this, selector)
+                return _createHtmlElementConstructor.call(this, selector)
 
-            return _selectorConstructor(this, selector, context)
+            return _selectorConstructor.call(this, selector, context)
         }
     }())
 
@@ -432,8 +435,8 @@ this.J = (function() {
         }())
 
         ;(function() {
-            function _eachEach(self, elements, callback) {
-                return self.each(function() {
+            function _eachEach(elements, callback) {
+                return this.each(function() {
                     var parentElement = this
 
                     elements.each(function() {
@@ -443,25 +446,25 @@ this.J = (function() {
             }
 
             J.prototype.prepend = function(elements) {
-                return _eachEach(this, elements, function(newElement) {
+                return _eachEach.call(this, elements, function(newElement) {
                     this.insertBefore(newElement.cloneNode(true), this.firstChild)
                 })
             }
 
             J.prototype.append = function(elements) {
-                return _eachEach(this, elements, function(newElement) {
+                return _eachEach.call(this, elements, function(newElement) {
                     this.appendChild(newElement.cloneNode(true))
                 })
             }
 
             J.prototype.before = function(elements) {
-                return _eachEach(this, elements, function(newElement) {
+                return _eachEach.call(this, elements, function(newElement) {
                     this.parentNode.insertBefore(newElement.cloneNode(true), this)
                 })
             }
 
             J.prototype.after = function(elements) {
-                return _eachEach(this, elements, function(newElement) {
+                return _eachEach.call(this, elements, function(newElement) {
                     this.parentNode.insertBefore(newElement.cloneNode(true), this.nextSibling)
                 })
             }
@@ -486,32 +489,32 @@ this.J = (function() {
 
     // ### Attributes
     ;(function() {
-        function _getAttribute(self, attribute) {
-            var firstElement = self._elements[0]
+        function _getAttribute(attribute) {
+            var firstElement = this._elements[0]
 
             return firstElement.getAttribute(attribute)
         }
 
-        function _setAttribute(self, attribute, value) {
-            return self.each(function() {
+        function _setAttribute(attribute, value) {
+            return this.each(function() {
                 this.setAttribute(attribute, value)
             })
         }
 
-        function _removeAttribute(self, attribute) {
-            return self.each(function() {
+        function _removeAttribute(attribute) {
+            return this.each(function() {
                 this.removeAttribute(attribute)
             })
         }
 
         J.prototype.attr = function(attribute, value) {
             return arguments.length === 1 ?
-                _getAttribute(this, attribute) :
-                _setAttribute(this, attribute, value)
+                _getAttribute.call(this, attribute) :
+                _setAttribute.call(this, attribute, value)
         }
 
         J.prototype.removeAttr = function(attribute) {
-            _removeAttribute(this, attribute)
+            _removeAttribute.call(this, attribute)
         }
     }())
 
@@ -557,28 +560,28 @@ this.J = (function() {
             }
         }
 
-        function _getData(self, key) {
-            var firstElement = self._elements[0]
+        function _getData(key) {
+            var firstElement = this._elements[0]
 
             return _hasDataProperty(firstElement, key) ?
                 _getDataProperty(firstElement, key) :
                 _parseDataAttribute(firstElement, key)
         }
 
-        function _setData(self, key, value) {
-            return self.each(function() {
+        function _setData(key, value) {
+            return this.each(function() {
                 _setDataProperty(this, key, value)
             })
         }
 
         J.prototype.data = function(key, value) {
             return arguments.length === 1 ?
-                _getData(this, key) :
-                _setData(this, key, value)
+                _getData.call(this, key) :
+                _setData.call(this, key, value)
         }
 
         J.prototype.removeData = function(key) {
-            return this.data(key, undefined)
+            return J.prototype.data.call(this, key, undefined)
         }
     }())
 
@@ -633,14 +636,14 @@ this.J = (function() {
             }
         }())
 
-        function _getCss(self, property) {
-            var firstElement = self._elements[0]
+        function _getCss(property) {
+            var firstElement = this._elements[0]
 
             return getComputedStyle(firstElement)[property]
         }
 
-        function _setCss(self, property, value) {
-            return self.each(function() {
+        function _setCss(property, value) {
+            return this.each(function() {
                 this.style[property] = value
             })
         }
@@ -649,78 +652,78 @@ this.J = (function() {
             var property = _makeVendorProperty(camelCasedProperty)
 
             return arguments.length === 1 ?
-                _getCss(this, property) :
-                _setCss(this, property, value)
+                _getCss.call(this, property) :
+                _setCss.call(this, property, value)
         }
     }())
 
     // ### Show/hide
     ;(function() {
-        function _isHidden(self) {
-            return self.css('display') === 'none'
+        function _isHidden() {
+            return this.css('display') === 'none'
         }
 
         // **TODO**: Restore the original display (`inline, table ...`).
-        function _showHide(self, show) {
-            return self.css('display', show ? 'block' : 'none')
+        function _showHide(show) {
+            return this.css('display', show ? 'block' : 'none')
         }
 
         J.prototype.show = function() {
-           return _showHide(this, true)
+           return _showHide.call(this, true)
         }
 
         J.prototype.hide = function() {
-            return _showHide(this, false)
+            return _showHide.call(this, false)
         }
 
         J.prototype.toggle = function() {
             return this.each(function() {
                 var self = new J(this)
 
-                _showHide(self, _isHidden(self))
+                _showHide.call(self, _isHidden.call(self))
             })
         }
     }())
 
     // ### Text
     ;(function() {
-        function _getText(self) {
-            var firstElement = self._elements[0]
+        function _getText() {
+            var firstElement = this._elements[0]
 
             return firstElement.textContent
         }
 
-        function _setText(self, text) {
-            return self.each(function() {
+        function _setText(text) {
+            return this.each(function() {
                 this.textContent = text
             })
         }
 
         J.prototype.text = function(text) {
             return arguments.length === 0 ?
-                _getText(this) :
-                _setText(this, text)
+                _getText.call(this) :
+                _setText.call(this, text)
         }
     }())
 
     // ### HTML
     ;(function() {
-        function _getHtml(self) {
-            var firstElement = self._elements[0]
+        function _getHtml() {
+            var firstElement = this._elements[0]
 
             return firstElement.innerHTML
         }
 
-        function _setHtml(self, html) {
-            return self.each(function() {
+        function _setHtml(html) {
+            return this.each(function() {
                 this.innerHTML = html
             })
         }
 
         J.prototype.html = function(html) {
             return arguments.length === 0 ?
-                _getHtml(this) :
-                _setHtml(this, html)
+                _getHtml.call(this) :
+                _setHtml.call(this, html)
         }
     }())
 
@@ -728,8 +731,8 @@ this.J = (function() {
 
     // // This should be the last section.
     // ;(function() {
-    //     function _tryDequeue(self) {
-    //         var queue = self._delayQueue
+    //     function _tryDequeue() {
+    //         var queue = this._delayQueue
 
     //         if (!queue.inProgress && queue.length)
     //             return queue.shift()()
@@ -749,7 +752,7 @@ this.J = (function() {
     //         setTimeout(function() {
     //             self._delayQueue.inProgress = false
 
-    //             return _tryDequeue(self)
+    //             return _tryDequeue.call(self)
     //         }, time)
 
     //         return this
@@ -766,10 +769,10 @@ this.J = (function() {
     //             this._delayQueue.push(function() {
     //                 methodBody.apply(self, methodArguments)
 
-    //                 return _tryDequeue(self)
+    //                 return _tryDequeue.call(self)
     //             })
 
-    //             _tryDequeue(this)
+    //             _tryDequeue.call(this)
 
     //             return this
     //         }

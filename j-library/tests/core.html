@@ -48,7 +48,7 @@
 
         // console.log(J('p').hasClass('testClass'))
 
-        console.log(J('p').parent().size())
+        // console.log(J('p').parent().size())
 
         // J('body').prepend(J('<p />').text('Previous paragraph.'))
         // J('body').append(J('<p />').text('Next paragraph.'))
@@ -77,14 +77,16 @@
         // .delay(1000).addClass('c1').removeClass('c2')
         // .delay(2000).removeClass('c1').addClass('c2')
 
-        // J('p:not(.info)').remove()
+        // J('p:not(.c1)').remove()
 
         // ;(function() {
         //     var p = J('<p />').html('<strong>Paragraph element created.</strong>')
 
-        //     p.addClass('info').timeout(function() {
-        //         this.removeClass('big')
-        //     }, 100).addClass('big').delay(500).addClass('big')
+        //     // p.addClass('c1').queue(function() {
+        //     //     this.removeClass('big')
+
+        //     //     this._delayQueue.shift()()
+        //     // }).addClass('big').delay(500).addClass('big')
 
         //     p.css('transform', 'rotate(180deg)')
         //     p.css('color', J.randomColor())
@@ -100,10 +102,6 @@
         //     console.log(this, e)
         // })
 
-        // J('p').each(function(i) {
-        //     J(this).attr('id', 'paragraph-' + i)
-        // })
-
         // J.each(J.range(10, 15), function(i) {
         //     console.log(i, this)
         // })
@@ -114,6 +112,11 @@
 
         // console.log(J('p').text())
         // J('p').text('paragraph')
+
+
+        // J('p').each(function(i) {
+        //     J(this).attr('id', 'paragraph-' + i)
+        // })
 
         // console.log(J('p').attr('id'))
 
