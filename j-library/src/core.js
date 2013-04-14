@@ -437,32 +437,32 @@ this.J = (function() {
                     var parentElement = this
 
                     elements.each(function() {
-                        callback(parentElement, this)
+                        callback.call(parentElement, this)
                     })
                 })
             }
 
             J.prototype.prepend = function(elements) {
-                return _eachEach(this, elements, function(parentElement, newElement) {
-                    parentElement.insertBefore(newElement.cloneNode(true), parentElement.firstChild)
+                return _eachEach(this, elements, function(newElement) {
+                    this.insertBefore(newElement.cloneNode(true), this.firstChild)
                 })
             }
 
             J.prototype.append = function(elements) {
-                return _eachEach(this, elements, function(parentElement, newElement) {
-                    parentElement.appendChild(newElement.cloneNode(true))
+                return _eachEach(this, elements, function(newElement) {
+                    this.appendChild(newElement.cloneNode(true))
                 })
             }
 
             J.prototype.before = function(elements) {
-                return _eachEach(this, elements, function(parentElement, newElement) {
-                    parentElement.parentNode.insertBefore(newElement.cloneNode(true), parentElement)
+                return _eachEach(this, elements, function(newElement) {
+                    this.parentNode.insertBefore(newElement.cloneNode(true), this)
                 })
             }
 
             J.prototype.after = function(elements) {
-                return _eachEach(this, elements, function(parentElement, newElement) {
-                    parentElement.parentNode.insertBefore(newElement.cloneNode(true), parentElement.nextSibling)
+                return _eachEach(this, elements, function(newElement) {
+                    this.parentNode.insertBefore(newElement.cloneNode(true), this.nextSibling)
                 })
             }
         }())
