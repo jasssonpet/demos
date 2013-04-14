@@ -676,6 +676,20 @@ var J = (function() {
             return this
         }
 
+        J.prototype.delay = function(time) {
+            var self = this
+
+            this._delayQueue.inProgress = true
+
+            setTimeout(function() {
+                self._delayQueue.inProgress = false
+
+                _tryDequeue(self)
+            }, time)
+
+            return this
+        }
+
         J.prototype = J.map(J.prototype, function(/* methodName */) {
             var methodBody = this
 
@@ -694,24 +708,6 @@ var J = (function() {
                 return this
             }
         })
-
-        J.prototype.delay = function(time) {
-            var self = this
-
-            this._delayQueue.push(function() {
-                self._delayQueue.inProgress = true
-
-                setTimeout(function() {
-                    self._delayQueue.inProgress = false
-
-                    _tryDequeue(self)
-                }, time)
-            })
-
-            _tryDequeue(this)
-
-            return this
-        }
     }())
 
     return J
