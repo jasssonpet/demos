@@ -5,11 +5,11 @@
  * Released under the MIT license
  */
 
-/*jshint laxcomma: true, asi: true, curly: false, eqnull: true, newcap: false */
+/*jshint laxcomma: true, asi: true, curly: false, eqnull: true, bitwise: false */
 
 // # J library
 
-var J = (function() {
+this.J = (function() {
     'use strict';
 
     // ## Constructor
@@ -113,10 +113,10 @@ var J = (function() {
             function _eachObject(object, callback) {
                 var i
 
-                // hasOwnProperty?
                 for (i in object)
-                    if (callback.call(object[i], i) === false)
-                        break
+                    if (object.hasOwnProperty(i))
+                        if (callback.call(object[i], i) === false)
+                            break
 
                 return object
             }
@@ -612,7 +612,7 @@ var J = (function() {
 
         J.prototype.toggle = function() {
             return this.each(function() {
-                var self = J(this)
+                var self = new J(this)
 
                 _showHide(self, _isHidden(self))
             })
@@ -662,53 +662,55 @@ var J = (function() {
     }())
 
     // This should be the last section.
-    ;(function() {
-        function _tryDequeue(self) {
-            var queue = self._delayQueue
+    // J('p').log().log().delay(1000).log().log().delay(1000).log().log()
+    // ;(function() {
+    //     function _tryDequeue(self) {
+    //         var queue = self._delayQueue
 
-            if (!queue.inProgress && queue.length)
-                queue.shift()()
-        }
+    //         if (!queue.inProgress && queue.length)
+    //             return queue.shift()()
+    //     }
 
-        J.prototype.log = function() {
-            console.log(~~(J.now() / 1000) % 100)
+    //     J.prototype.log = function() {
+    //         console.log(~~(J.now() / 1000) % 100)
 
-            return this
-        }
+    //         return this
+    //     }
 
-        J.prototype.delay = function(time) {
-            var self = this
+    //     J.prototype.delay = function(time) {
+    //         var self = this
 
-            this._delayQueue.inProgress = true
+    //         this._delayQueue.inProgress = true
 
-            setTimeout(function() {
-                self._delayQueue.inProgress = false
+    //         setTimeout(function() {
+    //             self._delayQueue.inProgress = false
 
-                _tryDequeue(self)
-            }, time)
+    //             return _tryDequeue(self)
+    //         }, time)
 
-            return this
-        }
+    //         return this
+    //     }
 
-        J.prototype = J.map(J.prototype, function(/* methodName */) {
-            var methodBody = this
+    //     // This should be the last method
+    //     J.prototype = J.map(J.prototype, function(/* methodName */) {
+    //         var methodBody = this
 
-            return function() {
-                var self = this
-                  , methodArguments = arguments
+    //         return function() {
+    //             var self = this
+    //               , methodArguments = arguments
 
-                this._delayQueue.push(function() {
-                    methodBody.apply(self, methodArguments)
+    //             this._delayQueue.push(function() {
+    //                 methodBody.apply(self, methodArguments)
 
-                    _tryDequeue(self)
-                })
+    //                 return _tryDequeue(self)
+    //             })
 
-                _tryDequeue(this)
+    //             _tryDequeue(this)
 
-                return this
-            }
-        })
-    }())
+    //             return this
+    //         }
+    //     })
+    // }())
 
     return J
 }())
