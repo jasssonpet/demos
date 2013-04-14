@@ -127,6 +127,16 @@ this.J = (function() {
             }
         }())
 
+        J.map = function(object, callback) {
+            var result = _isArrayLike(object) ? [] : {}
+
+            J.each(object, function(i) {
+                result[i] = callback.call(this, i)
+            })
+
+            return result
+        }
+
         // #### Filter/Reject & Any/All
         ;(function() {
             function _invertPredicate(callback) {
@@ -195,16 +205,6 @@ this.J = (function() {
                 }
             }())
         }())
-
-        J.map = function(object, callback) {
-            var result = _isArrayLike(object) ? [] : {}
-
-            J.each(object, function(i) {
-                result[i] = callback.call(this, i)
-            })
-
-            return result
-        }
 
         J.merge = (function() {
             function _mergeArray(object, elements) {
@@ -333,12 +333,20 @@ this.J = (function() {
             return this
         }
 
+        J.prototype.map = function(callback) {
+            return J.map(this._elements, callback)
+        }
+
         J.prototype.filter = function(callback) {
             var result = new J()
 
             result._elements = J.filter(this._elements, callback)
 
             return result
+        }
+
+        J.prototype.reject = function(object, callback) {
+            return J.reject(this._elements, callback)
         }
 
         J.prototype.any =
@@ -349,10 +357,6 @@ this.J = (function() {
         J.prototype.all =
         J.prototype.every = function(callback) {
             return J.all(this._elements, callback)
-        }
-
-        J.prototype.map = function(callback) {
-            return J.map(this._elements, callback)
         }
     }())
 
