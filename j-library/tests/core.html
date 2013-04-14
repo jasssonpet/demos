@@ -48,17 +48,28 @@
 
         // console.log(J('p').hasClass('testClass'))
 
-        console.log(J('p').map(function() {
-            return J(this).data('test')
-        }))
+        // console.log(J('p').parent().size())
 
-        var paragraphs = J('p')
+        // J('body').prepend(J('<p />').text('Previous paragraph.'))
+        // J('body').append(J('<p />').text('Next paragraph.'))
 
-        console.log(paragraphs.filter(function() {
-            return J(this).data('test') === 'string'
-        }).addClass('c1'))
+        // J('p').before(J('<h5 />').text('heading before'))
+        // J('p').after(J('<h5 />').text('heading after'))
 
-        paragraphs.addClass('c2')
+        // J('<h5 />').text('heading before').insertBefore(J('p'))
+        // J('<h5 />').text('heading after').insertAfter(J('p'))
+
+        // console.log(J('p').map(function() {
+        //     return J(this).data('test')
+        // }))
+
+        // var paragraphs = J('p')
+
+        // console.log(paragraphs.filter(function() {
+        //     return J(this).data('test') === 'string'
+        // }).addClass('c1').size())
+
+        // paragraphs.addClass('c2')
 
         // console.log(J('p').get())
         // console.log(J('p').get(1))
@@ -88,9 +99,6 @@
         // J('p').click(function(e) {
         //     console.log(this, e)
         // })
-
-        // J('body').prepend(J('<p />').text('Previous paragraph.'))
-        // J('body').append(J('<p />').text('Next paragraph.'))
 
         // J('p').each(function(i) {
         //     J(this).attr('id', 'paragraph-' + i)

@@ -7,6 +7,8 @@
 
 /*jshint laxcomma: true, asi: true, curly: false, eqnull: true, bitwise: false */
 
+// TODO: Remove elements array and use push
+
 // # J library
 
 this.J = (function() {
@@ -414,6 +416,9 @@ this.J = (function() {
         var pairedMethods =
             { 'prepend': 'prependTo'
             , 'append' : 'appendTo'
+
+            , 'before': 'insertBefore'
+            , 'after' : 'insertAfter'
         }
 
         J.each(pairedMethods, function(implementedMethod) {
@@ -429,7 +434,7 @@ this.J = (function() {
                 var parentElement = this
 
                 elements.each(function() {
-                    parentElement.insertBefore(this, parentElement.firstChild)
+                    parentElement.insertBefore(this.cloneNode(true), parentElement.firstChild)
                 })
             })
         }
@@ -439,9 +444,39 @@ this.J = (function() {
                 var parentElement = this
 
                 elements.each(function() {
-                    parentElement.appendChild(this)
+                    parentElement.appendChild(this.cloneNode(true))
                 })
             })
+        }
+
+        J.prototype.before = function(elements) {
+            return this.each(function() {
+                var element = this
+
+                elements.each(function() {
+                    element.parentNode.insertBefore(this.cloneNode(true), element)
+                })
+            })
+        }
+
+        J.prototype.after = function(elements) {
+            return this.each(function() {
+                var element = this
+
+                elements.each(function() {
+                    element.parentNode.insertBefore(this.cloneNode(true), element.nextSibling)
+                })
+            })
+        }
+
+        J.prototype.parent = function() {
+            var result = new J()
+
+            result._elements = J.uniq(this.map(function() {
+                return this.parentNode
+            }))
+
+            return result
         }
 
         J.prototype.remove = function() {
