@@ -127,34 +127,73 @@ this.J = (function() {
             }
         }())
 
-        J.filter = (function() {
-            function _filterArray(object, callback) {
-                var result = []
-
-                J.each(object, function(i) {
-                    if (callback.call(this, i))
-                        result.push(this)
-                })
-
-                return result
+        // #### Filter/Reject & Any/All
+        ;(function() {
+            function _invertPredicate(callback) {
+                return function() {
+                    return !callback.apply(this, arguments)
+                }
             }
 
-            function _filterObject(object, callback) {
-                var result = {}
+            J.filter = (function() {
+                function _filterArray(object, callback) {
+                    var result = []
 
-                J.each(object, function(i) {
-                    if (callback.call(this, i))
-                        result[i] = this
-                })
+                    J.each(object, function(i) {
+                        if (callback.call(this, i))
+                            result.push(this)
+                    })
 
-                return result
+                    return result
+                }
+
+                function _filterObject(object, callback) {
+                    var result = {}
+
+                    J.each(object, function(i) {
+                        if (callback.call(this, i))
+                            result[i] = this
+                    })
+
+                    return result
+                }
+
+                return function(object, callback) {
+                    return _isArrayLike(object) ?
+                        _filterArray(object, callback) :
+                        _filterObject(object, callback)
+                }
+            }())
+
+            J.reject = function(object, callback) {
+                return J.filter(object, _invertPredicate(callback))
             }
 
-            return function(object, callback) {
-                return _isArrayLike(object) ?
-                    _filterArray(object, callback) :
-                    _filterObject(object, callback)
-            }
+            ;(function() {
+                function _anyAll(object, callback, start) {
+                    var result = start
+
+                    J.each(object, function(i) {
+                        if (callback.call(this, i)) {
+                            result = !result
+
+                            return false
+                        }
+                    })
+
+                    return result
+                }
+
+                J.any =
+                J.some = function(object, callback) {
+                    return _anyAll(object, callback, false)
+                }
+
+                J.all =
+                J.every = function(object, callback) {
+                    return _anyAll(object, _invertPredicate(callback), true)
+                }
+            }())
         }())
 
         J.map = function(object, callback) {
@@ -166,39 +205,6 @@ this.J = (function() {
 
             return result
         }
-
-        // #### Any/All
-        ;(function() {
-            function _invertPredicate(callback) {
-                return function() {
-                    return !callback.apply(this, arguments)
-                }
-            }
-
-            function _anyAll(object, callback, start) {
-                var result = start
-
-                J.each(object, function(i) {
-                    if (callback.call(this, i)) {
-                        result = !result
-
-                        return false
-                    }
-                })
-
-                return result
-            }
-
-            J.any =
-            J.some = function(object, callback) {
-                return _anyAll(object, callback, false)
-            }
-
-            J.all =
-            J.every = function(object, callback) {
-                return _anyAll(object, _invertPredicate(callback), true)
-            }
-        }())
 
         J.merge = (function() {
             function _mergeArray(object, elements) {
@@ -335,10 +341,6 @@ this.J = (function() {
             return result
         }
 
-        J.prototype.map = function(callback) {
-            return J.map(this._elements, callback)
-        }
-
         J.prototype.any =
         J.prototype.some = function(callback) {
             return J.some(this._elements, callback)
@@ -347,6 +349,10 @@ this.J = (function() {
         J.prototype.all =
         J.prototype.every = function(callback) {
             return J.all(this._elements, callback)
+        }
+
+        J.prototype.map = function(callback) {
+            return J.map(this._elements, callback)
         }
     }())
 
