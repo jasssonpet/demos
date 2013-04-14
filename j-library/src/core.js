@@ -502,12 +502,6 @@ this.J = (function() {
             })
         }
 
-        function _removeData(self, key) {
-            return self.each(function() {
-                _setDataProperty(this, key, undefined)
-            })
-        }
-
         J.prototype.data = function(key, value) {
             return arguments.length === 1 ?
                 _getData(this, key) :
@@ -515,7 +509,7 @@ this.J = (function() {
         }
 
         J.prototype.removeData = function(key) {
-            return _removeData(this, key)
+            return this.data(key, undefined)
         }
     }())
 
