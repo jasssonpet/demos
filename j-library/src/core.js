@@ -7,8 +7,6 @@
 
 /*jshint laxcomma: true, asi: true, curly: false, eqnull: true, bitwise: false */
 
-// TODO: Remove elements array and use push
-
 // # J library
 
 this.J = (function() {
@@ -26,7 +24,7 @@ this.J = (function() {
         }
 
         function _htmlElementConstructor(htmlElement) {
-            this._elements.push(htmlElement)
+            this.push(htmlElement)
 
             return this
         }
@@ -41,10 +39,11 @@ this.J = (function() {
 
         function _selectorConstructor(selector, context) {
             var self = this
-              , contextElements = context && context._elements || [document.documentElement]
 
-            J.each(contextElements, function() {
-                J.merge(self._elements, this.querySelectorAll(selector))
+            context = context || [document.documentElement]
+
+            J.each(context, function() {
+                J.merge(self, this.querySelectorAll(selector))
             })
 
             return this
@@ -54,7 +53,7 @@ this.J = (function() {
             if (!(this instanceof J))
                 return new J(selector, context)
 
-            this._elements = []
+            this.length = 0
 
             if (selector == null)
                 return _defaultConstructor.call(this)
@@ -100,7 +99,7 @@ this.J = (function() {
     // ### Array-like and Object Manipulation
     ;(function() {
         function _isArrayLike() {
-            return !!this.length
+            return this.length === +this.length
         }
 
         J.each = (function() {
@@ -304,6 +303,12 @@ this.J = (function() {
         })
     }
 
+    J.toArray = function(object) {
+        return J.map(object, function() {
+            return this
+        })
+    }
+
     // ### Random Generators
 
     J.random = function(min, maxInclusive) {
@@ -334,17 +339,34 @@ this.J = (function() {
         return +new Date()
     }
 
+    // ### Elements manipulation
+    ;(function() {
+        J.prototype.push = function(element) {
+            this[this.length++] = element
+        }
+
+        J.prototype.get = function(index) {
+            return arguments.length === 0 ?
+                J.toArray(this) :
+                this[index]
+        }
+
+        J.prototype.size = function() {
+            return this.length
+        }
+    }())
+
     // ## Prototype
 
     // ### Elements higher-order functions
-    // Example: J.prototype.filter(callback) = J.filter(this._elements, callback)
+    // Example: J.prototype.filter(callback) = J.filter(this, callback)
     ;(function() {
         function _extendProto(methodNames, resultFunction) {
             J.each(methodNames, function() {
                 var methodName = this
 
                 J.prototype[methodName] = function() {
-                    var methodArguments = J.merge([this._elements], arguments)
+                    var methodArguments = J.merge([this], arguments)
 
                       , returnedValue = J[methodName].apply(this, methodArguments)
 
@@ -365,11 +387,7 @@ this.J = (function() {
             var methodNames = ['filter', 'where', 'reject']
 
             _extendProto(methodNames, function(returnedValue) {
-                var result = new J()
-
-                result._elements = returnedValue
-
-                return result
+                return J.merge(new J(), returnedValue)
             })
         }())
 
@@ -380,19 +398,6 @@ this.J = (function() {
                 return returnedValue
             })
         }())
-    }())
-
-    // ### Elements manipulation
-    ;(function() {
-        J.prototype.get = function(index) {
-            return index == null ?
-                this._elements :
-                this._elements[index]
-        }
-
-        J.prototype.size = function() {
-            return this._elements.length
-        }
     }())
 
     // ### Events
@@ -451,37 +456,43 @@ this.J = (function() {
 
             J.prototype.prepend = function(elements) {
                 return _eachEach.call(this, elements, function(newElement) {
-                    this.insertBefore(newElement.cloneNode(true), this.firstChild)
+                    var cloned = newElement.cloneNode(true)
+
+                    this.insertBefore(cloned, this.firstChild)
                 })
             }
 
             J.prototype.append = function(elements) {
                 return _eachEach.call(this, elements, function(newElement) {
-                    this.appendChild(newElement.cloneNode(true))
+                    var cloned = newElement.cloneNode(true)
+
+                    this.appendChild(cloned)
                 })
             }
 
             J.prototype.before = function(elements) {
                 return _eachEach.call(this, elements, function(newElement) {
-                    this.parentNode.insertBefore(newElement.cloneNode(true), this)
+                    var cloned = newElement.cloneNode(true)
+
+                    this.parentNode.insertBefore(cloned, this)
                 })
             }
 
             J.prototype.after = function(elements) {
                 return _eachEach.call(this, elements, function(newElement) {
-                    this.parentNode.insertBefore(newElement.cloneNode(true), this.nextSibling)
+                    var cloned = newElement.cloneNode(true)
+
+                    this.parentNode.insertBefore(cloned, this.nextSibling)
                 })
             }
         }())
 
         J.prototype.parent = function() {
-            var result = new J()
+            var parents = this.map(function(prop) {
+                return prop.parentNode
+            })
 
-            result._elements = J.uniq(this.map(function() {
-                return this.parentNode
-            }))
-
-            return result
+            return J.merge(new J(), J.uniq(parents))
         }
 
         J.prototype.remove = function() {
@@ -494,7 +505,7 @@ this.J = (function() {
     // ### Attributes
     ;(function() {
         function _getAttribute(attribute) {
-            var firstElement = this._elements[0]
+            var firstElement = this[0]
 
             return firstElement.getAttribute(attribute)
         }
@@ -565,7 +576,7 @@ this.J = (function() {
         }
 
         function _getData(key) {
-            var firstElement = this._elements[0]
+            var firstElement = this[0]
 
             return _hasDataProperty.call(firstElement, key) ?
                 _getDataProperty.call(firstElement, key) :
@@ -641,7 +652,7 @@ this.J = (function() {
         }())
 
         function _getCss(property) {
-            var firstElement = this._elements[0]
+            var firstElement = this[0]
 
             return getComputedStyle(firstElement)[property]
         }
@@ -692,7 +703,7 @@ this.J = (function() {
     // ### Text
     ;(function() {
         function _getText() {
-            var firstElement = this._elements[0]
+            var firstElement = this[0]
 
             return firstElement.textContent
         }
@@ -713,7 +724,7 @@ this.J = (function() {
     // ### HTML
     ;(function() {
         function _getHtml() {
-            var firstElement = this._elements[0]
+            var firstElement = this[0]
 
             return firstElement.innerHTML
         }
@@ -763,12 +774,17 @@ this.J = (function() {
     //     }
 
     //     // This should be the last method
-    //     J.prototype = J.map(J.prototype, function(/* methodName */) {
+    //     J.prototype = J.map(J.prototype, function(methodName) {
     //         var methodBody = this
+
+    //         if (methodName === 'push')
+    //             return this
 
     //         return function() {
     //             var self = this
     //               , methodArguments = arguments
+
+    //             // console.log(this._delayQueue)
 
     //             this._delayQueue.push(function() {
     //                 methodBody.apply(self, methodArguments)
@@ -785,6 +801,8 @@ this.J = (function() {
 
     // return function() {
     //     var result = J.apply(this, arguments)
+
+    //     console.log(result)
 
     //     result._delayQueue = []
 
