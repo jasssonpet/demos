@@ -68,6 +68,7 @@ var J = (function() {
     // ## Static Methods
 
     // ### String Manipulation
+
     J.repeat = function(string, times) {
         var result = ''
 
@@ -77,6 +78,7 @@ var J = (function() {
         return result
     }
 
+    // #### PadLeft/PadRight
     ;(function() {
         function _makeMissing(string, length, character) {
             return J.repeat(character || ' ', length - string.length)
@@ -209,6 +211,7 @@ var J = (function() {
     }())
 
     // ### Array Manipulation
+
     J.shuffle = (function() {
         function _swap(array, i, j) {
             array[i] = [array[j], array[j] = array[i]][0]
@@ -224,6 +227,41 @@ var J = (function() {
         }
     }())
 
+    J.contains = function(array, element) {
+        return array.indexOf(element) !== -1
+    }
+
+    J.binarySearch = function(array, element) {
+        var left = 0
+          , middle
+          , right = array.length - 1
+
+        while (left <= right) {
+            middle = left + ((right - left) >>> 1)
+
+            if (array[middle] < element)
+                left = middle + 1
+
+            else if (array[middle] > element)
+                right = middle - 1
+
+            else return middle
+        }
+
+        return -1
+    }
+
+    J.uniq = function(array) {
+        var result = []
+
+        J.each(array, function() {
+            if (!J.contains(result, this))
+                result.push(this)
+        })
+
+        return result
+    }
+
     J.range = function(min, maxInclusive) {
         if (arguments.length === 1) return J.range(0, min)
 
@@ -235,6 +273,7 @@ var J = (function() {
     }
 
     // ### Random Generators
+
     J.random = function(min, maxInclusive) {
         if (arguments.length === 1) return J.random(0, min)
 
@@ -244,7 +283,7 @@ var J = (function() {
     }
 
     J.randomByte = function() {
-        var decimal = J.random(255)
+        var decimal = J.random(1 << 8)
 
         return J.padLeft(decimal.toString(16), 2, '0').toUpperCase()
     }
@@ -258,13 +297,14 @@ var J = (function() {
     }
 
     // ### Utilities
+
     J.now = function() {
         return +new Date()
     }
 
     // ## Prototype
 
-    // ### Element manipulation
+    // ### Elements higher-order functions
     ;(function() {
         J.prototype.each = function(callback) {
             J.each(this._elements, callback)
@@ -293,16 +333,23 @@ var J = (function() {
         J.prototype.every = function(callback) {
             return J.all(this._elements, callback)
         }
+    }())
 
+    // ### Elements manipulation
+    ;(function() {
         J.prototype.get = function(index) {
             return index == null ?
                 this._elements :
                 this._elements[index]
         }
+
+        J.prototype.size = function() {
+            return this._elements.length
+        }
     }())
 
     // ### Events
-    ;(function () {
+    ;(function() {
         J.prototype.on = function(event, callback) {
             return this.each(function() {
                 this.addEventListener(event, callback)
@@ -598,36 +645,57 @@ var J = (function() {
     }())
 
     // This should be the last section.
-    // ;(function() {
-    //     J.prototype = J.map(J.prototype, function() {
-    //         var methodBody = this
+    ;(function() {
+        function _tryDequeue(self) {
+            var queue = self._delayQueue
 
-    //         return function() {
-    //             var self = this
-    //               , methodArguments = arguments
+            if (!queue.inProgress && queue.length)
+                queue.shift()()
+        }
 
-    //             this._delayQueue.push(function() {
-    //                 methodBody.apply(self, methodArguments)
-    //             })
+        J.prototype.log = function() {
+            console.log(~~(J.now() / 1000) % 100)
 
-    //             this._delayQueue.shift()()
+            return this
+        }
 
-    //             return this
-    //         }
-    //     })
+        J.prototype = J.map(J.prototype, function(/* methodName */) {
+            var methodBody = this
 
-    //     J.prototype.delay = function(time) {
-    //         var self = this
+            return function() {
+                var self = this
+                  , methodArguments = arguments
 
-    //         this._delayQueue.push(function() {
-    //             setTimeout(function() {
-    //                 self._delayQueue.shift()()
-    //             }, time)
-    //         })
+                this._delayQueue.push(function() {
+                    methodBody.apply(self, methodArguments)
 
-    //         return this
-    //     }
-    // }())
+                    _tryDequeue(self)
+                })
+
+                _tryDequeue(this)
+
+                return this
+            }
+        })
+
+        J.prototype.delay = function(time) {
+            var self = this
+
+            this._delayQueue.push(function() {
+                self._delayQueue.inProgress = true
+
+                setTimeout(function() {
+                    self._delayQueue.inProgress = false
+
+                    _tryDequeue(self)
+                }, time)
+            })
+
+            _tryDequeue(this)
+
+            return this
+        }
+    }())
 
     return J
 }())
