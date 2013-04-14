@@ -145,39 +145,41 @@ this.J = (function() {
                 }
             }
 
-            J.filter = (function() {
-                function _filterArray(object, callback) {
-                    var result = []
+            ;(function() {
+                J.filter = (function() {
+                    function _filterArray(object, callback) {
+                        var result = []
 
-                    J.each(object, function(i) {
-                        if (callback.call(this, i))
-                            result.push(this)
-                    })
+                        J.each(object, function(i) {
+                            if (callback.call(this, i))
+                                result.push(this)
+                        })
 
-                    return result
-                }
+                        return result
+                    }
 
-                function _filterObject(object, callback) {
-                    var result = {}
+                    function _filterObject(object, callback) {
+                        var result = {}
 
-                    J.each(object, function(i) {
-                        if (callback.call(this, i))
-                            result[i] = this
-                    })
+                        J.each(object, function(i) {
+                            if (callback.call(this, i))
+                                result[i] = this
+                        })
 
-                    return result
-                }
+                        return result
+                    }
 
-                return function(object, callback) {
-                    return _isArrayLike(object) ?
-                        _filterArray(object, callback) :
-                        _filterObject(object, callback)
+                    return function(object, callback) {
+                        return _isArrayLike(object) ?
+                            _filterArray(object, callback) :
+                            _filterObject(object, callback)
+                    }
+                }())
+
+                J.reject = function(object, callback) {
+                    return J.filter(object, _invertPredicate(callback))
                 }
             }())
-
-            J.reject = function(object, callback) {
-                return J.filter(object, _invertPredicate(callback))
-            }
 
             ;(function() {
                 function _anyAll(object, callback, start) {
