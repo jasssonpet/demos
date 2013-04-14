@@ -200,7 +200,6 @@ this.J = (function() {
             }
         }())
 
-        // **TODO**: Extend object
         J.merge = (function() {
             function _mergeArray(object, elements) {
                 J.each(elements, function() {
