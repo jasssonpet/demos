@@ -418,7 +418,9 @@ this.J = (function() {
     // ### Attributes
     ;(function() {
         function _getAttribute(self, attribute) {
-            return self._elements[0].getAttribute(attribute)
+            var firstElement = self._elements[0]
+
+            return firstElement.getAttribute(attribute)
         }
 
         function _setAttribute(self, attribute, value) {
@@ -487,11 +489,11 @@ this.J = (function() {
         }
 
         function _getData(self, key) {
-            var element = self._elements[0]
+            var firstElement = self._elements[0]
 
-            return _hasDataProperty(element, key) ?
-                _getDataProperty(element, key) :
-                _parseDataAttribute(element, key)
+            return _hasDataProperty(firstElement, key) ?
+                _getDataProperty(firstElement, key) :
+                _parseDataAttribute(firstElement, key)
         }
 
         function _setData(self, key, value) {
@@ -569,9 +571,9 @@ this.J = (function() {
         }())
 
         function _getCss(self, property) {
-            var el = self._elements[0]
+            var firstElement = self._elements[0]
 
-            return getComputedStyle(el)[property]
+            return getComputedStyle(firstElement)[property]
         }
 
         function _setCss(self, property, value) {
@@ -620,9 +622,9 @@ this.J = (function() {
     // ### Text
     ;(function() {
         function _getText(self) {
-            var el = self._elements[0]
+            var firstElement = self._elements[0]
 
-            return el.textContent
+            return firstElement.textContent
         }
 
         function _setText(self, text) {
@@ -641,9 +643,9 @@ this.J = (function() {
     // ### HTML
     ;(function() {
         function _getHtml(self) {
-            var el = self._elements[0]
+            var firstElement = self._elements[0]
 
-            return el.innerHTML
+            return firstElement.innerHTML
         }
 
         function _setHtml(self, html) {
