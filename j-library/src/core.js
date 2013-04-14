@@ -1,5 +1,5 @@
 /*!
- * J Library - https://github.com/jasssonpet/demos/blob/gh-pages/j-library/
+ * J Library - https://github.com/jasssonpet/demos/tree/gh-pages/j-library
  *
  * Copyright 2013 jasssonpet
  * Released under the MIT license
@@ -50,7 +50,6 @@ this.J = (function() {
                 return new J(selector, context)
 
             this._elements = []
-            this._delayQueue = []
 
             if (selector == null)
                 return _defaultConstructor(this)
@@ -661,9 +660,9 @@ this.J = (function() {
         }
     }())
 
-    // J('p').log().log().delay(1000).log().log().delay(1000).log().log()
+    // // J('p').log().log().delay(1000).log().log().delay(1000).log().log()
 
-    // This should be the last section.
+    // // This should be the last section.
     // ;(function() {
     //     function _tryDequeue(self) {
     //         var queue = self._delayQueue
@@ -712,6 +711,14 @@ this.J = (function() {
     //         }
     //     })
     // }())
+
+    // return function() {
+    //     var result = J.apply(this, arguments)
+
+    //     result._delayQueue = []
+
+    //     return result
+    // }
 
     return J
 }())
