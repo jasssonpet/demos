@@ -216,6 +216,32 @@ this.J = (function() {
             })
         }
 
+        J.pluck = function(object, property) {
+            return J.map(object, function() {
+                return this[property]
+            })
+        }
+
+        ;(function() {
+            function _minMax(callback) {
+                var result = callback()
+
+                J.each(this, function() {
+                    result = callback(this, result)
+                })
+
+                return result
+            }
+
+            J.min = function(object) {
+                return _minMax.call(object, Math.min)
+            }
+
+            J.max = function(object) {
+                return _minMax.call(object, Math.max)
+            }
+        }())
+
         J.merge = (function() {
             function _mergeArray(elements) {
                 var self = this
