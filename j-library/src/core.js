@@ -168,6 +168,7 @@ var J = (function() {
             return result
         }
 
+        // #### Any/All
         ;(function() {
             function _invertPredicate(callback) {
                 return function() {
@@ -201,13 +202,29 @@ var J = (function() {
         }())
 
         // **TODO**: Extend object
-        J.merge = function(self, elements) {
-            J.each(elements, function() {
-                self.push(this)
-            })
+        J.merge = (function() {
+            function _mergeArray(object, elements) {
+                J.each(elements, function() {
+                    object.push(this)
+                })
 
-            return self
-        }
+                return object
+            }
+
+            function _mergeObject(object, elements) {
+                J.each(elements, function(prop) {
+                    object[prop] = this
+                })
+
+                return object
+            }
+
+            return function(object, elements) {
+                return _isArrayLike(object) ?
+                    _mergeArray(object, elements) :
+                    _mergeObject(object, elements)
+            }
+        }())
     }())
 
     // ### Array Manipulation
