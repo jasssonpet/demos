@@ -475,51 +475,67 @@ this.J = (function() {
                     var parentElement = this
 
                     elements.each(function() {
-                        callback.call(parentElement, this)
+                        callback.call(parentElement, this.cloneNode(true))
                     })
                 })
             }
 
             J.prototype.prepend = function(elements) {
                 return _eachEach.call(this, elements, function(newElement) {
-                    var cloned = newElement.cloneNode(true)
-
-                    this.insertBefore(cloned, this.firstChild)
+                    this.insertBefore(newElement, this.firstChild)
                 })
             }
 
             J.prototype.append = function(elements) {
                 return _eachEach.call(this, elements, function(newElement) {
-                    var cloned = newElement.cloneNode(true)
-
-                    this.appendChild(cloned)
+                    this.appendChild(newElement)
                 })
             }
 
             J.prototype.before = function(elements) {
                 return _eachEach.call(this, elements, function(newElement) {
-                    var cloned = newElement.cloneNode(true)
-
-                    this.parentNode.insertBefore(cloned, this)
+                    this.parentNode.insertBefore(newElement, this)
                 })
             }
 
             J.prototype.after = function(elements) {
                 return _eachEach.call(this, elements, function(newElement) {
-                    var cloned = newElement.cloneNode(true)
-
-                    this.parentNode.insertBefore(cloned, this.nextSibling)
+                    this.parentNode.insertBefore(newElement, this.nextElementSibling)
                 })
             }
         }())
 
-        J.prototype.parent = function() {
-            var parents = this.map(function(prop) {
-                return prop.parentNode
-            })
+        ;(function() {
+            function _each(callback) {
+                var result = J.map(this, function() {
+                    return callback.call(this)
+                })
 
-            return J.merge(new J(), J.uniq(parents))
-        }
+                result = J.reject(result, function() {
+                    return this === null
+                })
+
+                return J.merge(new J(), result)
+            }
+
+            J.prototype.prev = function() {
+                return _each.call(this, function() {
+                    return this.previousElementSibling
+                })
+            }
+
+            J.prototype.next = function() {
+                return _each.call(this, function() {
+                    return this.nextElementSibling
+                })
+            }
+
+            J.prototype.parent = function() {
+                return _each.call(this, function() {
+                    return this.parentNode
+                })
+            }
+        }())
 
         J.prototype.remove = function() {
             return this.each(function() {

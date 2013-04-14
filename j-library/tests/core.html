@@ -15,7 +15,9 @@
 
 <body>
 
-    <p data-test='0'>Paragraph</p>
+    <div>
+        <p data-test='0'>Paragraph</p>
+    </div>
 
     <p data-test='123.5'>Paragraph</p>
     <p data-test='123'>Paragraph</p>
@@ -25,6 +27,7 @@
     <p data-test='{ "x": 1 }'>Paragraph</p>
     <p data-test='string'>Paragraph</p>
 
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="../src/core.js"></script>
     <script>
     ;(function() {
@@ -158,6 +161,10 @@
 
         // console.log(J.min({ x: 1, y: 2, z: 3 }))
         // console.log(J.max({ x: 1, y: 2, z: 3 }))
+
+        console.log(J('p').prev().next().get())
+
+        // console.log(J('body').next().get())
     }())
     </script>
 </body>
