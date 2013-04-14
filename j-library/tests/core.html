@@ -17,7 +17,6 @@
 
     <p data-test='0'>Paragraph</p>
 
-<!--
     <p data-test='123.5'>Paragraph</p>
     <p data-test='123'>Paragraph</p>
     <p class='testClass' data-test='null'>Paragraph</p>
@@ -25,7 +24,6 @@
     <p data-test='false'>Paragraph</p>
     <p data-test='{ "x": 1 }'>Paragraph</p>
     <p data-test='string'>Paragraph</p>
--->
 
     <script src="../src/core.js"></script>
     <script>
@@ -50,9 +48,17 @@
 
         // console.log(J('p').hasClass('testClass'))
 
-        // console.log(J('p').map(function() {
-        //     return J(this).data('test')
-        // }))
+        console.log(J('p').map(function() {
+            return J(this).data('test')
+        }))
+
+        var paragraphs = J('p')
+
+        console.log(paragraphs.filter(function() {
+            return J(this).data('test') === 'string'
+        }).addClass('c1'))
+
+        paragraphs.addClass('c2')
 
         // console.log(J('p').get())
         // console.log(J('p').get(1))

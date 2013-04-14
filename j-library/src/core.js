@@ -127,7 +127,8 @@ this.J = (function() {
             }
         }())
 
-        J.map = function(object, callback) {
+        J.map    =
+        J.select = function(object, callback) {
             var result = _isArrayLike(object) ? [] : {}
 
             J.each(object, function(i) {
@@ -146,7 +147,8 @@ this.J = (function() {
             }
 
             ;(function() {
-                J.filter = (function() {
+                J.filter =
+                J.where  = (function() {
                     function _filterArray(object, callback) {
                         var result = []
 
@@ -182,12 +184,13 @@ this.J = (function() {
             }())
 
             ;(function() {
-                function _anyAll(object, callback, start) {
-                    var result = start
+                J.any  =
+                J.some = function(object, callback) {
+                    var result = false
 
                     J.each(object, function(i) {
                         if (callback.call(this, i)) {
-                            result = !result
+                            result = true
 
                             return false
                         }
@@ -196,17 +199,18 @@ this.J = (function() {
                     return result
                 }
 
-                J.any  =
-                J.some = function(object, callback) {
-                    return _anyAll(object, callback, false)
-                }
-
                 J.all   =
                 J.every = function(object, callback) {
-                    return _anyAll(object, _invertPredicate(callback), true)
+                    return !J.any(object, _invertPredicate(callback))
                 }
             }())
         }())
+
+        J.contains = function(object, element) {
+            return J.any(object, function() {
+                return this === element
+            })
+        }
 
         J.merge = (function() {
             function _mergeArray(object, elements) {
@@ -249,10 +253,6 @@ this.J = (function() {
             return array
         }
     }())
-
-    J.contains = function(array, element) {
-        return array.indexOf(element) !== -1
-    }
 
     J.binarySearch = function(array, element) {
         var left = 0
@@ -329,37 +329,47 @@ this.J = (function() {
 
     // ### Elements higher-order functions
     ;(function() {
-        J.prototype.each = function(callback) {
-            J.each(this._elements, callback)
+        function _extendProto(methodNames, resultFunction) {
+            J.each(methodNames, function() {
+                var methodName = this
 
-            return this
+                J.prototype[methodName] = function() {
+                    var methodArguments = J.merge([this._elements], arguments)
+
+                      , returnedValue = J[methodName].apply(this, methodArguments)
+
+                    return resultFunction.call(this, returnedValue)
+                }
+            })
         }
 
-        J.prototype.map = function(callback) {
-            return J.map(this._elements, callback)
-        }
+        ;(function() {
+            var methodNames = ['each']
 
-        J.prototype.filter = function(callback) {
-            var result = new J()
+            _extendProto(methodNames, function() {
+                return this
+            })
+        }())
 
-            result._elements = J.filter(this._elements, callback)
+        ;(function() {
+            var methodNames = ['filter', 'where', 'reject']
 
-            return result
-        }
+            _extendProto(methodNames, function(returnedValue) {
+                var result = new J()
 
-        J.prototype.reject = function(object, callback) {
-            return J.reject(this._elements, callback)
-        }
+                result._elements = returnedValue
 
-        J.prototype.any  =
-        J.prototype.some = function(callback) {
-            return J.some(this._elements, callback)
-        }
+                return result
+            })
+        }())
 
-        J.prototype.all   =
-        J.prototype.every = function(callback) {
-            return J.all(this._elements, callback)
-        }
+        ;(function() {
+            var methodNames = ['map', 'select', 'any', 'some', 'all', 'every']
+
+            _extendProto(methodNames, function(returnedValue) {
+                return returnedValue
+            })
+        }())
     }())
 
     // ### Elements manipulation
@@ -400,6 +410,19 @@ this.J = (function() {
 
     // ### DOM Manipulation
     ;(function() {
+        var mirroredMethodNames =
+            { 'prepend': 'prependTo'
+            , 'append' : 'appendTo'
+        }
+
+        J.each(mirroredMethodNames, function(implementedMethodName) {
+            J.prototype[this] = function(elements) {
+                elements[implementedMethodName](this)
+
+                return this
+            }
+        })
+
         J.prototype.prepend = function(elements) {
             return this.each(function() {
                 var parentElement = this
