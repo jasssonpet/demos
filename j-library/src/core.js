@@ -196,12 +196,12 @@ this.J = (function() {
                     return result
                 }
 
-                J.any =
+                J.any  =
                 J.some = function(object, callback) {
                     return _anyAll(object, callback, false)
                 }
 
-                J.all =
+                J.all   =
                 J.every = function(object, callback) {
                     return _anyAll(object, _invertPredicate(callback), true)
                 }
@@ -351,12 +351,12 @@ this.J = (function() {
             return J.reject(this._elements, callback)
         }
 
-        J.prototype.any =
+        J.prototype.any  =
         J.prototype.some = function(callback) {
             return J.some(this._elements, callback)
         }
 
-        J.prototype.all =
+        J.prototype.all   =
         J.prototype.every = function(callback) {
             return J.all(this._elements, callback)
         }
