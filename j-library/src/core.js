@@ -127,7 +127,7 @@ this.J = (function() {
             }
         }())
 
-        J.map    =
+        J.map =
         J.select = function(object, callback) {
             var result = _isArrayLike(object) ? [] : {}
 
@@ -148,7 +148,7 @@ this.J = (function() {
 
             ;(function() {
                 J.filter =
-                J.where  = (function() {
+                J.where = (function() {
                     function _filterArray(object, callback) {
                         var result = []
 
@@ -184,7 +184,7 @@ this.J = (function() {
             }())
 
             ;(function() {
-                J.any  =
+                J.any =
                 J.some = function(object, callback) {
                     var result = false
 
@@ -199,7 +199,7 @@ this.J = (function() {
                     return result
                 }
 
-                J.all   =
+                J.all =
                 J.every = function(object, callback) {
                     return !J.any(object, _invertPredicate(callback))
                 }
@@ -328,6 +328,7 @@ this.J = (function() {
     // ## Prototype
 
     // ### Elements higher-order functions
+    // Example: J.prototype.filter(callback) = J.filter(this._elements, callback)
     ;(function() {
         function _extendProto(methodNames, resultFunction) {
             J.each(methodNames, function() {
@@ -410,14 +411,14 @@ this.J = (function() {
 
     // ### DOM Manipulation
     ;(function() {
-        var mirroredMethodNames =
+        var pairedMethods =
             { 'prepend': 'prependTo'
             , 'append' : 'appendTo'
         }
 
-        J.each(mirroredMethodNames, function(implementedMethodName) {
+        J.each(pairedMethods, function(implementedMethod) {
             J.prototype[this] = function(elements) {
-                elements[implementedMethodName](this)
+                elements[implementedMethod](this)
 
                 return this
             }
