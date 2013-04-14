@@ -413,61 +413,59 @@ this.J = (function() {
 
     // ### DOM Manipulation
     ;(function() {
-        var pairedMethods =
-            { 'prepend': 'prependTo'
-            , 'append' : 'appendTo'
+        ;(function() {
+            var pairedMethods =
+                { 'prepend': 'prependTo'
+                , 'append' : 'appendTo'
 
-            , 'before': 'insertBefore'
-            , 'after' : 'insertAfter'
-        }
-
-        J.each(pairedMethods, function(implementedMethod) {
-            J.prototype[this] = function(elements) {
-                elements[implementedMethod](this)
-
-                return this
+                , 'before': 'insertBefore'
+                , 'after' : 'insertAfter'
             }
-        })
 
-        J.prototype.prepend = function(elements) {
-            return this.each(function() {
-                var parentElement = this
+            J.each(pairedMethods, function(implementedMethod) {
+                J.prototype[this] = function(elements) {
+                    elements[implementedMethod](this)
 
-                elements.each(function() {
-                    parentElement.insertBefore(this.cloneNode(true), parentElement.firstChild)
-                })
+                    return this
+                }
             })
-        }
+        }())
 
-        J.prototype.append = function(elements) {
-            return this.each(function() {
-                var parentElement = this
+        ;(function() {
+            function _eachEach(self, elements, callback) {
+                return self.each(function() {
+                    var parentElement = this
 
-                elements.each(function() {
-                    parentElement.appendChild(this.cloneNode(true))
+                    elements.each(function() {
+                        callback(parentElement, this)
+                    })
                 })
-            })
-        }
+            }
 
-        J.prototype.before = function(elements) {
-            return this.each(function() {
-                var element = this
-
-                elements.each(function() {
-                    element.parentNode.insertBefore(this.cloneNode(true), element)
+            J.prototype.prepend = function(elements) {
+                return _eachEach(this, elements, function(parentElement, newElement) {
+                    parentElement.insertBefore(newElement.cloneNode(true), parentElement.firstChild)
                 })
-            })
-        }
+            }
 
-        J.prototype.after = function(elements) {
-            return this.each(function() {
-                var element = this
-
-                elements.each(function() {
-                    element.parentNode.insertBefore(this.cloneNode(true), element.nextSibling)
+            J.prototype.append = function(elements) {
+                return _eachEach(this, elements, function(parentElement, newElement) {
+                    parentElement.appendChild(newElement.cloneNode(true))
                 })
-            })
-        }
+            }
+
+            J.prototype.before = function(elements) {
+                return _eachEach(this, elements, function(parentElement, newElement) {
+                    parentElement.parentNode.insertBefore(newElement.cloneNode(true), parentElement)
+                })
+            }
+
+            J.prototype.after = function(elements) {
+                return _eachEach(this, elements, function(parentElement, newElement) {
+                    parentElement.parentNode.insertBefore(newElement.cloneNode(true), parentElement.nextSibling)
+                })
+            }
+        }())
 
         J.prototype.parent = function() {
             var result = new J()
