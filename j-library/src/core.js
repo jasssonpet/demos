@@ -84,57 +84,57 @@ this.J = (function() {
 
     // #### PadLeft/PadRight
     ;(function() {
-        function _makeMissing(string, length, character) {
-            return J.repeat(character || ' ', length - string.length)
+        function _makeMissing(length, character) {
+            return J.repeat(character || ' ', length - this.length)
         }
 
         J.padLeft = function(string, length, character) {
-            return _makeMissing(string, length, character) + string
+            return _makeMissing.call(string, length, character) + string
         }
 
         J.padRight = function(string, length, character) {
-            return string + _makeMissing(string, length, character)
+            return string + _makeMissing.call(string, length, character)
         }
     }())
 
     // ### Array-like and Object Manipulation
     ;(function() {
-        function _isArrayLike(object) {
-            return !!object.length
+        function _isArrayLike() {
+            return !!this.length
         }
 
         J.each = (function() {
-            function _eachArray(object, callback) {
+            function _eachArray(callback) {
                 var i
 
-                for (i = 0; i < object.length; i++)
-                    if (callback.call(object[i], i) === false)
+                for (i = 0; i < this.length; i++)
+                    if (callback.call(this[i], i) === false)
                         break
 
-                return object
+                return this
             }
 
-            function _eachObject(object, callback) {
+            function _eachObject(callback) {
                 var i
 
-                for (i in object)
-                    if (object.hasOwnProperty(i))
-                        if (callback.call(object[i], i) === false)
+                for (i in this)
+                    if (this.hasOwnProperty(i))
+                        if (callback.call(this[i], i) === false)
                             break
 
-                return object
+                return this
             }
 
             return function(object, callback) {
-                return _isArrayLike(object) ?
-                    _eachArray(object, callback) :
-                    _eachObject(object, callback)
+                return _isArrayLike.call(object) ?
+                    _eachArray.call(object, callback) :
+                    _eachObject.call(object, callback)
             }
         }())
 
         J.map =
         J.select = function(object, callback) {
-            var result = _isArrayLike(object) ? [] : {}
+            var result = _isArrayLike.call(object) ? [] : {}
 
             J.each(object, function(i) {
                 result[i] = callback.call(this, i)
@@ -154,10 +154,10 @@ this.J = (function() {
             ;(function() {
                 J.filter =
                 J.where = (function() {
-                    function _filterArray(object, callback) {
+                    function _filterArray(callback) {
                         var result = []
 
-                        J.each(object, function(i) {
+                        J.each(this, function(i) {
                             if (callback.call(this, i))
                                 result.push(this)
                         })
@@ -165,10 +165,10 @@ this.J = (function() {
                         return result
                     }
 
-                    function _filterObject(object, callback) {
+                    function _filterObject(callback) {
                         var result = {}
 
-                        J.each(object, function(i) {
+                        J.each(this, function(i) {
                             if (callback.call(this, i))
                                 result[i] = this
                         })
@@ -177,9 +177,9 @@ this.J = (function() {
                     }
 
                     return function(object, callback) {
-                        return _isArrayLike(object) ?
-                            _filterArray(object, callback) :
-                            _filterObject(object, callback)
+                        return _isArrayLike.call(object) ?
+                            _filterArray.call(object, callback) :
+                            _filterObject.call(object, callback)
                     }
                 }())
 
@@ -218,26 +218,30 @@ this.J = (function() {
         }
 
         J.merge = (function() {
-            function _mergeArray(object, elements) {
+            function _mergeArray(elements) {
+                var self = this
+
                 J.each(elements, function() {
-                    object.push(this)
+                    self.push(this)
                 })
 
-                return object
+                return this
             }
 
-            function _mergeObject(object, elements) {
+            function _mergeObject(elements) {
+                var self = this
+
                 J.each(elements, function(prop) {
-                    object[prop] = this
+                    self[prop] = this
                 })
 
-                return object
+                return this
             }
 
             return function(object, elements) {
-                return _isArrayLike(object) ?
-                    _mergeArray(object, elements) :
-                    _mergeObject(object, elements)
+                return _isArrayLike.call(object) ?
+                    _mergeArray.call(object, elements) :
+                    _mergeObject.call(object, elements)
             }
         }())
     }())
@@ -520,24 +524,24 @@ this.J = (function() {
 
     // ### Data
     ;(function() {
-        function _hasDataProperty(element, key) {
-            return element._data && (key in element._data)
+        function _hasDataProperty(key) {
+            return this._data && (key in this._data)
         }
 
-        function _getDataProperty(element, key) {
-            return element._data[key]
+        function _getDataProperty(key) {
+            return this._data[key]
         }
 
-        function _setDataProperty(element, key, value) {
-            element._data = element._data || {}
+        function _setDataProperty(key, value) {
+            this._data = this._data || {}
 
-            element._data[key] = value
+            this._data[key] = value
         }
 
-        function _parseDataAttribute(element, key) {
-            var valueString = element.dataset[key]
+        function _parseDataAttribute(key) {
+            var valueString = this.dataset[key]
 
-            if (!(key in element.dataset))
+            if (!(key in this.dataset))
                 return undefined
 
             if (parseFloat(valueString).toString() === valueString)
@@ -563,14 +567,14 @@ this.J = (function() {
         function _getData(key) {
             var firstElement = this._elements[0]
 
-            return _hasDataProperty(firstElement, key) ?
-                _getDataProperty(firstElement, key) :
-                _parseDataAttribute(firstElement, key)
+            return _hasDataProperty.call(firstElement, key) ?
+                _getDataProperty.call(firstElement, key) :
+                _parseDataAttribute.call(firstElement, key)
         }
 
         function _setData(key, value) {
             return this.each(function() {
-                _setDataProperty(this, key, value)
+                _setDataProperty.call(this, key, value)
             })
         }
 
