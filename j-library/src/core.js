@@ -661,8 +661,9 @@ this.J = (function() {
         }
     }())
 
-    // This should be the last section.
     // J('p').log().log().delay(1000).log().log().delay(1000).log().log()
+
+    // This should be the last section.
     // ;(function() {
     //     function _tryDequeue(self) {
     //         var queue = self._delayQueue
