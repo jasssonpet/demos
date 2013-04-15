@@ -53,7 +53,7 @@
 
         // console.log(J('p').hasClass('testClass'))
 
-        // console.log(J('p').parent().size())
+        console.log(J('p').parent().size())
 
         // J('body').prepend(J('<p />').text('Previous paragraph.'))
         // J('body').append(J('<p />').text('Next paragraph.'))
@@ -111,13 +111,12 @@
         //     console.log(i, this)
         // })
 
-        // J.each({a: 0, b: 1, c: 2}, function(prop, val) {
-        //     console.log(prop, val)
+        // J.each({a: 0, b: 1, c: 2}, function(prop) {
+        //     console.log(prop, this)
         // })
 
         // console.log(J('p').text())
         // J('p').text('paragraph')
-
 
         // J('p').each(function(i) {
         //     J(this).attr('id', 'paragraph-' + i)
@@ -148,13 +147,15 @@
         //     return this + 1
         // }))
 
-        // console.log(J.filter([1, 2, 3, 4], function(i) {
+        // console.log(J.filter([1, 2, 3, 4], function() {
         //     return this % 2
         // }))
 
         // console.log(J.filter({a: 0, b: 1, c: 2}, function(key) {
         //     return this === 2 || key === 'a'
         // }))
+
+        // console.log(J.pluck([[0, 1], [0, 2]], 1))
 
         // J('p').log().log().delay(1000).log().log().delay(1000).log().log()
 

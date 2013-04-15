@@ -109,6 +109,18 @@ this.J = (function() {
             return 'length' in this
         }
 
+        function _initialize() {
+            return _isArrayLike.call(this) ?
+                [] :
+                {}
+        }
+
+        function _insert(property, value) {
+            return _isArrayLike.call(this) ?
+                this.push(value) :
+                this[property] = value
+        }
+
         J.each = (function() {
             function _eachArray(callback) {
                 var i
@@ -140,10 +152,12 @@ this.J = (function() {
 
         J.map =
         J.select = function(object, callback) {
-            var result = _isArrayLike.call(object) ? [] : {}
+            var result = _initialize.call(object)
 
             J.each(object, function(i) {
-                result[i] = callback.call(this, i)
+                var mapped = callback.call(this, i)
+
+                _insert.call(result, i, mapped)
             })
 
             return result
@@ -159,35 +173,16 @@ this.J = (function() {
 
             ;(function() {
                 J.filter =
-                J.where = (function() {
-                    function _filterArray(callback) {
-                        var result = []
+                J.where = function(object, callback) {
+                    var result = _initialize.call(object)
 
-                        J.each(this, function(i) {
-                            if (callback.call(this, i))
-                                result.push(this)
-                        })
+                    J.each(object, function(i) {
+                        if (callback.call(this, i))
+                            _insert.call(result, i, this)
+                    })
 
-                        return result
-                    }
-
-                    function _filterObject(callback) {
-                        var result = {}
-
-                        J.each(this, function(i) {
-                            if (callback.call(this, i))
-                                result[i] = this
-                        })
-
-                        return result
-                    }
-
-                    return function(object, callback) {
-                        return _isArrayLike.call(object) ?
-                            _filterArray.call(object, callback) :
-                            _filterObject.call(object, callback)
-                    }
-                }())
+                    return result
+                }
 
                 J.reject = function(object, callback) {
                     return J.filter(object, _invertPredicate(callback))
@@ -216,6 +211,25 @@ this.J = (function() {
                 }
             }())
         }())
+
+        J.uniq = function(object) {
+            var result = _initialize.call(object)
+
+            J.filter(object, function(i) {
+                if (!J.contains(result, this))
+                   _insert.call(result, i, this)
+            })
+
+            return result
+        }
+
+        J.merge = function(object, elements) {
+            J.each(elements, function(i) {
+                _insert.call(object, i, this)
+            })
+
+            return object
+        }
 
         J.contains = function(object, element) {
             return J.any(object, function() {
@@ -246,34 +260,6 @@ this.J = (function() {
 
             J.max = function(object) {
                 return _minMax.call(object, Math.max)
-            }
-        }())
-
-        J.merge = (function() {
-            function _mergeArray(elements) {
-                var self = this
-
-                J.each(elements, function() {
-                    self.push(this)
-                })
-
-                return this
-            }
-
-            function _mergeObject(elements) {
-                var self = this
-
-                J.each(elements, function(prop) {
-                    self[prop] = this
-                })
-
-                return this
-            }
-
-            return function(object, elements) {
-                return _isArrayLike.call(object) ?
-                    _mergeArray.call(object, elements) :
-                    _mergeObject.call(object, elements)
             }
         }())
     }())
@@ -313,17 +299,6 @@ this.J = (function() {
         }
 
         return -1
-    }
-
-    J.uniq = function(array) {
-        var result = []
-
-        J.each(array, function() {
-            if (!J.contains(result, this))
-                result.push(this)
-        })
-
-        return result
     }
 
     J.range = function(min, maxInclusive) {
@@ -542,29 +517,29 @@ this.J = (function() {
                     return callback.call(this)
                 })
 
-                result = J.reject(result, function() {
+                return J.reject(result, function() {
                     return this === null
                 })
-
-                return new J(result)
             }
 
             J.prototype.prev = function() {
-                return _filteredMap.call(this, function() {
+                return new J(_filteredMap.call(this, function() {
                     return this.previousElementSibling
-                })
+                }))
             }
 
             J.prototype.next = function() {
-                return _filteredMap.call(this, function() {
+                return new J(_filteredMap.call(this, function() {
                     return this.nextElementSibling
-                })
+                }))
             }
 
             J.prototype.parent = function() {
-                return _filteredMap.call(this, function() {
+                var result = _filteredMap.call(this, function() {
                     return this.parentNode
                 })
+
+                return new J(J.uniq(result))
             }
         }())
 
