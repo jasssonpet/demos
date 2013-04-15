@@ -35,8 +35,8 @@ this.J = (function() {
             _htmlElementConstructor.call(this, htmlElement)
         }
 
-        function _arrayOfHtmlElementsConstructor(elements) {
-            J.merge(this, elements)
+        function _arrayOfObjectsConstructor(objects) {
+            J.merge(this, objects)
         }
 
         function _selectorConstructor(selector, context) {
@@ -45,7 +45,7 @@ this.J = (function() {
             context = context || [document.documentElement]
 
             J.each(context, function() {
-                _arrayOfHtmlElementsConstructor.call(self, this.querySelectorAll(selector))
+                _arrayOfObjectsConstructor.call(self, this.querySelectorAll(selector))
             })
         }
 
@@ -65,7 +65,7 @@ this.J = (function() {
                 _createHtmlElementConstructor.call(this, selector)
 
             else if (Array.isArray(selector))
-                _arrayOfHtmlElementsConstructor.call(this, selector)
+                _arrayOfObjectsConstructor.call(this, selector)
 
             else _selectorConstructor.call(this, selector, context)
         }
@@ -692,6 +692,8 @@ this.J = (function() {
 
                     if (vendorProperty in _style)
                         return false
+
+                    vendorProperty = undefined
                 })
 
                 return vendorProperty
