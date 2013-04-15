@@ -88,6 +88,10 @@
                 , animationDuration: function() {
                     return J.random(300, 5000) + 'ms'
                 }
+
+                , opacity: function() {
+                    return J.random(50, 100) / 100
+                }
             }
 
             return function() {
@@ -103,7 +107,7 @@
 
           , body = J('body')
 
-        J.each(J.range(1, 250), function(n) {
+        J.each(J.range(1, 1000), function(n) {
             var strong = J('<strong />').text('#div' + n)
 
               , div = makeDiv().append(strong)
