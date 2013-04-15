@@ -20,13 +20,10 @@ this.J = (function() {
         var _voidTag = /^<(\w+) \/>$/
 
         function _defaultConstructor() {
-            return this
         }
 
         function _htmlElementConstructor(htmlElement) {
             this.push(htmlElement)
-
-            return this
         }
 
         function _createHtmlElementConstructor(voidTag) {
@@ -34,7 +31,11 @@ this.J = (function() {
 
               , htmlElement = document.createElement(tagName)
 
-            return _htmlElementConstructor.call(this, htmlElement)
+            _htmlElementConstructor.call(this, htmlElement)
+        }
+
+        function _arrayOfHtmlElementsConstructor(elements) {
+            J.merge(this, elements)
         }
 
         function _selectorConstructor(selector, context) {
@@ -43,10 +44,8 @@ this.J = (function() {
             context = context || [document.documentElement]
 
             J.each(context, function() {
-                J.merge(self, this.querySelectorAll(selector))
+                _arrayOfHtmlElementsConstructor.call(self, this.querySelectorAll(selector))
             })
-
-            return this
         }
 
         return function(selector, context) {
@@ -56,15 +55,18 @@ this.J = (function() {
             this.length = 0
 
             if (selector == null)
-                return _defaultConstructor.call(this)
+                _defaultConstructor.call(this)
 
-            if (selector instanceof HTMLElement)
-                return _htmlElementConstructor.call(this, selector)
+            else if (selector instanceof HTMLElement)
+                _htmlElementConstructor.call(this, selector)
 
-            if (_voidTag.test(selector))
-                return _createHtmlElementConstructor.call(this, selector)
+            else if (_voidTag.test(selector))
+                _createHtmlElementConstructor.call(this, selector)
 
-            return _selectorConstructor.call(this, selector, context)
+            else if (Array.isArray(selector))
+                _arrayOfHtmlElementsConstructor.call(this, selector)
+
+            else _selectorConstructor.call(this, selector, context)
         }
     }())
 
@@ -369,6 +371,8 @@ this.J = (function() {
     ;(function() {
         J.prototype.push = function(element) {
             this[this.length++] = element
+
+            return element
         }
 
         J.prototype.get = function(index) {
@@ -413,7 +417,7 @@ this.J = (function() {
             var methodNames = ['filter', 'where', 'reject']
 
             _extendProto(methodNames, function(returnedValue) {
-                return J.merge(new J(), returnedValue)
+                return new J(returnedValue)
             })
         }())
 
@@ -506,7 +510,7 @@ this.J = (function() {
         }())
 
         ;(function() {
-            function _each(callback) {
+            function _filteredMap(callback) {
                 var result = J.map(this, function() {
                     return callback.call(this)
                 })
@@ -515,23 +519,23 @@ this.J = (function() {
                     return this === null
                 })
 
-                return J.merge(new J(), result)
+                return new J(result)
             }
 
             J.prototype.prev = function() {
-                return _each.call(this, function() {
+                return _filteredMap.call(this, function() {
                     return this.previousElementSibling
                 })
             }
 
             J.prototype.next = function() {
-                return _each.call(this, function() {
+                return _filteredMap.call(this, function() {
                     return this.nextElementSibling
                 })
             }
 
             J.prototype.parent = function() {
-                return _each.call(this, function() {
+                return _filteredMap.call(this, function() {
                     return this.parentNode
                 })
             }
