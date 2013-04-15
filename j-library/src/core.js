@@ -102,7 +102,7 @@ this.J = (function() {
     // ### Array-like and Object Manipulation
     ;(function() {
         function _isArrayLike() {
-            return this.length === +this.length
+            return this.length >= 0
         }
 
         J.each = (function() {
