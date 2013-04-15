@@ -23,16 +23,16 @@ this.J = (function() {
             void 0
         }
 
-        function _htmlElementConstructor(htmlElement) {
-            this.push(htmlElement)
-        }
-
         function _createHtmlElementConstructor(voidTag) {
             var tagName = voidTag.match(_voidTag)[1]
 
               , htmlElement = document.createElement(tagName)
 
             _htmlElementConstructor.call(this, htmlElement)
+        }
+
+        function _htmlElementConstructor(htmlElement) {
+            _arrayOfObjectsConstructor.call(this, [htmlElement])
         }
 
         function _arrayOfObjectsConstructor(objects) {
@@ -58,11 +58,11 @@ this.J = (function() {
             if (selector == null)
                 _defaultConstructor.call(this)
 
-            else if (selector instanceof HTMLElement)
-                _htmlElementConstructor.call(this, selector)
-
             else if (_voidTag.test(selector))
                 _createHtmlElementConstructor.call(this, selector)
+
+            else if (selector instanceof HTMLElement)
+                _htmlElementConstructor.call(this, selector)
 
             else if (Array.isArray(selector))
                 _arrayOfObjectsConstructor.call(this, selector)
@@ -102,7 +102,7 @@ this.J = (function() {
     // ### Array-like and Object Manipulation
     ;(function() {
         function _isArrayLike() {
-            return this.length >= 0
+            return 'length' in this
         }
 
         J.each = (function() {
