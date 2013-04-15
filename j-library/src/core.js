@@ -42,7 +42,7 @@ this.J = (function() {
         function _selectorConstructor(selector, context) {
             var self = this
 
-            context = context || [document.documentElement]
+            context = context || [document]
 
             J.each(context, function() {
                 _arrayOfObjectsConstructor.call(self, this.querySelectorAll(selector))
