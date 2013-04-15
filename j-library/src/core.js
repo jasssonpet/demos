@@ -480,7 +480,7 @@ this.J = (function() {
                     var parentElement = this
 
                     elements.each(function() {
-                        callback.call(parentElement, this.cloneNode(true))
+                        callback.call(parentElement, this) // Chrome bug: .cloneNode(true)
                     })
                 })
             }
