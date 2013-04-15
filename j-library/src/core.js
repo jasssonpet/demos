@@ -583,21 +583,20 @@ this.J = (function() {
             if (parseFloat(valueString).toString() === valueString)
                 return parseFloat(valueString)
 
-            if (valueString === 'null')
-                return null
-
             if (valueString === 'true')
                 return true
 
             if (valueString === 'false')
                 return false
 
+            if (valueString === 'null')
+                return null
+
             try {
                 return JSON.parse(valueString)
 
             } catch (e) {
                 return valueString
-
             }
         }
 
