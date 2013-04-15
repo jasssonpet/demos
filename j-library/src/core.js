@@ -407,10 +407,10 @@ this.J = (function() {
         }
 
         ;(function() {
-            var methodNames = ['each']
+            var methodNames = ['each', 'map', 'select', 'any', 'some', 'all', 'every']
 
-            _extendProto(methodNames, function() {
-                return this
+            _extendProto(methodNames, function(returnedValue) {
+                return returnedValue
             })
         }())
 
@@ -419,14 +419,6 @@ this.J = (function() {
 
             _extendProto(methodNames, function(returnedValue) {
                 return new J(returnedValue)
-            })
-        }())
-
-        ;(function() {
-            var methodNames = ['map', 'select', 'any', 'some', 'all', 'every']
-
-            _extendProto(methodNames, function(returnedValue) {
-                return returnedValue
             })
         }())
     }())
