@@ -574,20 +574,6 @@ this.J = (function() {
 
     // ### Data
     ;(function() {
-        function _hasDataProperty(key) {
-            return this._data && (key in this._data)
-        }
-
-        function _getDataProperty(key) {
-            return this._data[key]
-        }
-
-        function _setDataProperty(key, value) {
-            this._data = this._data || {}
-
-            this._data[key] = value
-        }
-
         function _parseDataAttribute(key) {
             var valueString = this.dataset[key]
 
@@ -611,7 +597,22 @@ this.J = (function() {
 
             } catch (e) {
                 return valueString
+
             }
+        }
+
+        function _hasDataProperty(key) {
+            return this._data && (key in this._data)
+        }
+
+        function _getDataProperty(key) {
+            return this._data[key]
+        }
+
+        function _setDataProperty(key, value) {
+            this._data = this._data || {}
+
+            this._data[key] = value
         }
 
         function _getData(key) {
