@@ -1,6 +1,10 @@
 /*!
  * J Library - https://github.com/jasssonpet/demos/tree/gh-pages/j-library
  *
+ * Inspired by:
+ * - jQuery JavaScript Library - http://jquery.com/
+ * - Underscore.js - http://underscorejs.org/
+ *
  * Copyright 2013 jasssonpet
  * Released under the MIT license
  */
@@ -371,9 +375,7 @@ this.J = (function() {
     // ### Elements manipulation
     ;(function() {
         J.prototype.push = function(element) {
-            this[this.length++] = element
-
-            return element
+            return this[this.length++] = element
         }
 
         J.prototype.get = function(index) {
@@ -425,6 +427,24 @@ this.J = (function() {
 
     // ### Events
     ;(function() {
+        ;(function() {
+            var events =
+                [ 'blur', 'focus', 'focusin', 'focusout', 'load', 'resize', 'scroll', 'unload', 'click', 'dblclick'
+                , 'mousedown', 'mouseup', 'mousemove', 'mouseover', 'mouseout', 'change', 'select', 'submit', 'keydown'
+                , 'keypress', 'keyup', 'error', 'contextmenu'
+            ]
+
+            J.each(events, function() {
+                var event = this
+
+                J.prototype[event] = function() {
+                    var methodArguments = J.merge([event], arguments)
+
+                    return J.prototype.on.apply(this, methodArguments)
+                }
+            })
+        }())
+
         J.prototype.on = function(event, callback) {
             return this.each(function() {
                 this.addEventListener(event, callback)
@@ -439,10 +459,6 @@ this.J = (function() {
         // **TODO**: Add `mouseleave` event to non-IE browsers.
         J.prototype.mouseleave = function(callback) {
             return this.on('mouseout', callback)
-        }
-
-        J.prototype.click = function(callback) {
-            return this.on('click', callback)
         }
     }())
 
