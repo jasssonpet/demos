@@ -20,6 +20,7 @@ this.J = (function() {
         var _voidTag = /^<(\w+) \/>$/
 
         function _defaultConstructor() {
+            void 0
         }
 
         function _htmlElementConstructor(htmlElement) {
