@@ -523,15 +523,19 @@ this.J = (function() {
             }
 
             J.prototype.prev = function() {
-                return new J(_filteredMap.call(this, function() {
+                var result = _filteredMap.call(this, function() {
                     return this.previousElementSibling
-                }))
+                })
+
+                return new J(result)
             }
 
             J.prototype.next = function() {
-                return new J(_filteredMap.call(this, function() {
+                var result = _filteredMap.call(this, function() {
                     return this.nextElementSibling
-                }))
+                })
+
+                return new J(result)
             }
 
             J.prototype.parent = function() {
@@ -539,7 +543,19 @@ this.J = (function() {
                     return this.parentNode
                 })
 
-                return new J(J.uniq(result))
+                result = J.uniq(result)
+
+                return new J(result)
+            }
+
+            J.prototype.children = function() {
+                var result = []
+
+                J.each(this, function() {
+                    J.merge(result, this.children)
+                })
+
+                return new J(result)
             }
         }())
 
