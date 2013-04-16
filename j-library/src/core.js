@@ -346,7 +346,7 @@ J.get = function(url, callback) {
             if (request.status === 200)
                 callback.call(request, request.responseText)
 
-            // else
+            // **TODO**: else
         }
     }
 
@@ -452,6 +452,8 @@ J.now = function() {
 
 // ### DOM Manipulation
 ;(function() {
+
+    // Example: body.append(div) = div.appendTo(body)
     ;(function() {
         var pairedMethods =
             { 'prepend': 'prependTo'
