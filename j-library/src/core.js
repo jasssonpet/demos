@@ -23,33 +23,33 @@ this.J = (function() {
 var J = (function() {
     var _voidTag = /^<(\w+) \/>$/
 
-    function _defaultConstructor() {
+    function _defaultCtor() {
         void 0
     }
 
-    function _createHtmlElementConstructor(voidTag) {
+    function _createHtmlElementCtor(voidTag) {
         var tagName = voidTag.match(_voidTag)[1]
 
           , htmlElement = document.createElement(tagName)
 
-        _htmlElementConstructor.call(this, htmlElement)
+        _htmlElementCtor.call(this, htmlElement)
     }
 
-    function _htmlElementConstructor(htmlElement) {
-        _arrayOfObjectsConstructor.call(this, [htmlElement])
+    function _htmlElementCtor(htmlElement) {
+        _arrayOfObjectsCtor.call(this, [htmlElement])
     }
 
-    function _arrayOfObjectsConstructor(objects) {
+    function _arrayOfObjectsCtor(objects) {
         J.merge(this, objects)
     }
 
-    function _selectorConstructor(selector, context) {
+    function _selectorCtor(selector, context) {
         var self = this
 
         context = context || [document]
 
         J.each(context, function() {
-            _arrayOfObjectsConstructor.call(self, this.querySelectorAll(selector))
+            _arrayOfObjectsCtor.call(self, this.querySelectorAll(selector))
         })
     }
 
@@ -60,18 +60,18 @@ var J = (function() {
         this.length = 0
 
         if (selector == null)
-            _defaultConstructor.call(this)
+            _defaultCtor.call(this)
 
         else if (_voidTag.test(selector))
-            _createHtmlElementConstructor.call(this, selector)
+            _createHtmlElementCtor.call(this, selector)
 
         else if (selector instanceof HTMLElement)
-            _htmlElementConstructor.call(this, selector)
+            _htmlElementCtor.call(this, selector)
 
         else if (Array.isArray(selector))
-            _arrayOfObjectsConstructor.call(this, selector)
+            _arrayOfObjectsCtor.call(this, selector)
 
-        else _selectorConstructor.call(this, selector, context)
+        else _selectorCtor.call(this, selector, context)
     }
 }())
 
@@ -241,7 +241,7 @@ J.pluck = function(object, property) {
 
 ;(function() {
     function _minMax(callback) {
-        var result = callback()
+        var result = callback() // Infinity
 
         J.each(this, function() {
             result = callback(this, result)
@@ -333,7 +333,7 @@ J.randomColor = function() {
       , g = J.randomByte()
       , b = J.randomByte()
 
-    return ('#' + r + g + b)
+    return '#' + r + g + b
 }
 
 // ### AJAX
@@ -357,7 +357,7 @@ J.get = function(url, callback) {
 // ### Utilities
 
 J.now = function() {
-    return +new Date()
+    return +new Date
 }
 
 // ### Elements manipulation
@@ -380,6 +380,7 @@ J.now = function() {
 // ## Prototype
 
 // ### Elements higher-order functions
+
 // Example: J.prototype.filter(callback) = J.filter(this, callback)
 ;(function() {
     function _extendProto(methodNames, resultFunction) {

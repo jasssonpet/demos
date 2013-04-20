@@ -16,24 +16,30 @@ J = do ->
 
     # ## Constructor
     J = do ->
-        _voidTag = /^<(\w+) \/>$/
+        voidTag =
+            ///^
+                <     # Opening bracket
+                (\w+) # Tag name
+                \s?   # Space
+                />    # Closing bracket
+            $///
 
-        _createHtmlElementConstructor = (voidTag) ->
-            tagName = voidTag.match(_voidTag)[1]
+        createHtmlElementConstructor = (voidTag) ->
+            tagName = voidTag.match(voidTag)[1]
 
             htmlElement = document.createElement(tagName)
 
-            _htmlElementConstructor.call(this, htmlElement)
+            htmlElementConstructor.call(this, htmlElement)
 
-        _htmlElementConstructor = (htmlElement) ->
-            _arrayOfObjectsConstructor.call(this, [htmlElement])
+        htmlElementConstructor = (htmlElement) ->
+            arrayOfObjectsConstructor.call(this, [htmlElement])
 
-        _arrayOfObjectsConstructor = (objects) ->
+        arrayOfObjectsConstructor = (objects) ->
             J.merge(this, objects)
 
-        _selectorConstructor = (selector, context = [document]) ->
+        selectorConstructor = (selector, context = [document]) ->
             J.each context, =>
-                _arrayOfObjectsConstructor.call this, @querySelectorAll(selector)
+                arrayOfObjectsConstructor.call this, @querySelectorAll(selector)
 
         return (selector, context) ->
             return new J(selector, context) unless this instanceof J
@@ -44,16 +50,16 @@ J = do ->
                 when not selector?
                     this
 
-                when _voidTag.test(selector)
-                    _createHtmlElementConstructor.call this, selector
+                when voidTag.test(selector)
+                    createHtmlElementConstructor.call this, selector
 
                 when selector instanceof HTMLElement
-                    _htmlElementConstructor.call this, selector
+                    htmlElementConstructor.call this, selector
 
                 when Array.isArray(selector)
-                    _arrayOfObjectsConstructor.call this, selector
+                    arrayOfObjectsConstructor.call this, selector
 
-                else _selectorConstructor.call this, selector, context
+                else selectorConstructor.call this, selector, context
 
     # ## Static Methods
 
@@ -69,36 +75,36 @@ J = do ->
 
     # #### PadLeft/PadRight
     do ->
-        _makeMissing = (string, length, character = ' ') ->
+        makeMissing = (string, length, character = ' ') ->
             J.repeat character, length - string.length
 
         J.padLeft = (string, length, character) ->
-            _makeMissing(string, length, character) + string
+            makeMissing(string, length, character) + string
 
         J.padRight = (string, length, character) ->
-            string + _makeMissing(string, length, character)
+            string + makeMissing(string, length, character)
 
     # ### Array-like and Object Manipulation
     do ->
-        _isArrayLike = ->
+        isArrayLike = ->
             'length' of this
 
-        _initialize = ->
-            if _isArrayLike.call(this) then [] else {}
+        initialize = ->
+            if isArrayLike.call(this) then [] else {}
 
         # TODO: Check only once and not on each iteration
-        _insert = (property, value) ->
-            if _isArrayLike.call(this) then @push(value) else this[property] = value
+        insert = (property, value) ->
+            if isArrayLike.call(this) then @push(value) else this[property] = value
 
         J.each = do ->
-            _eachArray = (callback) ->
+            eachArray = (callback) ->
                 for i in [0 .. @length]
                     if callback.call(this[i], i) is false
                         break
 
                 return this
 
-            _eachObject = (callback) ->
+            eachObject = (callback) ->
                 for own i of this
                     if callback.call(this[i], i) is false
                         break
@@ -106,36 +112,36 @@ J = do ->
                 return this
 
             (object, callback) ->
-                (if _isArrayLike.call(object) then _eachArray else _eachObject).call(object, callback)
+                (if isArrayLike.call(object) then eachArray else eachObject).call(object, callback)
 
         J.map =
         J.select = (object, callback) ->
-            result = _initialize.call(object)
+            result = initialize.call(object)
 
             J.each object, (i) ->
                 mapped = callback.call(this, i)
 
-                _insert.call(result, i, mapped)
+                insert.call(result, i, mapped)
 
             result
 
         # #### Filter/Reject & Any/All
         do ->
-            _invertPredicate = (callback) ->
+            invertPredicate = (callback) ->
                 -> not callback.apply(this, arguments)
 
             J.filter =
             J.where = (object, callback) ->
-                result = _initialize.call(object)
+                result = initialize.call(object)
 
                 J.each object, (i) ->
                     if callback.call(this, i)
-                        _insert.call result, i, this
+                        insert.call result, i, this
 
                 result
 
             J.reject = (object, callback) ->
-                J.filter object, _invertPredicate(callback)
+                J.filter object, invertPredicate(callback)
 
             J.any =
             J.some = (object, callback) ->
@@ -151,20 +157,20 @@ J = do ->
 
             J.all =
             J.every = (object, callback) ->
-                not J.any(object, _invertPredicate(callback))
+                not J.any(object, invertPredicate(callback))
 
         J.uniq = (object) ->
-            result = _initialize.call(object)
+            result = initialize.call(object)
 
             J.each object, (i) ->
                 unless J.contains(result, this)
-                    _insert.call result, i, this
+                    insert.call result, i, this
 
             result
 
         J.merge = (object, elements) ->
             J.each elements, (i) ->
-                _insert.call object, i, this
+                insert.call object, i, this
 
             object
 
@@ -177,7 +183,7 @@ J = do ->
             this[property]
 
     do ->
-        _minMax = (callback) ->
+        minMax = (callback) ->
             result = callback()
 
             J.each this, ->
@@ -186,20 +192,20 @@ J = do ->
             result
 
         J.min = (object) ->
-            _minMax.call object, Math.min
+            minMax.call object, Math.min
 
         J.max = (object) ->
-            _minMax.call object, Math.max
+            minMax.call object, Math.max
 
     # ### Array Manipulation
 
     J.shuffle = do ->
-        _swap = (array, i, j) ->
+        swap = (array, i, j) ->
             [array[i], array[j]] = [array[j], array[i]]
 
         (array) ->
             for i in [array.length - 1 ... 0]
-                _swap array, i, J.random(i)
+                swap array, i, J.random(i)
 
             return array
 
@@ -289,7 +295,7 @@ J = do ->
     # ### Elements higher-order functions
     # Example: J.prototype.filter(callback) = J.filter(this, callback)
     do ->
-        _extendProto = (methodNames, resultFunction) ->
+        extendProto = (methodNames, resultFunction) ->
             J.each methodNames, ->
                 methodName = this
 
@@ -303,13 +309,13 @@ J = do ->
         do ->
             methodNames = ['each', 'map', 'select', 'any', 'some', 'all', 'every']
 
-            _extendProto methodNames, (returnedValue) ->
+            extendProto methodNames, (returnedValue) ->
                 returnedValue
 
         do ->
             methodNames = ['filter', 'where', 'reject']
 
-            _extendProto methodNames, (returnedValue) ->
+            extendProto methodNames, (returnedValue) ->
                 new J(returnedValue)
 
     # ### Events
@@ -356,7 +362,7 @@ J = do ->
                 return this
 
     do ->
-        _eachEach = (elements, callback) ->
+        eachEach = (elements, callback) ->
             @each ->
                 parentElement = this
 
@@ -365,23 +371,23 @@ J = do ->
 
 
         J::prepend = (elements) ->
-            _eachEach.call this, elements, (newElement) ->
+            eachEach.call this, elements, (newElement) ->
                 @insertBefore newElement, @firstChild
 
         J::append = (elements) ->
-            _eachEach.call this, elements, (newElement) ->
+            eachEach.call this, elements, (newElement) ->
                 @appendChild newElement
 
         J::before = (elements) ->
-            _eachEach.call this, elements, (newElement) ->
+            eachEach.call this, elements, (newElement) ->
                 @parentNode.insertBefore newElement, this
 
         J::after = (elements) ->
-            _eachEach.call this, elements, (newElement) ->
+            eachEach.call this, elements, (newElement) ->
                 @parentNode.insertBefore newElement, @nextElementSibling
 
     do ->
-        _filteredMap = (callback) ->
+        filteredMap = (callback) ->
             result = J.map this, ->
                 callback.call this
 
@@ -389,19 +395,19 @@ J = do ->
                 this is null
 
         J::prev = ->
-            result = _filteredMap.call this, ->
+            result = filteredMap.call this, ->
                 @previousElementSibling
 
             new J(result)
 
         J::next = ->
-            result = _filteredMap.call this, ->
+            result = filteredMap.call this, ->
                 @nextElementSibling
 
             new J(result)
 
         J::parent = ->
-            result = _filteredMap.call this, ->
+            result = filteredMap.call this, ->
                 @parentNode
 
             result = J.uniq result
@@ -421,27 +427,27 @@ J = do ->
             @parentNode.removeChild this
 
     # ### Attributes
-    _getAttribute = (attribute) ->
+    getAttribute = (attribute) ->
         firstElement = this[0]
         firstElement.getAttribute attribute
 
-    _setAttribute = (attribute, value) ->
+    setAttribute = (attribute, value) ->
         @each ->
             @setAttribute attribute, value
 
-    _removeAttribute = (attribute) ->
+    removeAttribute = (attribute) ->
         @each ->
             @removeAttribute attribute
 
     J::attr = (attribute, value) ->
-        (if arguments.length is 1 then _getAttribute.call(this, attribute) else _setAttribute.call(this, attribute, value))
+        (if arguments.length is 1 then getAttribute.call(this, attribute) else setAttribute.call(this, attribute, value))
 
     J::removeAttr = (attribute) ->
-        _removeAttribute.call this, attribute
+        removeAttribute.call this, attribute
 
     # ### Data
     do ->
-        _parseDataAttribute = (key) ->
+        parseDataAttribute = (key) ->
             valueString = @dataset[key]
             return `undefined`  unless key of @dataset
             return parseFloat(valueString)  if parseFloat(valueString).toString() is valueString
@@ -453,26 +459,26 @@ J = do ->
             catch e
                 return valueString
 
-        _hasDataProperty = (key) ->
-            @_data and (key of @_data)
+        hasDataProperty = (key) ->
+            @data and (key of @data)
 
-        _getDataProperty = (key) ->
-            @_data[key]
+        getDataProperty = (key) ->
+            @data[key]
 
-        _setDataProperty = (key, value) ->
-            @_data = @_data or {}
-            @_data[key] = value
+        setDataProperty = (key, value) ->
+            @data = @data or {}
+            @data[key] = value
 
-        _getData = (key) ->
+        getData = (key) ->
             firstElement = this[0]
-            (if _hasDataProperty.call(firstElement, key) then _getDataProperty.call(firstElement, key) else _parseDataAttribute.call(firstElement, key))
+            (if hasDataProperty.call(firstElement, key) then getDataProperty.call(firstElement, key) else parseDataAttribute.call(firstElement, key))
 
-        _setData = (key, value) ->
+        setData = (key, value) ->
             @each ->
-                _setDataProperty.call this, key, value
+                setDataProperty.call this, key, value
 
         J::data = (key, value) ->
-            (if arguments.length is 1 then _getData.call(this, key) else _setData.call(this, key, value))
+            (if arguments.length is 1 then getData.call(this, key) else setData.call(this, key, value))
 
         J::removeData = (key) ->
             J::data.call this, key, `undefined`
@@ -496,89 +502,89 @@ J = do ->
 
     # ### CSS Properties
     do ->
-        _makeVendorProperty = do ->
-            _vendorPrefixes = ['Webkit', 'Moz', 'ms', 'O']
+        makeVendorProperty = do ->
+            vendorPrefixes = ['Webkit', 'Moz', 'ms', 'O']
 
-            _style = document.createElement('div').style
+            style = document.createElement('div').style
 
             (camelCasedProperty) ->
-                return camelCasedProperty if camelCasedProperty of _style
+                return camelCasedProperty if camelCasedProperty of style
 
                 pascalCasedProperty = camelCasedProperty[0].toUpperCase() + camelCasedProperty.substr(1)
 
                 vendorProperty
 
-                J.each _vendorPrefixes, ->
+                J.each vendorPrefixes, ->
                     vendorProperty = this + pascalCasedProperty
 
-                    return false if vendorProperty of _style
+                    return false if vendorProperty of style
 
                     vendorProperty = undefined
 
                 return vendorProperty
 
-        _getCss = (property) ->
+        getCss = (property) ->
             firstElement = this[0]
 
             return getComputedStyle(firstElement)[property]
 
-        _setCss = (property, value) ->
+        setCss = (property, value) ->
             @each ->
                 @style[property] = value
 
         J::css = (camelCasedProperty, value) ->
-            property = _makeVendorProperty(camelCasedProperty)
+            property = makeVendorProperty(camelCasedProperty)
 
-            (if arguments.length is 1 then _getCss else _setCss).call(this, property, value)
+            (if arguments.length is 1 then getCss else setCss).call(this, property, value)
 
     # ### Show/hide
     do ->
-        _isHidden = ->
+        isHidden = ->
             @css('display') is 'none'
 
         # **TODO**: Restore the original display (`inline, table ...`).
-        _showHide = (show) ->
+        showHide = (show) ->
             @css('display', (if show then 'block' else 'none'))
 
         J::show = ->
-            _showHide.call(this, true)
+            showHide.call(this, true)
 
         J::hide = ->
-            _showHide.call(this, false)
+            showHide.call(this, false)
 
         J::toggle = ->
             @each ->
                 self = new J(this)
 
-                _showHide.call self, _isHidden.call(self)
+                showHide.call self, isHidden.call(self)
 
     # ### Text
     do ->
-        _getText = ->
+        getText = ->
             firstElement = this[0]
 
             return firstElement.textContent
 
-        _setText = (text) ->
+        setText = (text) ->
             @each ->
                 @textContent = text
 
         J::text = (text) ->
-            (if arguments.length is 0 then _getText else _setText).call(this, text)
+            (if arguments.length is 0 then getText else setText).call(this, text)
 
     # ### HTML
     do ->
-        _getHtml = ->
+        getHtml = ->
             firstElement = this[0]
 
             return firstElement.innerHTML
 
-        _setHtml = (html) ->
+        setHtml = (html) ->
             @each ->
                 @innerHTML = html
 
         J::html = (html) ->
-            (if arguments.length is 0 then _getHtml else _setHtml).call(this, html)
+            (if arguments.length is 0 then getHtml else setHtml).call(this, html)
 
     # TODO: Deffered
 
@@ -586,8 +592,8 @@ J = do ->
 
     # // This should be the last section.
     # ;(function() {
-    #     function _tryDequeue() {
-    #         var queue = this._delayQueue
+    #     function tryDequeue() {
+    #         var queue = this.delayQueue
 
     #         if (!queue.inProgress && queue.length)
     #             return queue.shift()()
@@ -602,12 +608,12 @@ J = do ->
     #     J.prototype.delay = function(time) {
     #         var self = this
 
-    #         this._delayQueue.inProgress = true
+    #         this.delayQueue.inProgress = true
 
     #         setTimeout(function() {
-    #             self._delayQueue.inProgress = false
+    #             self.delayQueue.inProgress = false
 
-    #             return _tryDequeue.call(self)
+    #             return tryDequeue.call(self)
     #         }, time)
 
     #         return this
@@ -624,15 +630,15 @@ J = do ->
     #             var self = this
     #               , methodArguments = arguments
 
-    #             // console.log(this._delayQueue)
+    #             // console.log(this.delayQueue)
 
-    #             this._delayQueue.push(function() {
+    #             this.delayQueue.push(function() {
     #                 methodBody.apply(self, methodArguments)
 
-    #                 return _tryDequeue.call(self)
+    #                 return tryDequeue.call(self)
     #             })
 
-    #             _tryDequeue.call(this)
+    #             tryDequeue.call(this)
 
     #             return this
     #         }
@@ -644,7 +650,7 @@ J = do ->
 
     #     console.log(result)
 
-    #     result._delayQueue = []
+    #     result.delayQueue = []
 
     #     return result
     # }

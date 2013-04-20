@@ -6,29 +6,29 @@
     __hasProp = {}.hasOwnProperty;
 
   J = (function() {
-    var _getAttribute, _removeAttribute, _setAttribute;
+    var getAttribute, removeAttribute, setAttribute;
     J = (function() {
-      var _arrayOfObjectsConstructor, _createHtmlElementConstructor, _htmlElementConstructor, _selectorConstructor, _voidTag;
-      _voidTag = /^<(\w+) \/>$/;
-      _createHtmlElementConstructor = function(voidTag) {
+      var arrayOfObjectsConstructor, createHtmlElementConstructor, htmlElementConstructor, selectorConstructor, voidTag;
+      voidTag = /^<(\w+)\s?\/>$/;
+      createHtmlElementConstructor = function(voidTag) {
         var htmlElement, tagName;
-        tagName = voidTag.match(_voidTag)[1];
+        tagName = voidTag.match(voidTag)[1];
         htmlElement = document.createElement(tagName);
-        return _htmlElementConstructor.call(this, htmlElement);
+        return htmlElementConstructor.call(this, htmlElement);
       };
-      _htmlElementConstructor = function(htmlElement) {
-        return _arrayOfObjectsConstructor.call(this, [htmlElement]);
+      htmlElementConstructor = function(htmlElement) {
+        return arrayOfObjectsConstructor.call(this, [htmlElement]);
       };
-      _arrayOfObjectsConstructor = function(objects) {
+      arrayOfObjectsConstructor = function(objects) {
         return J.merge(this, objects);
       };
-      _selectorConstructor = function(selector, context) {
+      selectorConstructor = function(selector, context) {
         var _this = this;
         if (context == null) {
           context = [document];
         }
         return J.each(context, function() {
-          return _arrayOfObjectsConstructor.call(_this, _this.querySelectorAll(selector));
+          return arrayOfObjectsConstructor.call(_this, _this.querySelectorAll(selector));
         });
       };
       return function(selector, context) {
@@ -39,14 +39,14 @@
         switch (selector) {
           case !(selector != null):
             return this;
-          case _voidTag.test(selector):
-            return _createHtmlElementConstructor.call(this, selector);
+          case voidTag.test(selector):
+            return createHtmlElementConstructor.call(this, selector);
           case selector instanceof HTMLElement:
-            return _htmlElementConstructor.call(this, selector);
+            return htmlElementConstructor.call(this, selector);
           case Array.isArray(selector):
-            return _arrayOfObjectsConstructor.call(this, selector);
+            return arrayOfObjectsConstructor.call(this, selector);
           default:
-            return _selectorConstructor.call(this, selector, context);
+            return selectorConstructor.call(this, selector, context);
         }
       };
     })();
@@ -59,42 +59,42 @@
       return result;
     };
     (function() {
-      var _makeMissing;
-      _makeMissing = function(string, length, character) {
+      var makeMissing;
+      makeMissing = function(string, length, character) {
         if (character == null) {
           character = ' ';
         }
         return J.repeat(character, length - string.length);
       };
       J.padLeft = function(string, length, character) {
-        return _makeMissing(string, length, character) + string;
+        return makeMissing(string, length, character) + string;
       };
       return J.padRight = function(string, length, character) {
-        return string + _makeMissing(string, length, character);
+        return string + makeMissing(string, length, character);
       };
     })();
     (function() {
-      var _initialize, _insert, _isArrayLike;
-      _isArrayLike = function() {
+      var initialize, insert, isArrayLike;
+      isArrayLike = function() {
         return 'length' in this;
       };
-      _initialize = function() {
-        if (_isArrayLike.call(this)) {
+      initialize = function() {
+        if (isArrayLike.call(this)) {
           return [];
         } else {
           return {};
         }
       };
-      _insert = function(property, value) {
-        if (_isArrayLike.call(this)) {
+      insert = function(property, value) {
+        if (isArrayLike.call(this)) {
           return this.push(value);
         } else {
           return this[property] = value;
         }
       };
       J.each = (function() {
-        var _eachArray, _eachObject;
-        _eachArray = function(callback) {
+        var eachArray, eachObject;
+        eachArray = function(callback) {
           var i, _i, _ref;
           for (i = _i = 0, _ref = this.length; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
             if (callback.call(this[i], i) === false) {
@@ -103,7 +103,7 @@
           }
           return this;
         };
-        _eachObject = function(callback) {
+        eachObject = function(callback) {
           var i;
           for (i in this) {
             if (!__hasProp.call(this, i)) continue;
@@ -114,38 +114,38 @@
           return this;
         };
         return function(object, callback) {
-          return (_isArrayLike.call(object) ? _eachArray : _eachObject).call(object, callback);
+          return (isArrayLike.call(object) ? eachArray : eachObject).call(object, callback);
         };
       })();
       J.map = J.select = function(object, callback) {
         var result;
-        result = _initialize.call(object);
+        result = initialize.call(object);
         J.each(object, function(i) {
           var mapped;
           mapped = callback.call(this, i);
-          return _insert.call(result, i, mapped);
+          return insert.call(result, i, mapped);
         });
         return result;
       };
       (function() {
-        var _invertPredicate;
-        _invertPredicate = function(callback) {
+        var invertPredicate;
+        invertPredicate = function(callback) {
           return function() {
             return !callback.apply(this, arguments);
           };
         };
         J.filter = J.where = function(object, callback) {
           var result;
-          result = _initialize.call(object);
+          result = initialize.call(object);
           J.each(object, function(i) {
             if (callback.call(this, i)) {
-              return _insert.call(result, i, this);
+              return insert.call(result, i, this);
             }
           });
           return result;
         };
         J.reject = function(object, callback) {
-          return J.filter(object, _invertPredicate(callback));
+          return J.filter(object, invertPredicate(callback));
         };
         J.any = J.some = function(object, callback) {
           var result;
@@ -159,22 +159,22 @@
           return result;
         };
         return J.all = J.every = function(object, callback) {
-          return !J.any(object, _invertPredicate(callback));
+          return !J.any(object, invertPredicate(callback));
         };
       })();
       J.uniq = function(object) {
         var result;
-        result = _initialize.call(object);
+        result = initialize.call(object);
         J.each(object, function(i) {
           if (!J.contains(result, this)) {
-            return _insert.call(result, i, this);
+            return insert.call(result, i, this);
           }
         });
         return result;
       };
       return J.merge = function(object, elements) {
         J.each(elements, function(i) {
-          return _insert.call(object, i, this);
+          return insert.call(object, i, this);
         });
         return object;
       };
@@ -190,8 +190,8 @@
       });
     };
     (function() {
-      var _minMax;
-      _minMax = function(callback) {
+      var minMax;
+      minMax = function(callback) {
         var result;
         result = callback();
         J.each(this, function() {
@@ -200,22 +200,22 @@
         return result;
       };
       J.min = function(object) {
-        return _minMax.call(object, Math.min);
+        return minMax.call(object, Math.min);
       };
       return J.max = function(object) {
-        return _minMax.call(object, Math.max);
+        return minMax.call(object, Math.max);
       };
     })();
     J.shuffle = (function() {
-      var _swap;
-      _swap = function(array, i, j) {
+      var swap;
+      swap = function(array, i, j) {
         var _ref;
         return _ref = [array[j], array[i]], array[i] = _ref[0], array[j] = _ref[1], _ref;
       };
       return function(array) {
         var i, _i, _ref;
         for (i = _i = _ref = array.length - 1; _ref <= 0 ? _i < 0 : _i > 0; i = _ref <= 0 ? ++_i : --_i) {
-          _swap(array, i, J.random(i));
+          swap(array, i, J.random(i));
         }
         return array;
       };
@@ -308,8 +308,8 @@
       return this.length;
     };
     (function() {
-      var _extendProto;
-      _extendProto = function(methodNames, resultFunction) {
+      var extendProto;
+      extendProto = function(methodNames, resultFunction) {
         return J.each(methodNames, function() {
           var methodName;
           methodName = this;
@@ -324,14 +324,14 @@
       (function() {
         var methodNames;
         methodNames = ['each', 'map', 'select', 'any', 'some', 'all', 'every'];
-        return _extendProto(methodNames, function(returnedValue) {
+        return extendProto(methodNames, function(returnedValue) {
           return returnedValue;
         });
       })();
       return (function() {
         var methodNames;
         methodNames = ['filter', 'where', 'reject'];
-        return _extendProto(methodNames, function(returnedValue) {
+        return extendProto(methodNames, function(returnedValue) {
           return new J(returnedValue);
         });
       })();
@@ -375,8 +375,8 @@
       });
     })();
     (function() {
-      var _eachEach;
-      _eachEach = function(elements, callback) {
+      var eachEach;
+      eachEach = function(elements, callback) {
         return this.each(function() {
           var parentElement;
           parentElement = this;
@@ -386,29 +386,29 @@
         });
       };
       J.prototype.prepend = function(elements) {
-        return _eachEach.call(this, elements, function(newElement) {
+        return eachEach.call(this, elements, function(newElement) {
           return this.insertBefore(newElement, this.firstChild);
         });
       };
       J.prototype.append = function(elements) {
-        return _eachEach.call(this, elements, function(newElement) {
+        return eachEach.call(this, elements, function(newElement) {
           return this.appendChild(newElement);
         });
       };
       J.prototype.before = function(elements) {
-        return _eachEach.call(this, elements, function(newElement) {
+        return eachEach.call(this, elements, function(newElement) {
           return this.parentNode.insertBefore(newElement, this);
         });
       };
       return J.prototype.after = function(elements) {
-        return _eachEach.call(this, elements, function(newElement) {
+        return eachEach.call(this, elements, function(newElement) {
           return this.parentNode.insertBefore(newElement, this.nextElementSibling);
         });
       };
     })();
     (function() {
-      var _filteredMap;
-      _filteredMap = function(callback) {
+      var filteredMap;
+      filteredMap = function(callback) {
         var result;
         result = J.map(this, function() {
           return callback.call(this);
@@ -419,21 +419,21 @@
       };
       J.prototype.prev = function() {
         var result;
-        result = _filteredMap.call(this, function() {
+        result = filteredMap.call(this, function() {
           return this.previousElementSibling;
         });
         return new J(result);
       };
       J.prototype.next = function() {
         var result;
-        result = _filteredMap.call(this, function() {
+        result = filteredMap.call(this, function() {
           return this.nextElementSibling;
         });
         return new J(result);
       };
       J.prototype.parent = function() {
         var result;
-        result = _filteredMap.call(this, function() {
+        result = filteredMap.call(this, function() {
           return this.parentNode;
         });
         result = J.uniq(result);
@@ -453,34 +453,34 @@
         return this.parentNode.removeChild(this);
       });
     };
-    _getAttribute = function(attribute) {
+    getAttribute = function(attribute) {
       var firstElement;
       firstElement = this[0];
       return firstElement.getAttribute(attribute);
     };
-    _setAttribute = function(attribute, value) {
+    setAttribute = function(attribute, value) {
       return this.each(function() {
         return this.setAttribute(attribute, value);
       });
     };
-    _removeAttribute = function(attribute) {
+    removeAttribute = function(attribute) {
       return this.each(function() {
         return this.removeAttribute(attribute);
       });
     };
     J.prototype.attr = function(attribute, value) {
       if (arguments.length === 1) {
-        return _getAttribute.call(this, attribute);
+        return getAttribute.call(this, attribute);
       } else {
-        return _setAttribute.call(this, attribute, value);
+        return setAttribute.call(this, attribute, value);
       }
     };
     J.prototype.removeAttr = function(attribute) {
-      return _removeAttribute.call(this, attribute);
+      return removeAttribute.call(this, attribute);
     };
     (function() {
-      var _getData, _getDataProperty, _hasDataProperty, _parseDataAttribute, _setData, _setDataProperty;
-      _parseDataAttribute = function(key) {
+      var getData, getDataProperty, hasDataProperty, parseDataAttribute, setData, setDataProperty;
+      parseDataAttribute = function(key) {
         var valueString;
         valueString = this.dataset[key];
         if (!(key in this.dataset)) {
@@ -504,35 +504,35 @@
           return valueString;
         }
       };
-      _hasDataProperty = function(key) {
-        return this._data && (key in this._data);
+      hasDataProperty = function(key) {
+        return this.data && (key in this.data);
       };
-      _getDataProperty = function(key) {
-        return this._data[key];
+      getDataProperty = function(key) {
+        return this.data[key];
       };
-      _setDataProperty = function(key, value) {
-        this._data = this._data || {};
-        return this._data[key] = value;
+      setDataProperty = function(key, value) {
+        this.data = this.data || {};
+        return this.data[key] = value;
       };
-      _getData = function(key) {
+      getData = function(key) {
         var firstElement;
         firstElement = this[0];
-        if (_hasDataProperty.call(firstElement, key)) {
-          return _getDataProperty.call(firstElement, key);
+        if (hasDataProperty.call(firstElement, key)) {
+          return getDataProperty.call(firstElement, key);
         } else {
-          return _parseDataAttribute.call(firstElement, key);
+          return parseDataAttribute.call(firstElement, key);
         }
       };
-      _setData = function(key, value) {
+      setData = function(key, value) {
         return this.each(function() {
-          return _setDataProperty.call(this, key, value);
+          return setDataProperty.call(this, key, value);
         });
       };
       J.prototype.data = function(key, value) {
         if (arguments.length === 1) {
-          return _getData.call(this, key);
+          return getData.call(this, key);
         } else {
-          return _setData.call(this, key, value);
+          return setData.call(this, key, value);
         }
       };
       return J.prototype.removeData = function(key) {
@@ -560,23 +560,23 @@
       });
     };
     (function() {
-      var _getCss, _makeVendorProperty, _setCss;
-      _makeVendorProperty = (function() {
-        var _style, _vendorPrefixes;
-        _vendorPrefixes = ['Webkit', 'Moz', 'ms', 'O'];
-        _style = document.createElement('div').style;
+      var getCss, makeVendorProperty, setCss;
+      makeVendorProperty = (function() {
+        var style, vendorPrefixes;
+        vendorPrefixes = ['Webkit', 'Moz', 'ms', 'O'];
+        style = document.createElement('div').style;
         return function(camelCasedProperty) {
           var pascalCasedProperty;
-          if (camelCasedProperty in _style) {
+          if (camelCasedProperty in style) {
             return camelCasedProperty;
           }
           pascalCasedProperty = camelCasedProperty[0].toUpperCase() + camelCasedProperty.substr(1);
           vendorProperty;
 
-          J.each(_vendorPrefixes, function() {
+          J.each(vendorPrefixes, function() {
             var vendorProperty;
             vendorProperty = this + pascalCasedProperty;
-            if (vendorProperty in _style) {
+            if (vendorProperty in style) {
               return false;
             }
             return vendorProperty = void 0;
@@ -584,74 +584,74 @@
           return vendorProperty;
         };
       })();
-      _getCss = function(property) {
+      getCss = function(property) {
         var firstElement;
         firstElement = this[0];
         return getComputedStyle(firstElement)[property];
       };
-      _setCss = function(property, value) {
+      setCss = function(property, value) {
         return this.each(function() {
           return this.style[property] = value;
         });
       };
       return J.prototype.css = function(camelCasedProperty, value) {
         var property;
-        property = _makeVendorProperty(camelCasedProperty);
-        return (arguments.length === 1 ? _getCss : _setCss).call(this, property, value);
+        property = makeVendorProperty(camelCasedProperty);
+        return (arguments.length === 1 ? getCss : setCss).call(this, property, value);
       };
     })();
     (function() {
-      var _isHidden, _showHide;
-      _isHidden = function() {
+      var isHidden, showHide;
+      isHidden = function() {
         return this.css('display') === 'none';
       };
-      _showHide = function(show) {
+      showHide = function(show) {
         return this.css('display', (show ? 'block' : 'none'));
       };
       J.prototype.show = function() {
-        return _showHide.call(this, true);
+        return showHide.call(this, true);
       };
       J.prototype.hide = function() {
-        return _showHide.call(this, false);
+        return showHide.call(this, false);
       };
       return J.prototype.toggle = function() {
         return this.each(function() {
           var self;
           self = new J(this);
-          return _showHide.call(self, _isHidden.call(self));
+          return showHide.call(self, isHidden.call(self));
         });
       };
     })();
     (function() {
-      var _getText, _setText;
-      _getText = function() {
+      var getText, setText;
+      getText = function() {
         var firstElement;
         firstElement = this[0];
         return firstElement.textContent;
       };
-      _setText = function(text) {
+      setText = function(text) {
         return this.each(function() {
           return this.textContent = text;
         });
       };
       return J.prototype.text = function(text) {
-        return (arguments.length === 0 ? _getText : _setText).call(this, text);
+        return (arguments.length === 0 ? getText : setText).call(this, text);
       };
     })();
     (function() {
-      var _getHtml, _setHtml;
-      _getHtml = function() {
+      var getHtml, setHtml;
+      getHtml = function() {
         var firstElement;
         firstElement = this[0];
         return firstElement.innerHTML;
       };
-      _setHtml = function(html) {
+      setHtml = function(html) {
         return this.each(function() {
           return this.innerHTML = html;
         });
       };
       return J.prototype.html = function(html) {
-        return (arguments.length === 0 ? _getHtml : _setHtml).call(this, html);
+        return (arguments.length === 0 ? getHtml : setHtml).call(this, html);
       };
     })();
     return J;
