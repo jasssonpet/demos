@@ -9,7 +9,7 @@
 * Released under the MIT license
 */
 
-/*jshint laxcomma: true, asi: true, curly: false, eqnull: true, bitwise: false, browser:true */
+/*jshint laxcomma: true, asi: true, curly: false, eqnull: true, bitwise: false, browser: true */
 
 // # J library
 
