@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>core.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>core.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="comment">/*!
+* J Library - https://github.com/jasssonpet/demos/tree/gh-pages/j-library
+*
+* Inspired by:
+* - jQuery JavaScript Library - http://jquery.com/
+* - Underscore.js - http://underscorejs.org/
+*
+* Copyright 2013 jasssonpet
+* Released under the MIT license
+*/</span>
+
+<span class="comment">/*jshint laxcomma: true, asi: true, curly: false, eqnull: true, bitwise: false, browser: true */</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h1">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <h1>J library</h1>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="keyword">this</span>.J = (<span class="keyword">function</span>() {
+<span class="comment">/*jshint validthis: true */</span>
+
+<span class="string">'use strict'</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h2">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <h2>Constructor</h2>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="keyword">var</span> J = (<span class="keyword">function</span>() {
+    <span class="keyword">var</span> _voidTag = <span class="regexp">/^&lt;(\w+) \/&gt;$/</span>
+
+    <span class="function"><span class="keyword">function</span> <span class="title">_defaultCtor</span><span class="params">()</span> {</span>
+        <span class="keyword">void</span> <span class="number">0</span>
+    }
+
+    <span class="function"><span class="keyword">function</span> <span class="title">_createHtmlElementCtor</span><span class="params">(voidTag)</span> {</span>
+        <span class="keyword">var</span> tagName = voidTag.match(_voidTag)[<span class="number">1</span>]
+
+          , htmlElement = document.createElement(tagName)
+
+        _htmlElementCtor.call(<span class="keyword">this</span>, htmlElement)
+    }
+
+    <span class="function"><span class="keyword">function</span> <span class="title">_htmlElementCtor</span><span class="params">(htmlElement)</span> {</span>
+        _arrayOfObjectsCtor.call(<span class="keyword">this</span>, [htmlElement])
+    }
+
+    <span class="function"><span class="keyword">function</span> <span class="title">_arrayOfObjectsCtor</span><span class="params">(objects)</span> {</span>
+        J.merge(<span class="keyword">this</span>, objects)
+    }
+
+    <span class="function"><span class="keyword">function</span> <span class="title">_selectorCtor</span><span class="params">(selector, context)</span> {</span>
+        <span class="keyword">var</span> self = <span class="keyword">this</span>
+
+        context = context || [document]
+
+        J.each(context, <span class="keyword">function</span>() {
+            _arrayOfObjectsCtor.call(self, <span class="keyword">this</span>.querySelectorAll(selector))
+        })
+    }
+
+    <span class="keyword">return</span> <span class="keyword">function</span>(selector, context) {
+        <span class="keyword">if</span> (!(<span class="keyword">this</span> <span class="keyword">instanceof</span> J))
+            <span class="keyword">return</span> <span class="keyword">new</span> J(selector, context)
+
+        <span class="keyword">this</span>.length = <span class="number">0</span>
+
+        <span class="keyword">if</span> (selector == <span class="literal">null</span>)
+            _defaultCtor.call(<span class="keyword">this</span>)
+
+        <span class="keyword">else</span> <span class="keyword">if</span> (_voidTag.test(selector))
+            _createHtmlElementCtor.call(<span class="keyword">this</span>, selector)
+
+        <span class="keyword">else</span> <span class="keyword">if</span> (selector <span class="keyword">instanceof</span> HTMLElement)
+            _htmlElementCtor.call(<span class="keyword">this</span>, selector)
+
+        <span class="keyword">else</span> <span class="keyword">if</span> (Array.isArray(selector))
+            _arrayOfObjectsCtor.call(<span class="keyword">this</span>, selector)
+
+        <span class="keyword">else</span> _selectorCtor.call(<span class="keyword">this</span>, selector, context)
+    }
+}())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h2">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <h2>Static Methods</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <h3>String Manipulation</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+J.repeat = <span class="keyword">function</span>(string, times) {
+    <span class="keyword">var</span> result = <span class="string">''</span>
+
+    <span class="keyword">while</span> (times --&gt; <span class="number">0</span>)
+        result += string
+
+    <span class="keyword">return</span> result
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <h4>PadLeft/PadRight</h4>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>;(<span class="keyword">function</span>() {
+    <span class="function"><span class="keyword">function</span> <span class="title">_makeMissing</span><span class="params">(length, character)</span> {</span>
+        <span class="keyword">return</span> J.repeat(character || <span class="string">' '</span>, length - <span class="keyword">this</span>.length)
+    }
+
+    J.padLeft = <span class="keyword">function</span>(string, length, character) {
+        <span class="keyword">return</span> _makeMissing.call(string, length, character) + string
+    }
+
+    J.padRight = <span class="keyword">function</span>(string, length, character) {
+        <span class="keyword">return</span> string + _makeMissing.call(string, length, character)
+    }
+}())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <h3>Array-like and Object Manipulation</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>;(<span class="keyword">function</span>() {
+    <span class="function"><span class="keyword">function</span> <span class="title">_isArrayLike</span><span class="params">()</span> {</span>
+        <span class="keyword">return</span> <span class="string">'length'</span> <span class="keyword">in</span> <span class="keyword">this</span>
+    }
+
+    <span class="function"><span class="keyword">function</span> <span class="title">_initialize</span><span class="params">()</span> {</span>
+        <span class="keyword">return</span> _isArrayLike.call(<span class="keyword">this</span>) ? [] : {}
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>TODO: Check only once and not on each iteration</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="function"><span class="keyword">function</span> <span class="title">_insert</span><span class="params">(property, value)</span> {</span>
+        <span class="keyword">return</span> _isArrayLike.call(<span class="keyword">this</span>) ?
+            <span class="keyword">this</span>.push(value) :
+            <span class="keyword">this</span>[property] = value
+    }
+
+    J.each = (<span class="keyword">function</span>() {
+        <span class="function"><span class="keyword">function</span> <span class="title">_eachArray</span><span class="params">(callback)</span> {</span>
+            <span class="keyword">var</span> i
+
+            <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.length; i++)
+                <span class="keyword">if</span> (callback.call(<span class="keyword">this</span>[i], i) === <span class="literal">false</span>)
+                    <span class="keyword">break</span>
+
+            <span class="keyword">return</span> <span class="keyword">this</span>
+        }
+
+        <span class="function"><span class="keyword">function</span> <span class="title">_eachObject</span><span class="params">(callback)</span> {</span>
+            <span class="keyword">var</span> i
+
+            <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="keyword">this</span>)
+                <span class="keyword">if</span> (<span class="keyword">this</span>.hasOwnProperty(i))
+                    <span class="keyword">if</span> (callback.call(<span class="keyword">this</span>[i], i) === <span class="literal">false</span>)
+                        <span class="keyword">break</span>
+
+            <span class="keyword">return</span> <span class="keyword">this</span>
+        }
+
+        <span class="keyword">return</span> <span class="keyword">function</span>(object, callback) {
+            <span class="keyword">return</span> _isArrayLike.call(object) ?
+                _eachArray.call(object, callback) :
+                _eachObject.call(object, callback)
+        }
+    }())
+
+    J.map =
+    J.select = <span class="keyword">function</span>(object, callback) {
+        <span class="keyword">var</span> result = _initialize.call(object)
+
+        J.each(object, <span class="keyword">function</span>(i) {
+            <span class="keyword">var</span> mapped = callback.call(<span class="keyword">this</span>, i)
+
+            _insert.call(result, i, mapped)
+        })
+
+        <span class="keyword">return</span> result
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <h4>Filter/Reject &amp; Any/All</h4>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    ;(<span class="keyword">function</span>() {
+        <span class="function"><span class="keyword">function</span> <span class="title">_invertPredicate</span><span class="params">(callback)</span> {</span>
+            <span class="keyword">return</span> <span class="keyword">function</span>() {
+                <span class="keyword">return</span> !callback.apply(<span class="keyword">this</span>, arguments)
+            }
+        }
+
+        J.filter =
+        J.where = <span class="keyword">function</span>(object, callback) {
+            <span class="keyword">var</span> result = _initialize.call(object)
+
+            J.each(object, <span class="keyword">function</span>(i) {
+                <span class="keyword">if</span> (callback.call(<span class="keyword">this</span>, i))
+                    _insert.call(result, i, <span class="keyword">this</span>)
+            })
+
+            <span class="keyword">return</span> result
+        }
+
+        J.reject = <span class="keyword">function</span>(object, callback) {
+            <span class="keyword">return</span> J.filter(object, _invertPredicate(callback))
+        }
+
+        J.any =
+        J.some = <span class="keyword">function</span>(object, callback) {
+            <span class="keyword">var</span> result = <span class="literal">false</span>
+
+            J.each(object, <span class="keyword">function</span>(i) {
+                <span class="keyword">if</span> (callback.call(<span class="keyword">this</span>, i)) {
+                    result = <span class="literal">true</span>
+
+                    <span class="keyword">return</span> <span class="literal">false</span>
+                }
+            })
+
+            <span class="keyword">return</span> result
+        }
+
+        J.all =
+        J.every = <span class="keyword">function</span>(object, callback) {
+            <span class="keyword">return</span> !J.any(object, _invertPredicate(callback))
+        }
+    }())
+
+    J.uniq = <span class="keyword">function</span>(object) {
+        <span class="keyword">var</span> result = _initialize.call(object)
+
+        J.each(object, <span class="keyword">function</span>(i) {
+            <span class="keyword">if</span> (!J.contains(result, <span class="keyword">this</span>))
+               _insert.call(result, i, <span class="keyword">this</span>)
+        })
+
+        <span class="keyword">return</span> result
+    }
+
+    J.merge = <span class="keyword">function</span>(object, elements) {
+        J.each(elements, <span class="keyword">function</span>(i) {
+            _insert.call(object, i, <span class="keyword">this</span>)
+        })
+
+        <span class="keyword">return</span> object
+    }
+}())
+
+J.contains = <span class="keyword">function</span>(object, element) {
+    <span class="keyword">return</span> J.any(object, <span class="keyword">function</span>() {
+        <span class="keyword">return</span> <span class="keyword">this</span> === element
+    })
+}
+
+J.pluck = <span class="keyword">function</span>(object, property) {
+    <span class="keyword">return</span> J.map(object, <span class="keyword">function</span>() {
+        <span class="keyword">return</span> <span class="keyword">this</span>[property]
+    })
+}
+
+;(<span class="keyword">function</span>() {
+    <span class="function"><span class="keyword">function</span> <span class="title">_minMax</span><span class="params">(callback)</span> {</span>
+        <span class="keyword">var</span> result = callback() <span class="comment">// Infinity</span>
+
+        J.each(<span class="keyword">this</span>, <span class="keyword">function</span>() {
+            result = callback(<span class="keyword">this</span>, result)
+        })
+
+        <span class="keyword">return</span> result
+    }
+
+    J.min = <span class="keyword">function</span>(object) {
+        <span class="keyword">return</span> _minMax.call(object, Math.min)
+    }
+
+    J.max = <span class="keyword">function</span>(object) {
+        <span class="keyword">return</span> _minMax.call(object, Math.max)
+    }
+}())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <h3>Array Manipulation</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+J.shuffle = (<span class="keyword">function</span>() {
+    <span class="function"><span class="keyword">function</span> <span class="title">_swap</span><span class="params">(array, i, j)</span> {</span>
+        array[i] = [array[j], array[j] = array[i]][<span class="number">0</span>]
+    }
+
+    <span class="keyword">return</span> <span class="keyword">function</span>(array) {
+        <span class="keyword">var</span> i
+
+        <span class="keyword">for</span> (i = array.length - <span class="number">1</span>; i &gt; <span class="number">0</span>; i--)
+            _swap(array, i, J.random(i))
+
+        <span class="keyword">return</span> array
+    }
+}())
+
+J.binarySearch = <span class="keyword">function</span>(array, element) {
+    <span class="keyword">var</span> left = <span class="number">0</span>
+      , middle
+      , right = array.length - <span class="number">1</span>
+
+    <span class="keyword">while</span> (left &lt;= right) {
+        middle = left + ((right - left) &gt;&gt;&gt; <span class="number">1</span>)
+
+        <span class="keyword">if</span> (array[middle] &lt; element)
+            left = middle + <span class="number">1</span>
+
+        <span class="keyword">else</span> <span class="keyword">if</span> (array[middle] &gt; element)
+            right = middle - <span class="number">1</span>
+
+        <span class="keyword">else</span> <span class="keyword">return</span> middle
+    }
+
+    <span class="keyword">return</span> -<span class="number">1</span>
+}
+
+J.range = <span class="keyword">function</span>(min, maxInclusive) {
+    <span class="keyword">if</span> (arguments.length === <span class="number">1</span>) <span class="keyword">return</span> J.range(<span class="number">0</span>, min)
+
+    <span class="keyword">var</span> result = <span class="keyword">new</span> Array(maxInclusive - min + <span class="number">1</span>)
+
+    <span class="keyword">return</span> J.each(result, <span class="keyword">function</span>(i) {
+        result[i] = min + i
+    })
+}
+
+J.toArray = <span class="keyword">function</span>(object) {
+    <span class="keyword">return</span> J.map(object, <span class="keyword">function</span>() {
+        <span class="keyword">return</span> <span class="keyword">this</span>
+    })
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <h3>Random Generators</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+J.random = <span class="keyword">function</span>(min, maxInclusive) {
+    <span class="keyword">if</span> (arguments.length === <span class="number">1</span>) <span class="keyword">return</span> J.random(<span class="number">0</span>, min)
+
+    <span class="keyword">var</span> possibleNumbers = maxInclusive - min + <span class="number">1</span>
+
+    <span class="keyword">return</span> min + Math.floor(Math.random() * possibleNumbers)
+}
+
+J.randomByte = <span class="keyword">function</span>() {
+    <span class="keyword">var</span> decimal = J.random(<span class="number">1</span> &lt;<span class="xml"><span class="tag">&lt; <span class="attribute">8</span>)
+
+    <span class="attribute">return</span> <span class="attribute">J.padLeft</span>(<span class="attribute">decimal.toString</span>(<span class="attribute">16</span>), <span class="attribute">2</span>, '<span class="attribute">0</span>')<span class="attribute">.toUpperCase</span>()
+}
+
+<span class="attribute">J.randomColor</span> = <span class="attribute">function</span>() {
+    <span class="attribute">var</span> <span class="attribute">r</span> = <span class="attribute">J.randomByte</span>()
+      , <span class="attribute">g</span> = <span class="attribute">J.randomByte</span>()
+      , <span class="attribute">b</span> = <span class="attribute">J.randomByte</span>()
+
+    <span class="attribute">return</span> '#' + <span class="attribute">r</span> + <span class="attribute">g</span> + <span class="attribute">b</span>
+}
+
+</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <h3>AJAX</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+J.get = <span class="keyword">function</span>(url, callback) {
+    <span class="keyword">var</span> request = <span class="keyword">new</span> XMLHttpRequest()
+
+    request.onreadystatechange = <span class="keyword">function</span>() {
+        <span class="keyword">if</span> (request.readyState === <span class="number">4</span>) {
+            <span class="keyword">if</span> (request.status === <span class="number">200</span>)
+                callback.call(request, request.responseText)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p><strong>TODO</strong>: else</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        }
+    }
+
+    request.open(<span class="string">'GET'</span>, url)
+    request.send()
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <h3>Utilities</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+J.now = <span class="keyword">function</span>() {
+    <span class="keyword">return</span> +<span class="keyword">new</span> Date
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <h3>Elements manipulation</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>;(<span class="keyword">function</span>() {
+    J.prototype.push = <span class="keyword">function</span>(element) {
+        <span class="keyword">return</span> <span class="keyword">this</span>[<span class="keyword">this</span>.length++] = element
+    }
+
+    J.prototype.get = <span class="keyword">function</span>(index) {
+        <span class="keyword">return</span> arguments.length === <span class="number">0</span> ?
+            J.toArray(<span class="keyword">this</span>) :
+            <span class="keyword">this</span>[index]
+    }
+
+    J.prototype.size = <span class="keyword">function</span>() {
+        <span class="keyword">return</span> <span class="keyword">this</span>.length
+    }
+}())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h2">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <h2>Prototype</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <h3>Elements higher-order functions</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Example: J.prototype.filter(callback) = J.filter(this, callback)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>;(<span class="keyword">function</span>() {
+    <span class="function"><span class="keyword">function</span> <span class="title">_extendProto</span><span class="params">(methodNames, resultFunction)</span> {</span>
+        J.each(methodNames, <span class="keyword">function</span>() {
+            <span class="keyword">var</span> methodName = <span class="keyword">this</span>
+
+            J.prototype[methodName] = <span class="keyword">function</span>() {
+                <span class="keyword">var</span> methodArguments = J.merge([<span class="keyword">this</span>], arguments)
+
+                  , returnedValue = J[methodName].apply(<span class="keyword">this</span>, methodArguments)
+
+                <span class="keyword">return</span> resultFunction.call(<span class="keyword">this</span>, returnedValue)
+            }
+        })
+    }
+
+    ;(<span class="keyword">function</span>() {
+        <span class="keyword">var</span> methodNames = [<span class="string">'each'</span>, <span class="string">'map'</span>, <span class="string">'select'</span>, <span class="string">'any'</span>, <span class="string">'some'</span>, <span class="string">'all'</span>, <span class="string">'every'</span>]
+
+        _extendProto(methodNames, <span class="keyword">function</span>(returnedValue) {
+            <span class="keyword">return</span> returnedValue
+        })
+    }())
+
+    ;(<span class="keyword">function</span>() {
+        <span class="keyword">var</span> methodNames = [<span class="string">'filter'</span>, <span class="string">'where'</span>, <span class="string">'reject'</span>]
+
+        _extendProto(methodNames, <span class="keyword">function</span>(returnedValue) {
+            <span class="keyword">return</span> <span class="keyword">new</span> J(returnedValue)
+        })
+    }())
+}())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <h3>Events</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>;(<span class="keyword">function</span>() {
+    ;(<span class="keyword">function</span>() {
+        <span class="keyword">var</span> events =
+            [ <span class="string">'blur'</span>, <span class="string">'focus'</span>, <span class="string">'focusin'</span>, <span class="string">'focusout'</span>, <span class="string">'load'</span>, <span class="string">'resize'</span>, <span class="string">'scroll'</span>, <span class="string">'unload'</span>, <span class="string">'click'</span>, <span class="string">'dblclick'</span>
+            , <span class="string">'mousedown'</span>, <span class="string">'mouseup'</span>, <span class="string">'mousemove'</span>, <span class="string">'mouseover'</span>, <span class="string">'mouseout'</span>, <span class="string">'change'</span>, <span class="string">'select'</span>, <span class="string">'submit'</span>, <span class="string">'keydown'</span>
+            , <span class="string">'keypress'</span>, <span class="string">'keyup'</span>, <span class="string">'error'</span>, <span class="string">'contextmenu'</span>
+        ]
+
+        J.each(events, <span class="keyword">function</span>() {
+            <span class="keyword">var</span> event = <span class="keyword">this</span>
+
+            J.prototype[event] = <span class="keyword">function</span>() {
+                <span class="keyword">var</span> methodArguments = J.merge([event], arguments)
+
+                <span class="keyword">return</span> J.prototype.on.apply(<span class="keyword">this</span>, methodArguments)
+            }
+        })
+    }())
+
+    J.prototype.on = <span class="keyword">function</span>(event, callback) {
+        <span class="keyword">return</span> <span class="keyword">this</span>.each(<span class="keyword">function</span>() {
+            <span class="keyword">this</span>.addEventListener(event, callback)
+        })
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p><strong>TODO</strong>: Add <code>mouseenter</code> event to non-IE browsers.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    J.prototype.mouseenter = <span class="keyword">function</span>(callback) {
+        <span class="keyword">return</span> <span class="keyword">this</span>.on(<span class="string">'mouseover'</span>, callback)
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p><strong>TODO</strong>: Add <code>mouseleave</code> event to non-IE browsers.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    J.prototype.mouseleave = <span class="keyword">function</span>(callback) {
+        <span class="keyword">return</span> <span class="keyword">this</span>.on(<span class="string">'mouseout'</span>, callback)
+    }
+}())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <h3>DOM Manipulation</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>;(<span class="keyword">function</span>() {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>Example: body.append(div) = div.appendTo(body)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    ;(<span class="keyword">function</span>() {
+        <span class="keyword">var</span> pairedMethods =
+            { <span class="string">'prepend'</span>: <span class="string">'prependTo'</span>
+            , <span class="string">'append'</span> : <span class="string">'appendTo'</span>
+
+            , <span class="string">'before'</span>: <span class="string">'insertBefore'</span>
+            , <span class="string">'after'</span> : <span class="string">'insertAfter'</span>
+        }
+
+        J.each(pairedMethods, <span class="keyword">function</span>(implementedMethod) {
+            J.prototype[<span class="keyword">this</span>] = <span class="keyword">function</span>(elements) {
+                elements[implementedMethod](<span class="keyword">this</span>)
+
+                <span class="keyword">return</span> <span class="keyword">this</span>
+            }
+        })
+    }())
+
+    ;(<span class="keyword">function</span>() {
+        <span class="function"><span class="keyword">function</span> <span class="title">_eachEach</span><span class="params">(elements, callback)</span> {</span>
+            <span class="keyword">return</span> <span class="keyword">this</span>.each(<span class="keyword">function</span>() {
+                <span class="keyword">var</span> parentElement = <span class="keyword">this</span>
+
+                elements.each(<span class="keyword">function</span>() {
+                    callback.call(parentElement, <span class="keyword">this</span>) <span class="comment">// Chrome bug: .cloneNode(true)</span>
+                })
+            })
+        }
+
+        J.prototype.prepend = <span class="keyword">function</span>(elements) {
+            <span class="keyword">return</span> _eachEach.call(<span class="keyword">this</span>, elements, <span class="keyword">function</span>(newElement) {
+                <span class="keyword">this</span>.insertBefore(newElement, <span class="keyword">this</span>.firstChild)
+            })
+        }
+
+        J.prototype.append = <span class="keyword">function</span>(elements) {
+            <span class="keyword">return</span> _eachEach.call(<span class="keyword">this</span>, elements, <span class="keyword">function</span>(newElement) {
+                <span class="keyword">this</span>.appendChild(newElement)
+            })
+        }
+
+        J.prototype.before = <span class="keyword">function</span>(elements) {
+            <span class="keyword">return</span> _eachEach.call(<span class="keyword">this</span>, elements, <span class="keyword">function</span>(newElement) {
+                <span class="keyword">this</span>.parentNode.insertBefore(newElement, <span class="keyword">this</span>)
+            })
+        }
+
+        J.prototype.after = <span class="keyword">function</span>(elements) {
+            <span class="keyword">return</span> _eachEach.call(<span class="keyword">this</span>, elements, <span class="keyword">function</span>(newElement) {
+                <span class="keyword">this</span>.parentNode.insertBefore(newElement, <span class="keyword">this</span>.nextElementSibling)
+            })
+        }
+    }())
+
+    ;(<span class="keyword">function</span>() {
+        <span class="function"><span class="keyword">function</span> <span class="title">_filteredMap</span><span class="params">(callback)</span> {</span>
+            <span class="keyword">var</span> result = J.map(<span class="keyword">this</span>, <span class="keyword">function</span>() {
+                <span class="keyword">return</span> callback.call(<span class="keyword">this</span>)
+            })
+
+            <span class="keyword">return</span> J.reject(result, <span class="keyword">function</span>() {
+                <span class="keyword">return</span> <span class="keyword">this</span> === <span class="literal">null</span>
+            })
+        }
+
+        J.prototype.prev = <span class="keyword">function</span>() {
+            <span class="keyword">var</span> result = _filteredMap.call(<span class="keyword">this</span>, <span class="keyword">function</span>() {
+                <span class="keyword">return</span> <span class="keyword">this</span>.previousElementSibling
+            })
+
+            <span class="keyword">return</span> <span class="keyword">new</span> J(result)
+        }
+
+        J.prototype.next = <span class="keyword">function</span>() {
+            <span class="keyword">var</span> result = _filteredMap.call(<span class="keyword">this</span>, <span class="keyword">function</span>() {
+                <span class="keyword">return</span> <span class="keyword">this</span>.nextElementSibling
+            })
+
+            <span class="keyword">return</span> <span class="keyword">new</span> J(result)
+        }
+
+        J.prototype.parent = <span class="keyword">function</span>() {
+            <span class="keyword">var</span> result = _filteredMap.call(<span class="keyword">this</span>, <span class="keyword">function</span>() {
+                <span class="keyword">return</span> <span class="keyword">this</span>.parentNode
+            })
+
+            result = J.uniq(result)
+
+            <span class="keyword">return</span> <span class="keyword">new</span> J(result)
+        }
+
+        J.prototype.children = <span class="keyword">function</span>() {
+            <span class="keyword">var</span> result = []
+
+            J.each(<span class="keyword">this</span>, <span class="keyword">function</span>() {
+                J.merge(result, <span class="keyword">this</span>.children)
+            })
+
+            <span class="keyword">return</span> <span class="keyword">new</span> J(result)
+        }
+    }())
+
+    J.prototype.remove = <span class="keyword">function</span>() {
+        <span class="keyword">return</span> <span class="keyword">this</span>.each(<span class="keyword">function</span>() {
+            <span class="keyword">this</span>.parentNode.removeChild(<span class="keyword">this</span>)
+        })
+    }
+}())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <h3>Attributes</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>;(<span class="keyword">function</span>() {
+    <span class="function"><span class="keyword">function</span> <span class="title">_getAttribute</span><span class="params">(attribute)</span> {</span>
+        <span class="keyword">var</span> firstElement = <span class="keyword">this</span>[<span class="number">0</span>]
+
+        <span class="keyword">return</span> firstElement.getAttribute(attribute)
+    }
+
+    <span class="function"><span class="keyword">function</span> <span class="title">_setAttribute</span><span class="params">(attribute, value)</span> {</span>
+        <span class="keyword">return</span> <span class="keyword">this</span>.each(<span class="keyword">function</span>() {
+            <span class="keyword">this</span>.setAttribute(attribute, value)
+        })
+    }
+
+    <span class="function"><span class="keyword">function</span> <span class="title">_removeAttribute</span><span class="params">(attribute)</span> {</span>
+        <span class="keyword">return</span> <span class="keyword">this</span>.each(<span class="keyword">function</span>() {
+            <span class="keyword">this</span>.removeAttribute(attribute)
+        })
+    }
+
+    J.prototype.attr = <span class="keyword">function</span>(attribute, value) {
+        <span class="keyword">return</span> arguments.length === <span class="number">1</span> ?
+            _getAttribute.call(<span class="keyword">this</span>, attribute) :
+            _setAttribute.call(<span class="keyword">this</span>, attribute, value)
+    }
+
+    J.prototype.removeAttr = <span class="keyword">function</span>(attribute) {
+        _removeAttribute.call(<span class="keyword">this</span>, attribute)
+    }
+}())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <h3>Data</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>;(<span class="keyword">function</span>() {
+    <span class="function"><span class="keyword">function</span> <span class="title">_parseDataAttribute</span><span class="params">(key)</span> {</span>
+        <span class="keyword">var</span> valueString = <span class="keyword">this</span>.dataset[key]
+
+        <span class="keyword">if</span> (!(key <span class="keyword">in</span> <span class="keyword">this</span>.dataset))
+            <span class="keyword">return</span> <span class="literal">undefined</span>
+
+        <span class="keyword">if</span> (parseFloat(valueString).toString() === valueString)
+            <span class="keyword">return</span> parseFloat(valueString)
+
+        <span class="keyword">if</span> (valueString === <span class="string">'true'</span>)
+            <span class="keyword">return</span> <span class="literal">true</span>
+
+        <span class="keyword">if</span> (valueString === <span class="string">'false'</span>)
+            <span class="keyword">return</span> <span class="literal">false</span>
+
+        <span class="keyword">if</span> (valueString === <span class="string">'null'</span>)
+            <span class="keyword">return</span> <span class="literal">null</span>
+
+        <span class="keyword">try</span> {
+            <span class="keyword">return</span> JSON.parse(valueString)
+
+        } <span class="keyword">catch</span> (e) {
+            <span class="keyword">return</span> valueString
+
+        }
+    }
+
+    <span class="function"><span class="keyword">function</span> <span class="title">_hasDataProperty</span><span class="params">(key)</span> {</span>
+        <span class="keyword">return</span> <span class="keyword">this</span>._data &amp;&amp; (key <span class="keyword">in</span> <span class="keyword">this</span>._data)
+    }
+
+    <span class="function"><span class="keyword">function</span> <span class="title">_getDataProperty</span><span class="params">(key)</span> {</span>
+        <span class="keyword">return</span> <span class="keyword">this</span>._data[key]
+    }
+
+    <span class="function"><span class="keyword">function</span> <span class="title">_setDataProperty</span><span class="params">(key, value)</span> {</span>
+        <span class="keyword">this</span>._data = <span class="keyword">this</span>._data || {}
+
+        <span class="keyword">this</span>._data[key] = value
+    }
+
+    <span class="function"><span class="keyword">function</span> <span class="title">_getData</span><span class="params">(key)</span> {</span>
+        <span class="keyword">var</span> firstElement = <span class="keyword">this</span>[<span class="number">0</span>]
+
+        <span class="keyword">return</span> _hasDataProperty.call(firstElement, key) ?
+            _getDataProperty.call(firstElement, key) :
+            _parseDataAttribute.call(firstElement, key)
+    }
+
+    <span class="function"><span class="keyword">function</span> <span class="title">_setData</span><span class="params">(key, value)</span> {</span>
+        <span class="keyword">return</span> <span class="keyword">this</span>.each(<span class="keyword">function</span>() {
+            _setDataProperty.call(<span class="keyword">this</span>, key, value)
+        })
+    }
+
+    J.prototype.data = <span class="keyword">function</span>(key, value) {
+        <span class="keyword">return</span> arguments.length === <span class="number">1</span> ?
+            _getData.call(<span class="keyword">this</span>, key) :
+            _setData.call(<span class="keyword">this</span>, key, value)
+    }
+
+    J.prototype.removeData = <span class="keyword">function</span>(key) {
+        <span class="keyword">return</span> J.prototype.data.call(<span class="keyword">this</span>, key, <span class="literal">undefined</span>)
+    }
+}())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <h3>Classes</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>;(<span class="keyword">function</span>() {
+    J.prototype.hasClass = <span class="keyword">function</span>(className) {
+        <span class="keyword">return</span> <span class="keyword">this</span>.any(<span class="keyword">function</span>() {
+            <span class="keyword">return</span> <span class="keyword">this</span>.classList.contains(className)
+        })
+    }
+
+    J.prototype.addClass = <span class="keyword">function</span>(className) {
+        <span class="keyword">return</span> <span class="keyword">this</span>.each(<span class="keyword">function</span>() {
+            <span class="keyword">this</span>.classList.add(className)
+        })
+    }
+
+    J.prototype.removeClass = <span class="keyword">function</span>(className) {
+        <span class="keyword">return</span> <span class="keyword">this</span>.each(<span class="keyword">function</span>() {
+            <span class="keyword">this</span>.classList.remove(className)
+        })
+    }
+
+    J.prototype.toggleClass = <span class="keyword">function</span>(className) {
+        <span class="keyword">return</span> <span class="keyword">this</span>.each(<span class="keyword">function</span>() {
+            <span class="keyword">this</span>.classList.toggle(className)
+        })
+    }
+}())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <h3>CSS Properties</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>;(<span class="keyword">function</span>() {
+    <span class="keyword">var</span> _makeVendorProperty = (<span class="keyword">function</span>() {
+        <span class="keyword">var</span> _vendorPrefixes = [<span class="string">'Webkit'</span>, <span class="string">'Moz'</span>, <span class="string">'ms'</span>, <span class="string">'O'</span>]
+
+          , _style = document.createElement(<span class="string">'div'</span>).style
+
+        <span class="keyword">return</span> <span class="keyword">function</span>(camelCasedProperty) {
+            <span class="keyword">if</span> (camelCasedProperty <span class="keyword">in</span> _style) <span class="keyword">return</span> camelCasedProperty
+
+            <span class="keyword">var</span> pascalCasedProperty = camelCasedProperty[<span class="number">0</span>].toUpperCase() + camelCasedProperty.substr(<span class="number">1</span>)
+              , vendorProperty
+
+            J.each(_vendorPrefixes, <span class="keyword">function</span>() {
+                vendorProperty = <span class="keyword">this</span> + pascalCasedProperty
+
+                <span class="keyword">if</span> (vendorProperty <span class="keyword">in</span> _style)
+                    <span class="keyword">return</span> <span class="literal">false</span>
+
+                vendorProperty = <span class="literal">undefined</span>
+            })
+
+            <span class="keyword">return</span> vendorProperty
+        }
+    }())
+
+    <span class="function"><span class="keyword">function</span> <span class="title">_getCss</span><span class="params">(property)</span> {</span>
+        <span class="keyword">var</span> firstElement = <span class="keyword">this</span>[<span class="number">0</span>]
+
+        <span class="keyword">return</span> getComputedStyle(firstElement)[property]
+    }
+
+    <span class="function"><span class="keyword">function</span> <span class="title">_setCss</span><span class="params">(property, value)</span> {</span>
+        <span class="keyword">return</span> <span class="keyword">this</span>.each(<span class="keyword">function</span>() {
+            <span class="keyword">this</span>.style[property] = value
+        })
+    }
+
+    J.prototype.css = <span class="keyword">function</span>(camelCasedProperty, value) {
+        <span class="keyword">var</span> property = _makeVendorProperty(camelCasedProperty)
+
+        <span class="keyword">return</span> arguments.length === <span class="number">1</span> ?
+            _getCss.call(<span class="keyword">this</span>, property) :
+            _setCss.call(<span class="keyword">this</span>, property, value)
+    }
+}())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <h3>Show/hide</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>;(<span class="keyword">function</span>() {
+    <span class="function"><span class="keyword">function</span> <span class="title">_isHidden</span><span class="params">()</span> {</span>
+        <span class="keyword">return</span> <span class="keyword">this</span>.css(<span class="string">'display'</span>) === <span class="string">'none'</span>
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p><strong>TODO</strong>: Restore the original display (<code>inline, table ...</code>).</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="function"><span class="keyword">function</span> <span class="title">_showHide</span><span class="params">(show)</span> {</span>
+        <span class="keyword">return</span> <span class="keyword">this</span>.css(<span class="string">'display'</span>, show ? <span class="string">'block'</span> : <span class="string">'none'</span>)
+    }
+
+    J.prototype.show = <span class="keyword">function</span>() {
+       <span class="keyword">return</span> _showHide.call(<span class="keyword">this</span>, <span class="literal">true</span>)
+    }
+
+    J.prototype.hide = <span class="keyword">function</span>() {
+        <span class="keyword">return</span> _showHide.call(<span class="keyword">this</span>, <span class="literal">false</span>)
+    }
+
+    J.prototype.toggle = <span class="keyword">function</span>() {
+        <span class="keyword">return</span> <span class="keyword">this</span>.each(<span class="keyword">function</span>() {
+            <span class="keyword">var</span> self = <span class="keyword">new</span> J(<span class="keyword">this</span>)
+
+            _showHide.call(self, _isHidden.call(self))
+        })
+    }
+}())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <h3>Text</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>;(<span class="keyword">function</span>() {
+    <span class="function"><span class="keyword">function</span> <span class="title">_getText</span><span class="params">()</span> {</span>
+        <span class="keyword">var</span> firstElement = <span class="keyword">this</span>[<span class="number">0</span>]
+
+        <span class="keyword">return</span> firstElement.textContent
+    }
+
+    <span class="function"><span class="keyword">function</span> <span class="title">_setText</span><span class="params">(text)</span> {</span>
+        <span class="keyword">return</span> <span class="keyword">this</span>.each(<span class="keyword">function</span>() {
+            <span class="keyword">this</span>.textContent = text
+        })
+    }
+
+    J.prototype.text = <span class="keyword">function</span>(text) {
+        <span class="keyword">return</span> arguments.length === <span class="number">0</span> ?
+            _getText.call(<span class="keyword">this</span>) :
+            _setText.call(<span class="keyword">this</span>, text)
+    }
+}())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <h3>HTML</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>;(<span class="keyword">function</span>() {
+    <span class="function"><span class="keyword">function</span> <span class="title">_getHtml</span><span class="params">()</span> {</span>
+        <span class="keyword">var</span> firstElement = <span class="keyword">this</span>[<span class="number">0</span>]
+
+        <span class="keyword">return</span> firstElement.innerHTML
+    }
+
+    <span class="function"><span class="keyword">function</span> <span class="title">_setHtml</span><span class="params">(html)</span> {</span>
+        <span class="keyword">return</span> <span class="keyword">this</span>.each(<span class="keyword">function</span>() {
+            <span class="keyword">this</span>.innerHTML = html
+        })
+    }
+
+    J.prototype.html = <span class="keyword">function</span>(html) {
+        <span class="keyword">return</span> arguments.length === <span class="number">0</span> ?
+            _getHtml.call(<span class="keyword">this</span>) :
+            _setHtml.call(<span class="keyword">this</span>, html)
+    }
+}())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>TODO: Deffered</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <p>// J(&#39;p&#39;).log().log().delay(1000).log().log().delay(1000).log().log()</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-34">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              <p>// This should be the last section.
+;(function() {
+    function _tryDequeue() {
+        var queue = this._delayQueue</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
+              </div>
+              <pre><code>    if (!queue.inProgress &amp;&amp; queue.length)
+        return queue.shift()()
+}</code></pre>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-36">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-36">&#182;</a>
+              </div>
+              <pre><code>J.prototype.log = function() {
+    console.log(~~(J.now() / 1000) % 100)</code></pre>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-37">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-37">&#182;</a>
+              </div>
+              <pre><code>    return this
+}</code></pre>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-38">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-38">&#182;</a>
+              </div>
+              <pre><code>J.prototype.delay = function(time) {
+    var self = this</code></pre>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-39">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-39">&#182;</a>
+              </div>
+              <pre><code>    this._delayQueue.inProgress = true</code></pre>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-40">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-40">&#182;</a>
+              </div>
+              <pre><code>    setTimeout(function() {
+        self._delayQueue.inProgress = false</code></pre>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-41">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-41">&#182;</a>
+              </div>
+              <pre><code>        return _tryDequeue.call(self)
+    }, time)</code></pre>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-42">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-42">&#182;</a>
+              </div>
+              <pre><code>    return this
+}</code></pre>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-43">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-43">&#182;</a>
+              </div>
+              <pre><code>// This should be the last method
+J.prototype = J.map(J.prototype, function(methodName) {
+    var methodBody = this</code></pre>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-44">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-44">&#182;</a>
+              </div>
+              <pre><code>    if (methodName === &#39;push&#39;)
+        return this</code></pre>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-45">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-45">&#182;</a>
+              </div>
+              <pre><code>    return function() {
+        var self = this
+          , methodArguments = arguments</code></pre>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-46">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-46">&#182;</a>
+              </div>
+              <pre><code>        // console.log(this._delayQueue)</code></pre>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-47">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-47">&#182;</a>
+              </div>
+              <pre><code>        this._delayQueue.push(function() {
+            methodBody.apply(self, methodArguments)</code></pre>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-48">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-48">&#182;</a>
+              </div>
+              <pre><code>            return _tryDequeue.call(self)
+        })</code></pre>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-49">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-49">&#182;</a>
+              </div>
+              <pre><code>        _tryDequeue.call(this)</code></pre>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-50">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-50">&#182;</a>
+              </div>
+              <pre><code>        return this
+    }
+})</code></pre>
+<p>}())</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-51">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-51">&#182;</a>
+              </div>
+              <p>return function() {
+    var result = J.apply(this, arguments)</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-52">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-52">&#182;</a>
+              </div>
+              <pre><code>console.log(result)</code></pre>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-53">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-53">&#182;</a>
+              </div>
+              <pre><code>result._delayQueue = []</code></pre>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-54">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-54">&#182;</a>
+              </div>
+              <pre><code>return result</code></pre>
+<p>}</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="keyword">return</span> J
+}())</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
