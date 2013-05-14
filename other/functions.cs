@@ -213,7 +213,7 @@ static class Program
 
     static void Print<T>(IList<T> arr)
     {
-        arr.Foreach(x => Console.WriteLine(x));
+        arr.Foreach(Console.WriteLine);
     }
 
     static void Print(object obj)
