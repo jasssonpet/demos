@@ -89,7 +89,7 @@ J.repeat = function(string, times) {
 }
 
 // #### PadLeft/PadRight
-;(function() {
+!function() {
     function _makeMissing(length, character) {
         return J.repeat(character || ' ', length - this.length)
     }
@@ -101,10 +101,10 @@ J.repeat = function(string, times) {
     J.padRight = function(string, length, character) {
         return string + _makeMissing.call(string, length, character)
     }
-}())
+}()
 
 // ### Array-like and Object Manipulation
-;(function() {
+!(function() {
     function _isArrayLike() {
         return 'length' in this
     }
@@ -417,13 +417,13 @@ J.now = function() {
 // ### Events
 ;(function() {
     ;(function() {
-        var events =
+        var _events =
             [ 'blur', 'focus', 'focusin', 'focusout', 'load', 'resize', 'scroll', 'unload', 'click', 'dblclick'
             , 'mousedown', 'mouseup', 'mousemove', 'mouseover', 'mouseout', 'change', 'select', 'submit', 'keydown'
             , 'keypress', 'keyup', 'error', 'contextmenu'
         ]
 
-        J.each(events, function() {
+        J.each(_events, function() {
             var event = this
 
             J.prototype[event] = function() {
@@ -658,6 +658,7 @@ J.now = function() {
             _setData.call(this, key, value)
     }
 
+    // TODO: Delete
     J.prototype.removeData = function(key) {
         return J.prototype.data.call(this, key, undefined)
     }
