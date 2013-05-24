@@ -4,4 +4,4 @@
 
 ## Snake
 
-[![Screenshot](https://raw.github.com/jasssonpet/demos/gh-pages/snake/index.png)](http://jasssonpet.github.com/demos/matrix-traversal/)
+[![Screenshot](https://raw.github.com/jasssonpet/demos/gh-pages/snake/index.png)](http://jasssonpet.github.com/demos/snake/)
