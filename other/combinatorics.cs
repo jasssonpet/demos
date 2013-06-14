@@ -66,25 +66,23 @@ class Combination<T> : IEnumerable<IEnumerable<T>>
 
     private IEnumerable<IEnumerable<T>> Generate(int i, int next)
     {
-        //if (i == this.indices.Count)
-        //{
-        //    yield return this.indices.Select(x => this.elements[x]);
-        //}
+        if (i == this.indices.Count)
+        {
+            yield return this.indices.Select(x => this.elements[x]);
+        }
 
-        //else
-        //{
-        //    for (int j = next; j < this.elements.Count; j++)
-        //    {
-        //        this.indices[i] = j;
+        else
+        {
+            for (int j = next; j < this.elements.Count; j++)
+            {
+                this.indices[i] = j;
 
-        //        foreach (var item in this.Generate(i + 1, next + 1))
-        //        {
-        //            yield return item;
-        //        }
-        //    }
-        //}
-
-        throw new NotImplementedException();
+                foreach (var item in this.Generate(i + 1, j + 1))
+                {
+                    yield return item;
+                }
+            }
+        }
     }
 
     public IEnumerator<IEnumerable<T>> GetEnumerator()
@@ -156,13 +154,13 @@ class Program
 {
     static void Main()
     {
-        var numbers = new[] { "1", "2", "3", "4", "5" };
+        var numbers = new[] { "1", "2", "3", "4"};
 
         //foreach (var item in new Variation<string>(numbers))
         //    Console.WriteLine(string.Join(" ", item));
 
-        foreach (var item in new Combination<string>(numbers, 3))
-            Console.WriteLine(string.Join(" ", item));
+        //foreach (var item in new Combination<string>(numbers, 2))
+        //    Console.WriteLine(string.Join(" ", item));
 
         //foreach (var item in new Permutation<string>(numbers))
         //    Console.WriteLine(string.Join(" ", item));
